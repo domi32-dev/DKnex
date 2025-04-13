@@ -8,8 +8,7 @@ export default function Home() {
    return (
       <DashboardShell>
          <div className="min-h-screen bg-background text-foreground p-6 space-y-6">
-            <Hero />
-            <FeaturedApp />
+            <MapClientWrapper />
          </div>
       </DashboardShell>
    );

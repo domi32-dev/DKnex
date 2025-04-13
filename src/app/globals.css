@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "leaflet/dist/leaflet.css";
+@import "maplibre-gl/dist/maplibre-gl.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -132,4 +132,10 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+.poi-marker {
+  background-repeat: no-repeat;
+  background-position: center;
 }

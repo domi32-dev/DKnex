@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, BarChart2, Users, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, BarChart2, Users, Settings, ChevronLeft, ChevronRight, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 const navItems = [
   { label: 'Dashboard', icon: <Home />, href: '/' },
   { label: 'Analytics', icon: <BarChart2 />, href: '/analytics' },
+  { label: 'Map', icon: <Map />, href: '/map' },
   { label: 'Users', icon: <Users />, href: '/users' },
   { label: 'Settings', icon: <Settings />, href: '/settings' },
 ];
