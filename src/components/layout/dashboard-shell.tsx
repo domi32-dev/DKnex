@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Sidebar } from "./sidebar";
 import { Topbar } from "./topbar";
 import { useSession, signIn } from "next-auth/react";
@@ -12,8 +12,24 @@ import AuthLayout from "@/components/layout/auth-layout";
 
 export const DashboardShell = ({ children }: { children: ReactNode }) => {
    const [collapsed, setCollapsed] = useState(false);
+   const [isMobile, setIsMobile] = useState(false);
+   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
    const { data: session, status } = useSession();
 
+   // On mount: determine if viewport is mobile-sized
+   useEffect(() => {
+      const handleResize = () => {
+         setIsMobile(window.innerWidth < 768);
+      };
+
+      handleResize(); // Run initially
+      window.addEventListener("resize", handleResize);
+
+      return () => window.removeEventListener("resize", handleResize);
+   }, []);
+
+   // Show loading spinner while auth session is being resolved
    if (status === "loading") {
       return (
          <div className="flex h-screen items-center justify-center">
@@ -23,6 +39,7 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
       );
    }
 
+   // If no session, prompt user to sign in (email or Google)
    if (!session) {
       return (
          <AuthLayout>
@@ -33,7 +50,7 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
                </p>
 
                <div className="flex gap-4 mt-2">
-                  {/* Sign in with email */}
+                  {/* Email sign-in */}
                   <Link href="/auth/signin">
                      <Button
                         className="w-40 h-10 flex items-center justify-center cursor-pointer"
@@ -44,7 +61,7 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
                      </Button>
                   </Link>
 
-                  {/* Sign in with Google (icon only) */}
+                  {/* Google sign-in */}
                   <Button
                      variant="outline"
                      className="p-2 w-10 h-10 rounded-md flex items-center justify-center cursor-pointer"
@@ -68,17 +85,33 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
 
    return (
       <div className="min-h-screen bg-background text-foreground">
-         <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
+         {/* Sidebar: visible on desktop, toggled on mobile */}
+         <Sidebar
+            collapsed={collapsed}
+            setCollapsed={setCollapsed}
+            isMobile={isMobile}
+            setIsMobileOpen={setIsMobileOpen}
+         />
 
+         {/* Overlay (mobile only): closes sidebar when clicked */}
+         {isMobile && isMobileOpen && (
+            <div
+               className="fixed inset-0 bg-black/50 z-30"
+               onClick={() => setIsMobileOpen(false)}
+            />
+         )}
+
+         {/* Main content wrapper */}
          <div
-            className={`flex flex-col min-h-screen transition-all duration-300 ${
-               collapsed ? "ml-16" : "ml-64"
-            }`}
+            className={`
+          flex flex-col min-h-screen transition-all duration-300
+          ${isMobile ? "ml-0" : collapsed ? "ml-16" : "ml-64"}
+        `}
          >
             <Topbar />
-            <main className="flex-1 w-full max-w-[1800px] mx-auto px-6">
-               {/* Added padding with px-6 and ensured full width w-full */}
-               <div className="w-full">{children}</div>
+            <main className="flex-1 w-full max-w-[1800px] mx-auto px-6 py-4">
+               {/* Main content rendered here */}
+               {children}
             </main>
          </div>
       </div>
