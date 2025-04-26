@@ -18,6 +18,7 @@ const navItems = [
    { label: "Dashboard", icon: <Home />, href: "/" },
    { label: "Analytics", icon: <BarChart2 />, href: "/analytics" },
    { label: "Map", icon: <Map />, href: "/map" },
+   { label: "Kalendar", icon: <Map />, href: "/calendar" },
    { label: "Users", icon: <Users />, href: "/users" },
    { label: "Settings", icon: <Settings />, href: "/settings" },
 ];
