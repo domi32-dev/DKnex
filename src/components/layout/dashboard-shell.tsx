@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import AuthLayout from "@/components/layout/auth-layout";
+import { cn } from "@/lib/utils";
 
 export const DashboardShell = ({ children }: { children: ReactNode }) => {
    const [collapsed, setCollapsed] = useState(false);
@@ -32,9 +33,11 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
    // Show loading spinner while auth session is being resolved
    if (status === "loading") {
       return (
-         <div className="flex h-screen items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-            <span className="ml-2">Loading session…</span>
+         <div className="flex h-screen items-center justify-center bg-background">
+            <div className="flex flex-col items-center gap-4">
+               <Loader2 className="h-8 w-8 animate-spin text-primary" />
+               <span className="text-sm text-muted-foreground">Loading...</span>
+            </div>
          </div>
       );
    }
@@ -96,17 +99,17 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
          {/* Overlay (mobile only): closes sidebar when clicked */}
          {isMobile && isMobileOpen && (
             <div
-               className="fixed inset-0 bg-black/50 z-30"
+               className="fixed inset-0 bg-black/50 z-30 backdrop-blur-sm transition-opacity"
                onClick={() => setIsMobileOpen(false)}
             />
          )}
 
          {/* Main content wrapper */}
          <div
-            className={`
-          flex flex-col min-h-screen transition-all duration-300
-          ${isMobile ? "ml-0" : collapsed ? "ml-16" : "ml-64"}
-        `}
+            className={cn(
+               "flex flex-col min-h-screen transition-all duration-300",
+               isMobile ? "ml-0" : collapsed ? "ml-16" : "ml-80"
+            )}
          >
             <Topbar />
             <main className="flex-1 w-full max-w-[1800px] mx-auto px-6 py-4">
