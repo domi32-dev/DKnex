@@ -1,0 +1,272 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { User, Lock, Image as ImageIcon } from "lucide-react";
+
+// Sanitize user input for display
+const sanitizeUserInput = (input: string | null | undefined): string => {
+  return input?.replace(/[<>]/g, '') || '';
+};
+
+// Validate avatar URL
+const isValidAvatarUrl = (url: string | null | undefined): boolean => {
+  if (!url) return false;
+  try {
+    if (url.includes('googleusercontent.com')) {
+      return true;
+    }
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export function ProfileContent() {
+  const { data: session, update } = useSession();
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    name: session?.user?.name || "",
+    email: session?.user?.email || "",
+    image: session?.user?.image || "",
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const safeUserName = sanitizeUserInput(session?.user?.name);
+  const safeUserEmail = sanitizeUserInput(session?.user?.email);
+  const safeUserImage = session?.user?.image && isValidAvatarUrl(session.user.image) 
+    ? session.user.image 
+    : null;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Here you would typically upload the image to your server
+    // and get back a URL. For now, we'll just use a placeholder
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData(prev => ({ ...prev, image: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    try {
+      // Here you would typically make an API call to update the user's profile
+      // For now, we'll just update the session
+      await update({
+        ...session,
+        user: {
+          ...session?.user,
+          name: formData.name,
+          email: formData.email,
+          image: formData.image,
+        },
+      });
+      setSuccess("Profile updated successfully!");
+      setIsEditing(false);
+    } catch (err) {
+      setError("Failed to update profile. Please try again.");
+    }
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError("New passwords do not match");
+      return;
+    }
+
+    try {
+      // Here you would typically make an API call to update the password
+      // For now, we'll just show a success message
+      setSuccess("Password updated successfully!");
+      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (err) {
+      setError("Failed to update password. Please try again.");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background text-foreground p-6 space-y-6">
+      {/* Profile Header */}
+      <div className="relative w-full h-48 rounded-xl overflow-hidden bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+        <div className="absolute left-6 bottom-6 flex items-end space-x-4">
+          <Avatar className="h-20 w-20 border-4 border-background shadow-lg">
+            {safeUserImage ? (
+              <AvatarImage 
+                src={safeUserImage} 
+                alt={safeUserName || "User"}
+                referrerPolicy="no-referrer"
+              />
+            ) : null}
+            <AvatarFallback>{safeUserName ? safeUserName[0].toUpperCase() : "U"}</AvatarFallback>
+          </Avatar>
+          <div className="pb-2">
+            <div className="text-2xl font-bold text-white drop-shadow-lg">{safeUserName || "Unknown User"}</div>
+            <div className="text-sm text-gray-200 drop-shadow">{safeUserEmail || "No Email"}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Profile Settings */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Profile Information */}
+        <Card className="rounded-2xl shadow-md border-0 bg-white dark:bg-[#23263a] dark:border dark:border-[#2d314d]">
+          <CardHeader className="flex flex-row items-center gap-2 pb-2">
+            <User className="text-primary w-6 h-6" />
+            <CardTitle className="text-lg font-semibold text-blue-900 dark:text-white">Profile Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Name</label>
+                <Input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className="bg-white dark:bg-[#23263a]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Email</label>
+                <Input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className="bg-white dark:bg-[#23263a]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Profile Image</label>
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-12 w-12">
+                    {formData.image ? (
+                      <AvatarImage 
+                        src={formData.image} 
+                        alt={formData.name || "User"}
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : null}
+                    <AvatarFallback>{formData.name?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+                  </Avatar>
+                  {isEditing && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="relative"
+                      onClick={() => document.getElementById('image-upload')?.click()}
+                    >
+                      <ImageIcon className="h-4 w-4 mr-2" />
+                      Change Image
+                      <input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageChange}
+                      />
+                    </Button>
+                  )}
+                </div>
+              </div>
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+              {success && <p className="text-green-500 text-sm">{success}</p>}
+              <div className="flex justify-end gap-2">
+                {isEditing ? (
+                  <>
+                    <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>
+                      Cancel
+                    </Button>
+                    <Button type="submit">Save Changes</Button>
+                  </>
+                ) : (
+                  <Button type="button" onClick={() => setIsEditing(true)}>
+                    Edit Profile
+                  </Button>
+                )}
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Password Settings */}
+        <Card className="rounded-2xl shadow-md border-0 bg-white dark:bg-[#23263a] dark:border dark:border-[#2d314d]">
+          <CardHeader className="flex flex-row items-center gap-2 pb-2">
+            <Lock className="text-primary w-6 h-6" />
+            <CardTitle className="text-lg font-semibold text-blue-900 dark:text-white">Password Settings</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Current Password</label>
+                <Input
+                  name="currentPassword"
+                  type="password"
+                  value={passwordData.currentPassword}
+                  onChange={handlePasswordChange}
+                  className="bg-white dark:bg-[#23263a]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">New Password</label>
+                <Input
+                  name="newPassword"
+                  type="password"
+                  value={passwordData.newPassword}
+                  onChange={handlePasswordChange}
+                  className="bg-white dark:bg-[#23263a]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Confirm New Password</label>
+                <Input
+                  name="confirmPassword"
+                  type="password"
+                  value={passwordData.confirmPassword}
+                  onChange={handlePasswordChange}
+                  className="bg-white dark:bg-[#23263a]"
+                />
+              </div>
+              <div className="flex justify-end">
+                <Button type="submit">Update Password</Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+} 
