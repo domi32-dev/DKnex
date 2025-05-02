@@ -15,15 +15,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-
-const navItems = [
-   { label: "Dashboard", icon: <Home />, href: "/" },
-   { label: "Analytics", icon: <BarChart2 />, href: "/analytics" },
-   { label: "Map", icon: <Map />, href: "/map" },
-   { label: "Calendar", icon: <Calendar />, href: "/calendar" },
-   { label: "Users", icon: <Users />, href: "/users" },
-   { label: "Settings", icon: <Settings />, href: "/settings" },
-];
+import { useTranslation } from "@/i18n/translations";
 
 export const Sidebar = ({
    collapsed,
@@ -37,6 +29,14 @@ export const Sidebar = ({
    setIsMobileOpen: (val: boolean) => void;
 }) => {
    const pathname = usePathname();
+   const { t } = useTranslation();
+
+   const navItems = [
+      { label: t('navigation.dashboard'), icon: <Home />, href: '/' },
+      { label: t('navigation.analytics'), icon: <BarChart2 />, href: '/analytics' },
+      { label: t('navigation.map'), icon: <Map />, href: '/map' },
+      { label: t('navigation.calendar'), icon: <Calendar />, href: '/calendar' },
+   ];
 
    return (
       <>
@@ -80,7 +80,7 @@ export const Sidebar = ({
             </div>
 
             {/* Nav items */}
-            <nav className="flex flex-col gap-1 p-4">
+            <nav className="space-y-1 p-4">
                {navItems.map((item) => {
                   const isActive = pathname === item.href;
                   return (
@@ -107,7 +107,7 @@ export const Sidebar = ({
                      </Link>
                   );
                })}
-            </nav>
+            </nav> 
          </aside>
       </>
    );

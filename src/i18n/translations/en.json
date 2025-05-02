@@ -1,0 +1,26 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "analytics": "Analytics",
+    "map": "Map",
+    "calendar": "Calendar",
+    "settings": "Settings"
+  },
+  "common": {
+    "search": "Search pages...",
+    "notifications": "Notifications",
+    "noNotifications": "No notifications",
+    "darkMode": "Dark Mode",
+    "profile": "Profile",
+    "logout": "Logout",
+    "no_results": "No results found",
+    "pages": "Pages"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "noNotifications": "No notifications",
+    "unread": "You have {count} unread notification",
+    "unread_plural": "You have {count} unread notifications",
+    "markAsRead": "Mark as read"
+  }
+} 

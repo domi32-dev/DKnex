@@ -2,12 +2,16 @@ import NextAuth, { NextAuthOptions, Session, User } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from '.prisma/client';
 import bcrypt from "bcryptjs";
 import { JWT } from "next-auth/jwt";
 import { SessionStrategy } from "next-auth";
 
 const prisma = new PrismaClient();
+
+if (!process.env.NEXTAUTH_URL) {
+   process.env.NEXTAUTH_URL = 'http://localhost:3000';
+}
 
 export const authOptions: NextAuthOptions = {
    adapter: PrismaAdapter(prisma),
@@ -32,27 +36,23 @@ export const authOptions: NextAuthOptions = {
                where: { email: credentials.email },
             });
 
-            if (!user) {
-               console.log("User not found");
+            if (!user || !user.password) {
+               console.log("User not found or has no password");
                return null;
             }
 
-            if (!user.password) {
-               console.log("User has no password saved");
-               return null;
-            }
-
-            const isValid = await bcrypt.compare(
-               credentials.password,
-               user.password
-            );
+            const isValid = await bcrypt.compare(credentials.password, user.password);
             if (!isValid) {
-               console.log("Password is invalid");
+               console.log("Invalid password");
                return null;
             }
 
-            console.log("Login successful:", user.email);
-            return user;
+            // Return only safe fields
+            return {
+               id: user.id,
+               name: user.name,
+               email: user.email,
+            };
          },
       }),
    ],
@@ -69,20 +69,16 @@ export const authOptions: NextAuthOptions = {
          }
          return token;
       },
-      async session({
-         session,
-         token,
-      }: {
-         session: Session;
-         token: JWT;
-      }): Promise<Session> {
-         if (token) {
+      async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
+         if (token?.id) {
             (session.user as any).id = token.id;
          }
          return session;
       },
-   },
+   }, 
    secret: process.env.JWT_SECRET ?? "",
+   // Optional: debug logging
+   // debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);

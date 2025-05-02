@@ -71,11 +71,42 @@ export function ProfileContent() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData(prev => ({ ...prev, image: reader.result as string }));
-    };
-    reader.readAsDataURL(file);
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      setError("Image size must be less than 5MB");
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError("File must be an image");
+      return;
+    }
+
+    try {
+      // Create FormData and append the file
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Upload to Supabase
+      const uploadResponse = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        const data = await uploadResponse.json();
+        throw new Error(data.error || 'Failed to upload image');
+      }
+
+      const { url } = await uploadResponse.json();
+      
+      // Update form data with the new image URL
+      setFormData(prev => ({ ...prev, image: url }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to upload image. Please try again.");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

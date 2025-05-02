@@ -17,13 +17,18 @@ export function DarkToggler() {
   if (!mounted) return null
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-    >
-      {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-      <span className="sr-only">Toggle theme</span>
-    </Button>
+    <div className="flex items-center justify-center cursor-pointer">
+      {theme === "dark" ? (
+        <Moon
+          onClick={() => setTheme("light")}
+          className="h-5 w-5"
+        />
+      ) : (
+        <Sun
+          onClick={() => setTheme("dark")}
+          className="h-5 w-5"
+        />
+      )}
+    </div>
   )
 }

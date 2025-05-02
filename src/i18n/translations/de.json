@@ -1,0 +1,26 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "analytics": "Analysen",
+    "map": "Karte",
+    "calendar": "Kalender",
+    "settings": "Einstellungen"
+  },
+  "common": {
+    "search": "Seiten durchsuchen...",
+    "notifications": "Benachrichtigungen",
+    "noNotifications": "Keine Benachrichtigungen",
+    "darkMode": "Dunkelmodus",
+    "profile": "Profil",
+    "logout": "Abmelden",
+    "no_results": "Keine Ergebnisse gefunden",
+    "pages": "Seiten"
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "noNotifications": "Keine Benachrichtigungen",
+    "unread": "Sie haben {count} ungelesene Benachrichtigung",
+    "unread_plural": "Sie haben {count} ungelesene Benachrichtigungen",
+    "markAsRead": "Als gelesen markieren"
+  }
+} 

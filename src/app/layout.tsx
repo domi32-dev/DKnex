@@ -4,6 +4,7 @@ import "./globals.css";
 import { SessionWrapper } from "@/components/auth/session-wrapper";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import RouteLoader from "@/components/layout/route-loader";
+import { I18nProvider } from '@/i18n/I18nProvider';
 
 const geistSans = Geist({
    variable: "--font-geist-sans",
@@ -42,7 +43,9 @@ export default function RootLayout({
             >
                <SessionWrapper>
                   <RouteLoader />
-                  {children}
+                  <I18nProvider>
+                     {children}
+                  </I18nProvider>
                </SessionWrapper>
             </ThemeProvider>
          </body>
