@@ -8,15 +8,16 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  password      String?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  projects      Project[]
+  id                String             @id @default(cuid())
+  name              String?
+  email             String             @unique
+  emailVerified     DateTime?
+  password          String?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
+  projects          Project[]
+  userNotifications UserNotification[]
 }
 
 model Account {
@@ -61,4 +62,24 @@ model Project {
   updatedAt   DateTime @updatedAt
   userId      String
   user        User     @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id                String             @id @default(cuid())
+  title             String
+  description       String?
+  createdAt         DateTime           @default(now())
+  userNotifications UserNotification[]
+}
+
+model UserNotification {
+  id             String       @id @default(cuid())
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  notification   Notification @relation(fields: [notificationId], references: [id])
+  notificationId String
+  read           Boolean      @default(false)
+  readAt         DateTime?
+
+  @@unique([userId, notificationId])
 }

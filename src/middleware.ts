@@ -25,10 +25,17 @@ export async function middleware(request: NextRequest) {
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   
   // Content Security Policy
-  headers.set(
-    'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"
-  );
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https:;
+    worker-src 'self' blob: https:;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https:;
+    connect-src 'self' https:;
+    child-src 'self' blob:;
+  `.replace(/\s+/g, ' ').trim();
+
+  headers.set('Content-Security-Policy', cspHeader);
 
   // Frame options
   headers.set('X-Frame-Options', 'DENY');
