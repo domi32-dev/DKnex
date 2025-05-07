@@ -1,43 +1,66 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DarkToggler } from '@/components/ui/dark-toggler';
 import { UserMenu } from '@/components/ui/user-menu';
 import { Search } from '@/components/ui/search';
 import { LanguageSelector } from '@/components/ui/language-selector';
 import { Notifications } from '@/components/ui/notifications';
 import { useTranslation } from '@/i18n/translations';
-
-// Mock notifications - replace with real data in production
-const mockNotifications = [
-  {
-    id: '1',
-    title: 'New Project Added',
-    description: 'A new project "Project X" has been added to your workspace.',
-    time: '5m ago',
-    read: false,
-  },
-  {
-    id: '2',
-    title: 'Meeting Reminder',
-    description: 'Team meeting starts in 30 minutes.',
-    time: '30m ago',
-    read: true,
-  },
-];
+import type { Notification } from '@/components/ui/notifications';
 
 export const Topbar = () => {
   const { language, setLanguage, t } = useTranslation();
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang as 'en' | 'de');
   };
 
-  const handleNotificationClick = (id: string) => {
-    setNotifications(notifications.map(n => 
-      n.id === id ? { ...n, read: true } : n
-    ));
+  useEffect(() => {
+    async function fetchNotifications() {
+      try {
+        // Add pagination parameters
+        const res = await fetch('/api/notifications?page=1&limit=20');
+        if (res.ok) {
+          const data = await res.json();
+          setNotifications(data);
+        } else {
+          console.error('Failed to fetch notifications');
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    }
+    fetchNotifications();
+  }, []);
+
+  const handleNotificationClick = async (id: string) => {
+    try {
+      // Update UI state optimistically
+      setNotifications(notifications.map(n =>
+        n.id === id ? { ...n, read: true } : n
+      ));
+      
+      // Make API call to update in database
+      const response = await fetch(`/api/notifications/${id}/read`, { 
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to mark notification as read:', errorData);
+        // Revert UI state on error
+        setNotifications(notifications);
+      }
+    } catch (error) {
+      console.error('Error handling notification click:', error);
+      // Revert UI state on error
+      setNotifications(notifications);
+    }
   };
 
   return (

@@ -1,7 +1,7 @@
 {
   "navigation": {
     "dashboard": "Dashboard",
-    "analytics": "Analysen",
+    "analytics": "Analytik",
     "map": "Karte",
     "calendar": "Kalender",
     "settings": "Einstellungen"
@@ -22,5 +22,13 @@
     "unread": "Sie haben {count} ungelesene Benachrichtigung",
     "unread_plural": "Sie haben {count} ungelesene Benachrichtigungen",
     "markAsRead": "Als gelesen markieren"
+  },
+  "map": {
+    "generateRoute": "Wanderroute generieren",
+    "routeDescription": "Beschreiben Sie Ihre ideale Wanderung",
+    "routeDescriptionPlaceholder": "z.B. malerischer Bergpfad mit Wasserfällen",
+    "difficulty": "Schwierigkeitsgrad",
+    "duration": "Dauer (Stunden)",
+    "distance": "Entfernung (km)"
   }
 } 

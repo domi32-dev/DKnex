@@ -10,8 +10,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useTranslation } from '@/i18n/translations';
+import dayjs from 'dayjs';
 
-interface Notification {
+export interface Notification {
   id: string;
   title: string;
   description: string;
@@ -35,7 +36,7 @@ export function Notifications({ notifications, onNotificationClick }: Notificati
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center justify-center cursor-pointer hover:bg-secondary/5 rounded-md transition-colors">
+      <DropdownMenuTrigger className="flex items-center justify-center cursor-pointer hover:bg-secondary/5 rounded-md transition-colors focus:outline-none focus:ring-0">
         <div className="relative">
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
@@ -45,10 +46,10 @@ export function Notifications({ notifications, onNotificationClick }: Notificati
           )}
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80">
-        <DropdownMenuLabel className="font-normal">
+      <DropdownMenuContent align="end" className="w-96 rounded-xl shadow-lg bg-background border border-secondary">
+        <DropdownMenuLabel className="font-normal px-4 pt-4 pb-2">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{t('notifications.title')}</p>
+            <p className="text-base font-semibold leading-none">{t('notifications.title')}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {unreadCount > 0 ? getUnreadText() : t('notifications.noNotifications')}
             </p>
@@ -56,7 +57,7 @@ export function Notifications({ notifications, onNotificationClick }: Notificati
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {notifications.length === 0 ? (
-          <div className="p-4 text-center text-sm text-muted-foreground">
+          <div className="p-6 text-center text-sm text-muted-foreground">
             {t('notifications.noNotifications')}
           </div>
         ) : (
@@ -64,14 +65,14 @@ export function Notifications({ notifications, onNotificationClick }: Notificati
             <DropdownMenuItem
               key={notification.id}
               onClick={() => onNotificationClick(notification.id)}
-              className={`flex flex-col items-start gap-1 p-4 cursor-pointer rounded-md transition-colors hover:bg-secondary/5 focus:bg-secondary/5 active:bg-secondary/5 dark:hover:bg-secondary/100 dark:focus:bg-secondary/20 dark:active:bg-secondary/20 ${!notification.read ? 'bg-secondary/10' : ''}`}
+              className={`flex flex-col items-start gap-1 p-4 cursor-pointer rounded-lg transition-colors hover:bg-primary/10 focus:bg-primary/10 active:bg-primary/20 ${!notification.read ? 'bg-primary/5' : ''}`}
             >
               <div className="flex w-full justify-between gap-2">
-                <span className={`font-medium ${notification.read ? 'text-muted-foreground' : ''}`}>
+                <span className={`font-medium ${notification.read ? 'text-muted-foreground' : 'text-primary'}`}>
                   {notification.title}
                 </span>
                 <span className="text-xs text-muted-foreground shrink-0">
-                  {notification.time}
+                  {dayjs(notification.time).format('DD.MM.YYYY, HH:mm')}
                 </span>
               </div>
               <span className="text-sm text-muted-foreground">
@@ -83,4 +84,4 @@ export function Notifications({ notifications, onNotificationClick }: Notificati
       </DropdownMenuContent>
     </DropdownMenu>
   );
-} 
+}

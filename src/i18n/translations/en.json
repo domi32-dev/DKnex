@@ -22,5 +22,13 @@
     "unread": "You have {count} unread notification",
     "unread_plural": "You have {count} unread notifications",
     "markAsRead": "Mark as read"
+  },
+  "map": {
+    "generateRoute": "Generate Hiking Route",
+    "routeDescription": "Describe your ideal hike",
+    "routeDescriptionPlaceholder": "e.g., scenic mountain trail with waterfalls",
+    "difficulty": "Difficulty Level",
+    "duration": "Duration (hours)",
+    "distance": "Distance (km)"
   }
 } 
