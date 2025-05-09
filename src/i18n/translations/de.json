@@ -30,5 +30,18 @@
     "difficulty": "Schwierigkeitsgrad",
     "duration": "Dauer (Stunden)",
     "distance": "Entfernung (km)"
+  },
+  "dashboard": {
+    "kpi": {
+      "activeUsers": "Aktive Nutzer insgesamt",
+      "installed": "Insgesamt installiert",
+      "downloads": "Insgesamt Downloads",
+      "last7days": "letzte 7 Tage"
+    },
+    "welcome": "Willkommen zurück,",
+    "recentActivity": "Letzte Aktivität",
+    "activeProjects": "Aktive Projekte",
+    "upcomingTasks": "Anstehende Aufgaben",
+    "createProject": "Neues Projekt erstellen"
   }
 } 

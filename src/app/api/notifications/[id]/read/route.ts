@@ -5,56 +5,46 @@ import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const notificationId = params.id;
+
   try {
-    const session = await getServerSession(authOptions);
-    const userId = (session?.user as any)?.id;
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    const notificationId = params.id;
+    // Check if notification exists first
+    const notification = await prisma.userNotification.findUnique({
+      where: {
+        id: notificationId,
+        userId: session.user.id,
+      },
+    });
 
-    try {
-      // Check if notification exists first
-      const notification = await prisma.$queryRaw`
-        SELECT COUNT(*) FROM "Notification" WHERE id = ${notificationId}
-      `;
-      
-      if (!notification || !Array.isArray(notification) || !notification[0] || notification[0].count === '0') {
-        return NextResponse.json({ error: 'Notification not found' }, { status: 404 });
-      }
-      
-      // Check if user notification exists
-      const userNotification = await prisma.$queryRaw`
-        SELECT id FROM "UserNotification" 
-        WHERE "userId" = ${userId} AND "notificationId" = ${notificationId}
-      `;
-      
-      if (userNotification && Array.isArray(userNotification) && userNotification.length > 0) {
-        // Update existing record
-        await prisma.$executeRaw`
-          UPDATE "UserNotification" 
-          SET read = true, "readAt" = ${new Date()} 
-          WHERE "userId" = ${userId} AND "notificationId" = ${notificationId}
-        `;
-      } else {
-        // Insert new record
-        await prisma.$executeRaw`
-          INSERT INTO "UserNotification" (id, "userId", "notificationId", read, "readAt")
-          VALUES (${randomUUID()}, ${userId}, ${notificationId}, true, ${new Date()})
-        `;
-      }
-
-      return NextResponse.json({ success: true });
-    } catch (prismaError) {
-      console.error('Prisma error:', prismaError);
-      return NextResponse.json(
-        { error: 'Database error', details: (prismaError as Error).message },
-        { status: 500 }
-      );
+    if (!notification) {
+      return NextResponse.json({ error: 'Notification not found' }, { status: 404 });
     }
+
+    // Update the notification
+    await prisma.userNotification.update({
+      where: { id: notificationId },
+      data: {
+        read: true,
+        readAt: new Date(),
+      },
+    });
+
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error marking notification as read:', error);
-    return NextResponse.json({ error: 'Failed to update notification status' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to mark notification as read' },
+      { status: 500 }
+    );
   }
 } 

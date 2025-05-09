@@ -43,44 +43,49 @@ export const Sidebar = ({
          {/* Mobile: trigger button to open sidebar */}
          {isMobile && (
             <Button
-               className="fixed top-4 left-4 z-50 md:hidden"
+               className="fixed top-4 left-4 z-50 md:hidden bg-white/80 dark:bg-[#23263a]/80 backdrop-blur-xl shadow-xl dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.65)] hover:shadow-2xl transition-all duration-200"
                variant="ghost"
                size="icon"
                onClick={() => setIsMobileOpen(true)}
             >
-               <Menu />
+               <Menu className="h-5 w-5 text-blue-900 dark:text-white" />
             </Button>
          )}
 
          {/* Sidebar panel */}
          <aside
             className={cn(
-               "fixed left-0 top-0 z-40 h-screen border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-300",
-               collapsed ? "w-16" : "w-80",
+               "fixed left-0 top-0 z-40 h-screen border-r border-blue-400/10 bg-white/70 dark:bg-[#23263a]/80 backdrop-blur-xl shadow-2xl dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.65)] transition-all duration-300",
+               collapsed ? "w-20" : "w-80",
                isMobile ? "hidden md:block" : ""
             )}
          >
             {/* Header section with logo and collapse toggle */}
-            <div className="flex items-center justify-between px-4 h-16 border-b">
+            <div className="relative flex items-center justify-between h-16 border-b border-blue-400/10 px-4">
                <span className={cn(
-                  "text-lg font-bold text-primary transition-opacity duration-200",
-                  collapsed ? "opacity-0" : "opacity-100"
+                  "text-xl font-bold bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent transition-all duration-200",
+                  collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"
                )}>
                   DoKi
                </span>
 
-               <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setCollapsed(!collapsed)}
-                  className="hover:bg-muted/50"
-               >
-                  {collapsed ? <ChevronRight /> : <ChevronLeft />}
-               </Button>
+               <div className="relative z-10">
+                  <Button
+                     variant="ghost"
+                     size="icon"
+                     onClick={() => setCollapsed(!collapsed)}
+                     className="hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors min-w-[40px]"
+                  >
+                     {collapsed ? 
+                        <ChevronRight className="h-5 w-5 text-blue-900 dark:text-white" /> : 
+                        <ChevronLeft className="h-5 w-5 text-blue-900 dark:text-white" />
+                     }
+                  </Button>
+               </div>
             </div>
 
             {/* Nav items */}
-            <nav className="space-y-1 p-4">
+            <nav className="space-y-2 p-4">
                {navItems.map((item) => {
                   const isActive = pathname === item.href;
                   return (
@@ -88,26 +93,58 @@ export const Sidebar = ({
                         href={item.href}
                         key={item.label}
                         className={cn(
-                           "flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
-                           "hover:bg-muted/50 hover:text-primary",
+                           "flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200",
+                           "hover:bg-blue-100/50 dark:hover:bg-blue-900/30",
                            "active:scale-[0.98]",
-                           isActive && "bg-primary/10 text-primary",
+                           isActive ? "bg-gradient-to-r from-blue-500/10 to-violet-500/10 text-blue-900 dark:text-white" : "text-blue-900/70 dark:text-white/70",
                            collapsed ? "justify-center" : "gap-3"
                         )}
                      >
                         <span className={cn(
-                           "h-5 w-5 shrink-0",
-                           isActive ? "text-primary" : "text-muted-foreground"
+                           "h-5 w-5 shrink-0 transition-colors",
+                           isActive ? "text-blue-900 dark:text-white" : "text-blue-900/70 dark:text-white/70"
                         )}>
                            {item.icon}
                         </span>
                         {!collapsed && (
-                           <span className="truncate">{item.label}</span>
+                           <span className={cn(
+                              "truncate transition-opacity duration-200",
+                              isActive ? "font-semibold" : "font-medium"
+                           )}>
+                              {item.label}
+                           </span>
                         )}
                      </Link>
                   );
                })}
-            </nav> 
+            </nav>
+
+            {/* Settings section at bottom */}
+            <div className="absolute bottom-0 w-full p-4 border-t border-blue-400/10">
+               <Link
+                  href="/settings"
+                  className={cn(
+                     "flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200",
+                     "hover:bg-blue-100/50 dark:hover:bg-blue-900/30",
+                     "active:scale-[0.98]",
+                     pathname === '/settings' ? "bg-gradient-to-r from-blue-500/10 to-violet-500/10 text-blue-900 dark:text-white" : "text-blue-900/70 dark:text-white/70",
+                     collapsed ? "justify-center" : "gap-3"
+                  )}
+               >
+                  <Settings className={cn(
+                     "h-5 w-5 shrink-0 transition-colors",
+                     pathname === '/settings' ? "text-blue-900 dark:text-white" : "text-blue-900/70 dark:text-white/70"
+                  )} />
+                  {!collapsed && (
+                     <span className={cn(
+                        "truncate transition-opacity duration-200",
+                        pathname === '/settings' ? "font-semibold" : "font-medium"
+                     )}>
+                        {t('navigation.settings')}
+                     </span>
+                  )}
+               </Link>
+            </div>
          </aside>
       </>
    );

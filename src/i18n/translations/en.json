@@ -30,5 +30,18 @@
     "difficulty": "Difficulty Level",
     "duration": "Duration (hours)",
     "distance": "Distance (km)"
+  },
+  "dashboard": {
+    "kpi": {
+      "activeUsers": "Total active users",
+      "installed": "Total installed",
+      "downloads": "Total downloads",
+      "last7days": "last 7 days"
+    },
+    "welcome": "Welcome back,",
+    "recentActivity": "Recent Activity",
+    "activeProjects": "Active Projects",
+    "upcomingTasks": "Upcoming Tasks",
+    "createProject": "Create New Project"
   }
 } 

@@ -17,24 +17,16 @@ const CustomTooltip = ({
   active,
   payload,
   label,
-  coordinate,
 }: {
   active?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: any;
   label?: string;
-  coordinate?: { x: number; y: number };
 }) => {
-  if (!active || !payload || !payload.length || !coordinate) return null;
+  if (!active || !payload || !payload.length) return null;
 
   return (
-    <div
-      className="absolute top-0 z-50 rounded-lg border bg-card p-2 text-xs shadow-lg w-24"
-      style={{
-        left: `${coordinate.x - 85}px`,
-        top: `${coordinate.y - 10}px`,
-      }}
-    >
+    <div className="rounded-lg border bg-white dark:bg-[#23263a] p-2 text-xs shadow-lg w-24 text-gray-900 dark:text-white">
       <div className="text-center text-muted-foreground text-sm">{label}</div>
       <div className="flex items-center justify-center gap-2 mt-1">
         <div className="w-1.5 h-1.5 rounded-full bg-accent" />
