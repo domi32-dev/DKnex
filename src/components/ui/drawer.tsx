@@ -1,36 +1,42 @@
 'use client';
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+
+const ANIMATION_DURATION = 700;
 
 const Drawer = ({ open, onClose, children, childrenFooter }: { open: boolean; onClose: () => void; children: React.ReactNode; childrenFooter: React.ReactNode }) => {
-  // Disable scrolling when the drawer is open
+  const [shouldRender, setShouldRender] = useState(open);
+
   useEffect(() => {
     if (open) {
-      document.body.style.overflow = 'hidden'; // Disable scroll
+      setShouldRender(true);
     } else {
-      document.body.style.overflow = ''; // Re-enable scroll
+      const timeout = setTimeout(() => setShouldRender(false), ANIMATION_DURATION);
+      return () => clearTimeout(timeout);
     }
-    return () => {
-      document.body.style.overflow = ''; // Ensure scroll is re-enabled when component is unmounted
-    };
   }, [open]);
 
-  return (
-    <>
-      {/* Invisible overlay that functions but is not visible */}
-      {open && <div className="fixed inset-0 bg-transparent z-40" onClick={onClose}></div>}
+  if (!shouldRender) return null;
 
+  return ReactDOM.createPortal(
+    <>
       <div
-        className={`fixed top-0 right-0 h-full bg-white dark:bg-gray-800 transform transition-all duration-700 ease-in-out ${
+        className="fixed inset-0 bg-transparent z-[99999] pointer-events-auto"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <div
+        className={`fixed top-0 right-0 h-screen bg-white dark:bg-gray-800 transform transition-transform duration-700 ease-in-out ${
           open ? 'translate-x-0' : 'translate-x-full'
-        } w-72 shadow-lg z-50`}
+        } w-80 shadow-lg z-[100000]`}
       >
-        <div className="relative h-full flex flex-col justify-between">
+        <div className="relative h-full flex flex-col">
           {/* Header: Close button */}
-          <div className="absolute top-4 left-4 w-full flex justify-between px-4">
+          <div className="absolute top-4 right-4 z-10">
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             >
               <svg
                 className="w-6 h-6"
@@ -50,19 +56,18 @@ const Drawer = ({ open, onClose, children, childrenFooter }: { open: boolean; on
           </div>
 
           {/* Body: Drawer content */}
-          <div className="flex-1 p-2 pt-12">
+          <div className="flex-1 overflow-y-auto">
             {children}
           </div>
 
           {/* Footer: Additional content */}
-          <div className="border-t p-4 bg-white dark:bg-gray-800">
-            <div className="text-center text-sm">
-              {childrenFooter}
-            </div>
+          <div className="border-t border-gray-200 dark:border-gray-700">
+            {childrenFooter}
           </div>
         </div>
       </div>
-    </>
+    </>,
+    document.body
   );
 };
 

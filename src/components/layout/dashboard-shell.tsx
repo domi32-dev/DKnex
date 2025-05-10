@@ -12,11 +12,20 @@ import AuthLayout from "@/components/layout/auth-layout";
 import { cn } from "@/lib/utils";
 
 export const DashboardShell = ({ children }: { children: ReactNode }) => {
-   const [collapsed, setCollapsed] = useState(false);
+   const [collapsed, setCollapsed] = useState(() => {
+      if (typeof window !== "undefined") {
+         return localStorage.getItem("sidebar-collapsed") === "true";
+      }
+      return false;
+   });
    const [isMobile, setIsMobile] = useState(false);
    const [isMobileOpen, setIsMobileOpen] = useState(false);
 
    const { data: session, status } = useSession();
+
+   useEffect(() => {
+      localStorage.setItem("sidebar-collapsed", collapsed ? "true" : "false");
+   }, [collapsed]);
 
    // On mount: determine if viewport is mobile-sized
    useEffect(() => {
@@ -87,12 +96,13 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
    }
 
    return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen text-foreground">
          {/* Sidebar: visible on desktop, toggled on mobile */}
          <Sidebar
             collapsed={collapsed}
             setCollapsed={setCollapsed}
             isMobile={isMobile}
+            isMobileOpen={isMobileOpen}
             setIsMobileOpen={setIsMobileOpen}
          />
 

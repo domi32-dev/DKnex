@@ -17,9 +17,11 @@ import { cn } from '@/lib/utils';
 
 interface SearchProps {
   placeholder?: string;
+  iconOnly?: boolean;
+  iconClassName?: string;
 }
 
-export function Search({ placeholder }: SearchProps) {
+export function Search({ placeholder, iconOnly, iconClassName }: SearchProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -77,26 +79,36 @@ export function Search({ placeholder }: SearchProps) {
   );
 
   return (
-    <div ref={searchRef} className="relative w-full max-w-xl">
-      <div className="relative">
-        <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setIsOpen(true)}
-          className="w-full pl-9 pr-9"
-          placeholder={placeholder || t('common.search')}
-        />
-        {query && (
-          <button
-            onClick={() => setQuery('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Clear search</span>
-          </button>
-        )}
-      </div>
+    <div ref={searchRef} className={cn("relative", iconOnly ? "w-auto" : "w-full max-w-xl")}>
+      {iconOnly ? (
+        <button
+          className="p-2 rounded-full hover:bg-secondary/10 transition-colors"
+          onClick={() => setIsOpen(true)}
+          aria-label={placeholder || t('common.search')}
+        >
+          <SearchIcon className={cn("h-5 w-5", iconClassName || "text-muted-foreground")} />
+        </button>
+      ) : (
+        <div className="relative">
+          <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setIsOpen(true)}
+            className="w-full pl-9 pr-9"
+            placeholder={placeholder || t('common.search')}
+          />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Clear search</span>
+            </button>
+          )}
+        </div>
+      )}
       {isOpen && (
         <div className="absolute inset-x-0 top-full mt-2 rounded-lg border bg-popover shadow-lg">
           <div className="divide-y">

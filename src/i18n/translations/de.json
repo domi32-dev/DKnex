@@ -4,7 +4,8 @@
     "analytics": "Analytik",
     "map": "Karte",
     "calendar": "Kalender",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "projects": "Projekte"
   },
   "common": {
     "search": "Seiten durchsuchen...",
@@ -14,7 +15,9 @@
     "profile": "Profil",
     "logout": "Abmelden",
     "no_results": "Keine Ergebnisse gefunden",
-    "pages": "Seiten"
+    "pages": "Seiten",
+    "unknownUser": "Unbekannter Nutzer",
+    "noEmail": "Keine E-Mail"
   },
   "notifications": {
     "title": "Benachrichtigungen",

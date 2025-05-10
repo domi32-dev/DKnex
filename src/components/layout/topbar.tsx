@@ -1,103 +1,131 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { DarkToggler } from '@/components/ui/dark-toggler';
-import { UserMenu } from '@/components/ui/user-menu';
-import { Search } from '@/components/ui/search';
-import { LanguageSelector } from '@/components/ui/language-selector';
-import { Notifications } from '@/components/ui/notifications';
-import { useTranslation } from '@/i18n/translations';
-import type { Notification } from '@/components/ui/notifications';
+import { useState, useEffect } from "react";
+import { DarkToggler } from "@/components/ui/dark-toggler";
+import { UserMenu } from "@/components/ui/user-menu";
+import { Search } from "@/components/ui/search";
+import { LanguageSelector } from "@/components/ui/language-selector";
+import { Notifications } from "@/components/ui/notifications";
+import { useTranslation } from "@/i18n/translations";
+import type { Notification } from "@/components/ui/notifications";
 
 export const Topbar = () => {
-  const { language, setLanguage, t } = useTranslation();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+   const { language, setLanguage, t } = useTranslation();
+   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const handleLanguageChange = (lang: string) => {
-    setLanguage(lang as 'en' | 'de');
-  };
+   const handleLanguageChange = (lang: string) => {
+      setLanguage(lang as "en" | "de");
+   };
 
-  useEffect(() => {
-    async function fetchNotifications() {
+   useEffect(() => {
+      async function fetchNotifications() {
+         try {
+            // Add pagination parameters
+            const res = await fetch("/api/notifications?page=1&limit=20");
+            if (res.ok) {
+               const data = await res.json();
+               setNotifications(data);
+            } else {
+               console.error("Failed to fetch notifications");
+            }
+         } catch (error) {
+            console.error("Error fetching notifications:", error);
+         }
+      }
+      fetchNotifications();
+   }, []);
+
+   const handleNotificationClick = async (id: string) => {
       try {
-        // Add pagination parameters
-        const res = await fetch('/api/notifications?page=1&limit=20');
-        if (res.ok) {
-          const data = await res.json();
-          setNotifications(data);
-        } else {
-          console.error('Failed to fetch notifications');
-        }
+         // Update UI state optimistically
+         setNotifications(
+            notifications.map((n) => (n.id === id ? { ...n, read: true } : n))
+         );
+
+         // Make API call to update in database
+         const response = await fetch(`/api/notifications/${id}/read`, {
+            method: "PATCH",
+            headers: {
+               "Content-Type": "application/json",
+            },
+         });
+
+         if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Failed to mark notification as read:", errorData);
+            // Revert UI state on error
+            setNotifications(notifications);
+         }
       } catch (error) {
-        console.error('Error fetching notifications:', error);
+         console.error("Error handling notification click:", error);
+         // Revert UI state on error
+         setNotifications(notifications);
       }
-    }
-    fetchNotifications();
-  }, []);
+   };
 
-  const handleNotificationClick = async (id: string) => {
-    try {
-      // Update UI state optimistically
-      setNotifications(notifications.map(n =>
-        n.id === id ? { ...n, read: true } : n
-      ));
-      
-      // Make API call to update in database
-      const response = await fetch(`/api/notifications/${id}/read`, { 
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Failed to mark notification as read:', errorData);
-        // Revert UI state on error
-        setNotifications(notifications);
-      }
-    } catch (error) {
-      console.error('Error handling notification click:', error);
-      // Revert UI state on error
-      setNotifications(notifications);
-    }
-  };
-
-  return (
-    <header className="sticky top-0 z-30 h-16 border-b bg-background">
-      <div className="h-full w-full px-4 grid grid-cols-3">
-        {/* Left section - empty */}
-        <div />
-        
-        {/* Center section - search */}
-        <div className="flex items-center justify-center">
-          <Search placeholder={t('common.search')} />
-        </div>
-        
-        {/* Right section - controls */}
-        <div className="flex items-center justify-end">
-          <div className="flex items-center gap-2">
+   return (
+      <header className="relative sticky top-0 z-30 h-16 border-b/10 bg-white/30 dark:bg-[#23263a]/30 backdrop-blur-xl">
+         {/* Centered search bar (desktop only) */}
+         <div className="hidden md:flex absolute left-0 right-0 top-1/2 -translate-y-1/2 justify-center pointer-events-none min-w-0">
+            <div className="pointer-events-auto w-full max-w-xs md:max-w-sm lg:max-w-md mx-auto">
+               <Search placeholder={t("common.search")} />
+            </div>
+         </div>
+         {/* Right controls always at screen edge (desktop) */}
+         <div className="hidden md:flex absolute right-0 top-0 h-full items-center gap-2 px-4 z-10">
             <div className="hover:bg-secondary/5 rounded-md transition-colors">
-              <LanguageSelector
-                currentLanguage={language}
-                onLanguageChange={handleLanguageChange}
-              />
+               <LanguageSelector
+                  currentLanguage={language}
+                  onLanguageChange={handleLanguageChange}
+                  onlyFlag={window.innerWidth < 1280}
+                  className="bg-transparent border-none shadow-none hover:bg-transparent focus:bg-transparent [&_[data-slot=select-trigger]]:bg-transparent [&_[data-slot=select-trigger]]:border-none [&_[data-slot=select-trigger]]:shadow-none [&_[data-slot=select-trigger]]:hover:bg-transparent [&_[data-slot=select-trigger]]:focus:bg-transparent [&_svg.size-4]:text-blue-900 dark:[&_svg.size-4]:text-white"
+               />
             </div>
             <div className="p-2 hover:bg-secondary/5 rounded-md transition-colors">
-              <Notifications
-                notifications={notifications}
-                onNotificationClick={handleNotificationClick}
-              />
+               <Notifications
+                  notifications={notifications}
+                  onNotificationClick={handleNotificationClick}
+               />
             </div>
             <div className="p-2 hover:bg-secondary/5 rounded-md transition-colors">
-              <DarkToggler />
+               <DarkToggler />
             </div>
             <div className="hover:bg-secondary/5 rounded-md transition-colors">
-              <UserMenu />
+               <UserMenu />
             </div>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
+         </div>
+         {/* Mobile: all controls in one row, evenly spaced */}
+         <div className="flex items-center gap-2 md:hidden w-full justify-end px-2 h-full">
+            <span className="p-2">
+               <Search
+                  iconOnly
+                  placeholder={t("common.search")}
+                  iconClassName="text-blue-900 dark:text-white"
+               />
+            </span>
+            <span className="p-2">
+               <LanguageSelector
+                  currentLanguage={language}
+                  onLanguageChange={handleLanguageChange}
+                  onlyFlag
+                  className="bg-transparent border-none shadow-none hover:bg-transparent focus:bg-transparent [&_[data-slot=select-trigger]]:bg-transparent [&_[data-slot=select-trigger]]:border-none [&_[data-slot=select-trigger]]:shadow-none [&_[data-slot=select-trigger]]:hover:bg-transparent [&_[data-slot=select-trigger]]:focus:bg-transparent [&_svg.size-4]:text-blue-900 dark:[&_svg.size-4]:text-white"
+               />
+            </span>
+            <span className="p-2">
+               <Notifications
+                  notifications={notifications}
+                  onNotificationClick={handleNotificationClick}
+               />
+            </span>
+            <span className="p-2">
+               <DarkToggler />
+            </span>
+            <span className="p-2">
+               <UserMenu />
+            </span>
+         </div>
+         {/* Main content container for height alignment */}
+         <div className="h-full max-w-[1800px] mx-auto" />
+      </header>
+   );
 };

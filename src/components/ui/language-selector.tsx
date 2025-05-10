@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 const languages = [
   { 
@@ -39,19 +40,25 @@ const languages = [
 interface LanguageSelectorProps {
   currentLanguage: string;
   onLanguageChange: (language: string) => void;
+  onlyFlag?: boolean;
+  className?: string;
 }
 
 export function LanguageSelector({
   currentLanguage,
   onLanguageChange,
+  onlyFlag = false,
+  className = '',
 }: LanguageSelectorProps) {
   const selectedLanguage = languages.find(lang => lang.code === currentLanguage);
 
   return (
     <Select value={currentLanguage} onValueChange={onLanguageChange}>
-      <SelectTrigger className="w-[140px] gap-2">
+      <SelectTrigger className={cn(onlyFlag ? 'w-10 justify-center' : 'w-[140px] gap-2', className)}>
         {selectedLanguage?.flag}
-        <span className="flex-1 text-left">{selectedLanguage?.name}</span>
+        {!onlyFlag && (
+          <span className="flex-1 text-left">{selectedLanguage?.name}</span>
+        )}
       </SelectTrigger>
       <SelectContent>
         {languages.map((language) => (

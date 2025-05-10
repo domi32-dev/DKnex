@@ -195,7 +195,7 @@ export function DashboardContent() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-6 space-y-6">
+    <div className="min-h-screen text-foreground p-6 space-y-6">
       {/* Hero Section */}
       <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 bg-white/70 dark:bg-[#23263a]/80 backdrop-blur-xl rounded-3xl shadow-2xl dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.65)] px-8 py-10 border border-blue-400/10">
         <Avatar className="h-24 w-24 border-4 border-blue-400/30 shadow-xl bg-white/10 dark:bg-blue-900/30">

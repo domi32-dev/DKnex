@@ -12,3 +12,9 @@ export default function Home() {
       </DashboardShell>
    );
 }
+
+export async function generateMetadata() {
+  return {
+    title: "Dashboard | DoKi",
+  };
+}

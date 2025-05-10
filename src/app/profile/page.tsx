@@ -2,6 +2,12 @@ import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { ProfileContent } from "@/components/profile/profile-content";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 
+export async function generateMetadata() {
+  return {
+    title: "Profile",
+  };
+}
+
 export default function ProfilePage() {
    return (
       <DashboardShell>
