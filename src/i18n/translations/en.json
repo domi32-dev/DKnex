@@ -46,5 +46,24 @@
     "activeProjects": "Active Projects",
     "upcomingTasks": "Upcoming Tasks",
     "createProject": "Create New Project"
+  },
+  "calendar": {
+    "today": "Today",
+    "7days": "Week",
+    "month": "Month",
+    "90days": "Quarter",
+    "subtitle": "Your schedule at a glance",
+    "newEvent": "New Event",
+    "noEvents": "No events",
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "dateFormatDay": "dddd, MMM D",
+    "dateFormatFull": "dddd, MMM D, YYYY",
+    "dateFormatMonth": "MMMM YYYY"
   }
 } 

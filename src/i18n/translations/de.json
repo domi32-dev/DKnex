@@ -46,5 +46,23 @@
     "activeProjects": "Aktive Projekte",
     "upcomingTasks": "Anstehende Aufgaben",
     "createProject": "Neues Projekt erstellen"
+  },
+  "calendar": {
+    "today": "Heute",
+    "7days": "Woche",
+    "month": "Monat",
+    "subtitle": "Ihr Zeitplan auf einen Blick",
+    "newEvent": "Neues Ereignis",
+    "noEvents": "Keine Ereignisse",
+    "sun": "So",
+    "mon": "Mo",
+    "tue": "Di",
+    "wed": "Mi",
+    "thu": "Do",
+    "fri": "Fr",
+    "sat": "Sa",
+    "dateFormatDay": "dddd, D. MMM",
+    "dateFormatFull": "dddd, D. MMMM YYYY",
+    "dateFormatMonth": "MMMM YYYY"
   }
 } 

@@ -85,7 +85,7 @@ export function MonthCalendar() {
   }
 
   return (
-    <div className="bg-zinc-900 text-white p-4 rounded-xl shadow-md">
+    <div className="rounded-3xl border-0 bg-white/80 dark:bg-[#23263a]/90 backdrop-blur-xl shadow-md dark:shadow-md hover:shadow-lg transition-all duration-200 p-6 text-foreground">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">{currentDate.format("MMMM YYYY")}</h2>
         <div className="flex gap-2">

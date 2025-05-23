@@ -79,20 +79,67 @@ export const Sidebar = ({
             )}
          >
             {/* Header section with logo and collapse toggle */}
-            <div className="relative flex items-center justify-between h-16 border-b border-blue-400/10 px-4">
-               <div className="flex items-center gap-2">
-                  <span className="relative flex items-center justify-center w-9 h-9">
-                    <span className="absolute inset-0 rounded-full border-2 border-blue-400 dark:border-violet-400 z-0"></span>
-                    <span className="absolute inset-0 rounded-full bg-white/80 dark:bg-[#23263a]/80 z-10"></span>
-                    <img src="/icon.png" alt="DoKi Logo" className="w-7 h-7 rounded-full shadow relative z-20" />
+            <div className={cn(
+               "relative border-b border-blue-400/10 px-4 flex items-center transition-all duration-200",
+               "h-16",
+               effectiveCollapsed ? "justify-between" : "justify-between"
+            )}>
+               <Link href="/" className={cn(
+                  "flex items-center transition-all duration-200",
+                  effectiveCollapsed ? "justify-center w-auto" : "gap-2"
+               )}>
+                  <span className={cn(
+                     "relative flex items-center justify-center transition-all duration-200",
+                     effectiveCollapsed ? "w-10 h-10" : "w-9 h-9"
+                  )}>
+                    <span className={cn(
+                      "absolute inset-0 rounded-full border-2 border-blue-400 dark:border-violet-400 z-0 transition-all duration-200",
+                      effectiveCollapsed ? "w-10 h-10" : "w-9 h-9"
+                    )}></span>
+                    <span className={cn(
+                      "absolute inset-0 rounded-full bg-white/80 dark:bg-[#23263a]/80 z-10 transition-all duration-200",
+                      effectiveCollapsed ? "w-10 h-10" : "w-9 h-9"
+                    )}></span>
+                    <img src="/icon.png" alt="DoKi Logo" className={cn(
+                      "rounded-full shadow relative z-20 transition-all duration-200",
+                      effectiveCollapsed ? "w-6 h-6" : "w-7 h-7"
+                    )} />
                   </span>
                   <span className={cn(
                      "text-xl font-bold bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent transition-all duration-200",
-                     effectiveCollapsed ? "opacity-0 w-0" : "opacity-100 w-auto"
+                     effectiveCollapsed ? "opacity-0 w-0" : "opacity-100 w-auto ml-2"
                   )}>
                      DoKi
                   </span>
-               </div>
+               </Link>
+
+               {/* Collapse button only on desktop */}
+               {!isMobile && (
+                  effectiveCollapsed ? (
+                    <div className="z-10 transition-all duration-200 flex items-center">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setCollapsed(!collapsed)}
+                        className="transition-colors min-w-[40px] bg-white/80 dark:bg-[#23263a]/80 border border-blue-400/20 shadow hover:bg-blue-100/70 dark:hover:bg-blue-900/40 absolute z-50 right-[-60px] top-1/2 -translate-y-1/2"
+                        style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                      >
+                        <ChevronRight className="h-5 w-5 text-blue-900 dark:text-white" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="z-10 transition-all duration-200 flex items-center relative">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setCollapsed(!collapsed)}
+                        className="hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors min-w-[40px]"
+                      >
+                        <ChevronLeft className="h-5 w-5 text-blue-900 dark:text-white" />
+                      </Button>
+                    </div>
+                  )
+               )}
 
                {/* Mobile close (X) button */}
                {isMobile && (
@@ -103,23 +150,6 @@ export const Sidebar = ({
                   >
                      <XIcon className="h-5 w-5 text-blue-900 dark:text-white" />
                   </button>
-               )}
-
-               {/* Collapse button only on desktop */}
-               {!isMobile && (
-                  <div className="relative z-10">
-                     <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setCollapsed(!collapsed)}
-                        className="hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors min-w-[40px]"
-                     >
-                        {effectiveCollapsed ? 
-                           <ChevronRight className="h-5 w-5 text-blue-900 dark:text-white" /> : 
-                           <ChevronLeft className="h-5 w-5 text-blue-900 dark:text-white" />
-                        }
-                     </Button>
-                  </div>
                )}
             </div>
 
