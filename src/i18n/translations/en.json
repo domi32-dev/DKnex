@@ -5,7 +5,8 @@
     "map": "Map",
     "calendar": "Calendar",
     "settings": "Settings",
-    "projects": "Projects"
+    "projects": "Projects",
+    "maskBuilder": "Mask Builder"
   },
   "common": {
     "search": "Search pages...",

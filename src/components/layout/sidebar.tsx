@@ -11,6 +11,7 @@ import {
    Menu,
    Calendar,
    X as XIcon,
+   FormInput,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -39,6 +40,7 @@ export const Sidebar = ({
       { label: t('navigation.analytics'), icon: <BarChart2 />, href: '/analytics' },
       { label: t('navigation.map'), icon: <Map />, href: '/map' },
       { label: t('navigation.calendar'), icon: <Calendar />, href: '/calendar' },
+      { label: t('navigation.maskBuilder'), icon: <FormInput />, href: '/mask-builder' },
    ];
 
    // On mobile, always show expanded sidebar

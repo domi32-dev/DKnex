@@ -10,6 +10,7 @@ import {
   Search as SearchIcon,
   User,
   X,
+  FormInput,
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/translations';
 import { Input } from '@/components/ui/input';
@@ -64,6 +65,12 @@ export function Search({ placeholder, iconOnly, iconClassName }: SearchProps) {
       icon: <Calendar className="h-4 w-4" />,
       href: '/calendar',
       description: 'Manage your schedule',
+    },
+    {
+      label: t('navigation.maskBuilder'),
+      icon: <FormInput className="h-4 w-4" />,
+      href: '/mask-builder',
+      description: 'Create and manage custom forms',
     },
     {
       label: t('common.profile'),
