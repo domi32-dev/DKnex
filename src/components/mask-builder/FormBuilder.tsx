@@ -14,7 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Maximize2, Minimize2, GripVertical, Eye, EyeOff, Grid, LayoutGrid, ZoomIn, ZoomOut } from 'lucide-react';
+import { X, Maximize2, Minimize2, GripVertical, Eye, EyeOff, Grid, LayoutGrid, ZoomIn, ZoomOut, Settings, Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 
 interface FormField {
   id: string;
@@ -108,6 +110,12 @@ interface FormSettings {
   snapToGrid: boolean;
   showGrid: boolean;
   zoom: number;
+  maskSize: {
+    width: number;
+    height: number;
+  };
+  maskBorderRadius: number;
+  maskPadding: number;
 }
 
 const defaultFormSettings: FormSettings = {
@@ -121,6 +129,12 @@ const defaultFormSettings: FormSettings = {
   snapToGrid: true,
   showGrid: true,
   zoom: 1,
+  maskSize: {
+    width: 800,
+    height: 600,
+  },
+  maskBorderRadius: 8,
+  maskPadding: 20,
 };
 
 const availableFields = [
@@ -156,14 +170,13 @@ const availableFields = [
 ];
 
 const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
+  const { theme, setTheme } = useTheme();
   const [fields, setFields] = useState<FormField[]>([]);
   const [selectedField, setSelectedField] = useState<FormField | null>(null);
   const [settings, setSettings] = useState<FormSettings>(defaultFormSettings);
   const [viewMode, setViewMode] = useState<'design' | 'preview'>('design');
-  const [panelSizes, setPanelSizes] = useState({
-    left: 280,
-    right: 280,
-  });
+  const [showSettings, setShowSettings] = useState(false);
+  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   // Memoize filtered fields for better performance
@@ -171,7 +184,19 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
     return availableFields.filter(field => field.category === 'Basic');
   }, []);
 
-  // Optimized drag end handler
+  // Add delete field handler
+  const handleDeleteField = useCallback((fieldId: string) => {
+    setFields(prevFields => {
+      const newFields = prevFields.filter(field => field.id !== fieldId);
+      onFormChange(newFields);
+      return newFields;
+    });
+    if (selectedField?.id === fieldId) {
+      setSelectedField(null);
+    }
+  }, [onFormChange]);
+
+  // Update handleDragEnd to allow free positioning
   const handleDragEnd = useCallback((result: DropResult) => {
     if (!result.destination) return;
 
@@ -187,8 +212,8 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
         label: `New ${fieldType.label}`,
         required: false,
         position: {
-          x: destination.index * 100,
-          y: destination.index * 50,
+          x: 0,
+          y: 0,
           width: 200,
           height: 40,
           zIndex: fields.length + 1,
@@ -261,13 +286,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
     });
   }, [fields, settings.snapToGrid, settings.gridSize, handleFieldUpdate]);
 
-  const handlePanelResize = useCallback((direction: 'left' | 'right', newSize: number) => {
-    setPanelSizes(prev => ({
-      ...prev,
-      [direction]: Math.max(200, Math.min(500, newSize)),
-    }));
-  }, []);
-
+  // Update renderField to remove delete button
   const renderField = useCallback((field: FormField) => {
     const fieldStyle = {
       position: 'absolute' as const,
@@ -325,7 +344,6 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
             </Select>
           </div>
         );
-      // Add more field types as needed
       default:
         return (
           <div {...commonProps}>
@@ -342,109 +360,119 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <div className="flex h-full">
-        {/* Left Sidebar - Field Palette */}
-        <div
-          className="border-r bg-card/50 backdrop-blur-sm"
-          style={{ width: panelSizes.left }}
-        >
-          <div className="p-4 border-b">
-            <div className="flex items-center justify-between mb-4">
-              <Button
-                variant={viewMode === 'design' ? 'default' : 'outline'}
-                className="flex-1 mr-2"
-                onClick={() => setViewMode('design')}
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                Design
-              </Button>
-              <Button
-                variant={viewMode === 'preview' ? 'default' : 'outline'}
-                className="flex-1"
-                onClick={() => setViewMode('preview')}
-              >
-                <EyeOff className="w-4 h-4 mr-2" />
-                Preview
-              </Button>
-            </div>
+      <div className="flex flex-col h-full">
+        {/* Header */}
+        <div className="border-b bg-card/50 backdrop-blur-sm p-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button
+              variant={viewMode === 'design' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('design')}
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              Design
+            </Button>
+            <Button
+              variant={viewMode === 'preview' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('preview')}
+            >
+              <EyeOff className="w-4 h-4 mr-2" />
+              Preview
+            </Button>
           </div>
-
-          {viewMode === 'design' && (
-            <div className="p-4">
-              <Tabs defaultValue="basic">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="basic">Basic</TabsTrigger>
-                  <TabsTrigger value="advanced">Advanced</TabsTrigger>
-                  <TabsTrigger value="layout">Layout</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="basic">
-                  <Droppable droppableId="palette">
-                    {(provided: DroppableProvided) => (
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        className="space-y-2"
-                      >
-                        {filteredFields.map((field, index) => (
-                          <Draggable
-                            key={field.type}
-                            draggableId={field.type}
-                            index={index}
-                          >
-                            {(provided: DraggableProvided) => (
-                              <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.2 }}
-                              >
-                                <Card
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  className="p-3 cursor-move hover:bg-accent/50 transition-colors"
-                                >
-                                  {field.label}
-                                </Card>
-                              </motion.div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </TabsContent>
-              </Tabs>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSettings(!showSettings)}
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Settings
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-4 h-4" />
+              ) : (
+                <Moon className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
         </div>
 
-        {/* Resize Handle */}
-        <div
-          className="w-1 cursor-col-resize hover:bg-primary/20 transition-colors"
-          onMouseDown={(e) => {
-            const startX = e.clientX;
-            const startWidth = panelSizes.left;
-            
-            const handleMouseMove = (e: MouseEvent) => {
-              const delta = e.clientX - startX;
-              handlePanelResize('left', startWidth + delta);
-            };
-            
-            const handleMouseUp = () => {
-              document.removeEventListener('mousemove', handleMouseMove);
-              document.removeEventListener('mouseup', handleMouseUp);
-            };
-            
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-          }}
-        />
-
-        {/* Main Canvas */}
-        <div className="flex-1 relative">
+        {/* Main Content */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Left Sidebar - Field Palette */}
           {viewMode === 'design' && (
+            <div className={`relative transition-all duration-200 ${leftPanelCollapsed ? 'w-12' : 'w-64'}`}>
+              <div className="absolute right-0 top-4 z-10">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => setLeftPanelCollapsed(!leftPanelCollapsed)}
+                >
+                  {leftPanelCollapsed ? (
+                    <ChevronRight className="h-4 w-4" />
+                  ) : (
+                    <ChevronLeft className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+              <div className="h-full border-r bg-card/50 backdrop-blur-sm overflow-y-auto">
+                {!leftPanelCollapsed && (
+                  <div className="p-4">
+                    <Tabs defaultValue="basic">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="basic">Basic</TabsTrigger>
+                        <TabsTrigger value="advanced">Advanced</TabsTrigger>
+                        <TabsTrigger value="layout">Layout</TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="basic">
+                        <Droppable droppableId="palette">
+                          {(provided: DroppableProvided) => (
+                            <div
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                              className="space-y-2 mt-4"
+                            >
+                              {filteredFields.map((field, index) => (
+                                <Draggable
+                                  key={field.type}
+                                  draggableId={field.type}
+                                  index={index}
+                                >
+                                  {(provided: DraggableProvided) => (
+                                    <Card
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      className="p-3 cursor-move hover:bg-accent/50 transition-colors"
+                                    >
+                                      {field.label}
+                                    </Card>
+                                  )}
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                            </div>
+                          )}
+                        </Droppable>
+                      </TabsContent>
+                    </Tabs>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Main Canvas */}
+          <div className="flex-1 relative overflow-auto">
             <div className="absolute top-4 right-4 space-x-2 z-10">
               <Button
                 variant="outline"
@@ -475,165 +503,219 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
                 <ZoomOut className="w-4 h-4" />
               </Button>
             </div>
-          )}
 
-          <Droppable droppableId="form">
-            {(provided: DroppableProvided) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                className="min-h-[600px] border-2 border-dashed border-border/50 rounded-lg p-4 relative bg-background/50 backdrop-blur-sm"
-                style={{
-                  backgroundImage: settings.showGrid && viewMode === 'design'
-                    ? 'linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)'
-                    : 'none',
-                  backgroundSize: `${settings.gridSize}px ${settings.gridSize}px`,
-                  transform: `scale(${settings.zoom})`,
-                  transformOrigin: 'top left',
-                }}
-              >
-                <AnimatePresence>
-                  {fields.map((field) => (
-                    viewMode === 'design' ? (
-                      <motion.div
-                        key={field.id}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <Rnd
-                          default={{
-                            x: field.position.x,
-                            y: field.position.y,
-                            width: field.position.width,
-                            height: field.position.height,
-                          }}
-                          onDragStop={(e, d) => handleFieldMove(field.id, d.x, d.y)}
-                          onResizeStop={handleFieldResize}
-                          bounds="parent"
-                          grid={settings.snapToGrid ? [settings.gridSize, settings.gridSize] : undefined}
-                          style={{
-                            zIndex: field.position.zIndex,
-                          }}
-                          onClick={() => setSelectedField(field)}
-                          data-field-id={field.id}
-                          resizeHandleStyles={{
-                            bottomRight: { cursor: 'nwse-resize' },
-                            bottomLeft: { cursor: 'nesw-resize' },
-                            topRight: { cursor: 'nesw-resize' },
-                            topLeft: { cursor: 'nwse-resize' },
-                          }}
-                          resizeHandleClasses={{
-                            bottomRight: 'w-3 h-3 bg-primary/20 rounded-full hover:bg-primary/40 transition-colors',
-                            bottomLeft: 'w-3 h-3 bg-primary/20 rounded-full hover:bg-primary/40 transition-colors',
-                            topRight: 'w-3 h-3 bg-primary/20 rounded-full hover:bg-primary/40 transition-colors',
-                            topLeft: 'w-3 h-3 bg-primary/20 rounded-full hover:bg-primary/40 transition-colors',
-                          }}
-                        >
-                          {renderField(field)}
-                        </Rnd>
-                      </motion.div>
-                    ) : (
-                      <div key={field.id}>
-                        {renderField(field)}
-                      </div>
-                    )
-                  ))}
-                </AnimatePresence>
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </div>
-
-        {/* Resize Handle */}
-        <div
-          className="w-1 cursor-col-resize hover:bg-primary/20 transition-colors"
-          onMouseDown={(e) => {
-            const startX = e.clientX;
-            const startWidth = panelSizes.right;
-            
-            const handleMouseMove = (e: MouseEvent) => {
-              const delta = e.clientX - startX;
-              handlePanelResize('right', startWidth - delta);
-            };
-            
-            const handleMouseUp = () => {
-              document.removeEventListener('mousemove', handleMouseMove);
-              document.removeEventListener('mouseup', handleMouseUp);
-            };
-            
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-          }}
-        />
-
-        {/* Right Sidebar - Field Properties */}
-        {viewMode === 'design' && selectedField && (
-          <div
-            className="border-l bg-card/50 backdrop-blur-sm overflow-y-auto"
-            style={{ width: panelSizes.right }}
-          >
-            <div className="p-4 border-b flex items-center justify-between">
-              <h3 className="font-semibold">Field Properties</h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSelectedField(null)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="p-4 space-y-4">
-              <div>
-                <Label>Label</Label>
-                <Input
-                  value={selectedField.label}
-                  onChange={(e) =>
-                    handleFieldUpdate(selectedField.id, { label: e.target.value })
-                  }
-                />
-              </div>
-              <div>
-                <Label>Required</Label>
-                <Switch
-                  checked={selectedField.required}
-                  onCheckedChange={(checked) =>
-                    handleFieldUpdate(selectedField.id, { required: checked })
-                  }
-                />
-              </div>
-              {selectedField.fieldType && (
-                <div>
-                  <Label>Field Type</Label>
-                  <Select
-                    value={selectedField.fieldType.type}
-                    onValueChange={(value) =>
-                      handleFieldUpdate(selectedField.id, {
-                        fieldType: {
-                          ...selectedField.fieldType,
-                          type: value as any,
-                        },
-                      })
-                    }
+            <Droppable droppableId="form">
+              {(provided: DroppableProvided) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className="min-h-[600px] p-4 relative"
+                  style={{
+                    backgroundImage: settings.showGrid && viewMode === 'design'
+                      ? 'linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)'
+                      : 'none',
+                    backgroundSize: `${settings.gridSize}px ${settings.gridSize}px`,
+                  }}
+                >
+                  <div
+                    className="relative mx-auto"
+                    style={{
+                      width: settings.maskSize.width,
+                      height: settings.maskSize.height,
+                      borderRadius: settings.maskBorderRadius,
+                      padding: settings.maskPadding,
+                      transform: `scale(${settings.zoom})`,
+                      transformOrigin: 'top center',
+                    }}
                   >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableFields.map((field) => (
-                        <SelectItem key={field.type} value={field.type}>
-                          {field.label}
-                        </SelectItem>
+                    <AnimatePresence>
+                      {fields.map((field) => (
+                        viewMode === 'design' ? (
+                          <motion.div
+                            key={field.id}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Rnd
+                              default={{
+                                x: field.position.x,
+                                y: field.position.y,
+                                width: field.position.width,
+                                height: field.position.height,
+                              }}
+                              onDragStop={(e, d) => handleFieldMove(field.id, d.x, d.y)}
+                              onResizeStop={handleFieldResize}
+                              bounds="parent"
+                              grid={settings.snapToGrid ? [settings.gridSize, settings.gridSize] : undefined}
+                              style={{
+                                zIndex: field.position.zIndex,
+                              }}
+                              onClick={() => setSelectedField(field)}
+                              data-field-id={field.id}
+                              resizeHandleStyles={{
+                                bottomRight: { cursor: 'nwse-resize' },
+                                bottomLeft: { cursor: 'nesw-resize' },
+                                topRight: { cursor: 'nesw-resize' },
+                                topLeft: { cursor: 'nwse-resize' },
+                              }}
+                              resizeHandleClasses={{
+                                bottomRight: 'w-3 h-3 bg-primary/20 rounded-full hover:bg-primary/40 transition-colors',
+                                bottomLeft: 'w-3 h-3 bg-primary/20 rounded-full hover:bg-primary/40 transition-colors',
+                                topRight: 'w-3 h-3 bg-primary/20 rounded-full hover:bg-primary/40 transition-colors',
+                                topLeft: 'w-3 h-3 bg-primary/20 rounded-full hover:bg-primary/40 transition-colors',
+                              }}
+                            >
+                              {renderField(field)}
+                            </Rnd>
+                          </motion.div>
+                        ) : (
+                          <div key={field.id}>
+                            {renderField(field)}
+                          </div>
+                        )
                       ))}
-                    </SelectContent>
-                  </Select>
+                    </AnimatePresence>
+                    {provided.placeholder}
+                  </div>
                 </div>
               )}
-            </div>
+            </Droppable>
           </div>
-        )}
+
+          {/* Right Sidebar - Field Properties (only when a field is selected) */}
+          {viewMode === 'design' && selectedField && (
+            <div className="w-80 border-l bg-card/50 backdrop-blur-sm overflow-y-auto">
+              <div className="p-4 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold">Field Properties</h3>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDeleteField(selectedField.id)}
+                    >
+                      Delete Field
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedField(null)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div>
+                  <Label>Label</Label>
+                  <Input
+                    value={selectedField.label}
+                    onChange={(e) =>
+                      handleFieldUpdate(selectedField.id, { label: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Required</Label>
+                  <Switch
+                    checked={selectedField.required}
+                    onCheckedChange={(checked) =>
+                      handleFieldUpdate(selectedField.id, { required: checked })
+                    }
+                  />
+                </div>
+                {selectedField.fieldType && (
+                  <div>
+                    <Label>Field Type</Label>
+                    <Select
+                      value={selectedField.fieldType.type}
+                      onValueChange={(value) =>
+                        handleFieldUpdate(selectedField.id, {
+                          fieldType: {
+                            ...selectedField.fieldType,
+                            type: value as any,
+                          },
+                        })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableFields.map((field) => (
+                          <SelectItem key={field.type} value={field.type}>
+                            {field.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Settings Modal */}
+          <Dialog open={showSettings} onOpenChange={setShowSettings}>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Mask Settings</DialogTitle>
+                <DialogClose asChild>
+                  <Button variant="ghost" size="sm" className="absolute right-2 top-2">
+                    <X className="w-4 h-4" />
+                  </Button>
+                </DialogClose>
+              </DialogHeader>
+              <div className="space-y-4 mt-4">
+                <div>
+                  <Label>Width (px)</Label>
+                  <Input
+                    type="number"
+                    value={settings.maskSize.width}
+                    onChange={(e) => setSettings(prev => ({
+                      ...prev,
+                      maskSize: { ...prev.maskSize, width: Number(e.target.value) }
+                    }))}
+                  />
+                </div>
+                <div>
+                  <Label>Height (px)</Label>
+                  <Input
+                    type="number"
+                    value={settings.maskSize.height}
+                    onChange={(e) => setSettings(prev => ({
+                      ...prev,
+                      maskSize: { ...prev.maskSize, height: Number(e.target.value) }
+                    }))}
+                  />
+                </div>
+                <div>
+                  <Label>Border Radius (px)</Label>
+                  <Input
+                    type="number"
+                    value={settings.maskBorderRadius}
+                    onChange={(e) => setSettings(prev => ({
+                      ...prev,
+                      maskBorderRadius: Number(e.target.value)
+                    }))}
+                  />
+                </div>
+                <div>
+                  <Label>Padding (px)</Label>
+                  <Input
+                    type="number"
+                    value={settings.maskPadding}
+                    onChange={(e) => setSettings(prev => ({
+                      ...prev,
+                      maskPadding: Number(e.target.value)
+                    }))}
+                  />
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
     </DragDropContext>
   );

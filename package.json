@@ -51,6 +51,8 @@
     "qrcode": "^1.5.4",
     "re-resizable": "^6.11.2",
     "react": "^19.0.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
     "react-hotkeys-hook": "^5.1.0",
     "react-rnd": "^10.5.2",
