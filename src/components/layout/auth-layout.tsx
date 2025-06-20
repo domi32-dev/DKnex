@@ -10,10 +10,10 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
       <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] bg-background text-foreground relative">
          {/* Left Side */}
          <div className="hidden lg:flex flex-col justify-center items-center px-10 py-12 bg-gradient-to-br from-muted/30 to-muted text-left text-foreground relative">
-            {/* DoKi brand */}
+            {/* DkNex brand */}
             <div className="absolute top-6 left-6 text-2xl font-bold text-primary">
                <Link href="/" passHref>
-                  DoKi
+                  DkNex
                </Link>
             </div>
 
@@ -21,7 +21,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
             <div className="space-y-6 max-w-sm text-center">
                <h1 className="text-3xl font-bold">Hi, Welcome back</h1>
                <p className="text-muted-foreground">
-                  to DoKi, your effective AI power Tool.
+                  to DkNex, your effective AI power Tool.
                </p>
                <Image
                   src="/loginscreen.png"

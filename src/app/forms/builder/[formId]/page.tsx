@@ -5,24 +5,35 @@ import { useState } from 'react';
 import FormBuilder from '@/components/mask-builder/FormBuilder';
 import { Button } from '@/components/ui/button';
 
-export default function DesignerPage() {
+export default function FormBuilderPage() {
   const router = useRouter();
   const params = useParams();
   const formId = params?.formId as string;
-  const [formName] = useState('Form Designer'); // You can fetch the real name if needed
+  const [formName] = useState(formId === 'new' ? 'New Form' : `Form ${formId}`);
 
-  // Optionally, fetch form data by formId here
+  const handleSave = () => {
+    // TODO: Implement save logic
+    console.log('Saving form...');
+  };
+
+  const handleCancel = () => {
+    router.push('/forms');
+  };
 
   return (
     <div className="fixed inset-0 bg-background z-[10000] flex flex-col">
       <div className="border-b p-4 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">{formName} (ID: {formId})</h2>
+        <h2 className="text-xl font-semibold">{formName}</h2>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => router.push('/mask-builder')}>
+          <Button variant="outline" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button variant="default" onClick={() => {/* TODO: Save logic */}}>
-            Save
+          <Button 
+            variant="default" 
+            onClick={handleSave}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          >
+            Save Form
           </Button>
         </div>
       </div>

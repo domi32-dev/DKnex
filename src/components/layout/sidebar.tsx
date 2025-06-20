@@ -36,11 +36,11 @@ export const Sidebar = ({
    const { t } = useTranslation();
 
    const navItems = [
-      { label: t('navigation.dashboard'), icon: <Home />, href: '/' },
-      { label: t('navigation.analytics'), icon: <BarChart2 />, href: '/analytics' },
-      { label: t('navigation.map'), icon: <Map />, href: '/map' },
-      { label: t('navigation.calendar'), icon: <Calendar />, href: '/calendar' },
-      { label: t('navigation.maskBuilder'), icon: <FormInput />, href: '/mask-builder' },
+      { label: t('navigation.home'), icon: <Home />, href: '/' },
+      { label: t('navigation.forms'), icon: <FormInput />, href: '/forms' },
+      { label: t('navigation.templates'), icon: <BarChart2 />, href: '/templates' },
+      { label: t('navigation.routeForms'), icon: <Map />, href: '/route-forms' },
+      { label: t('navigation.submissions'), icon: <Calendar />, href: '/submissions' },
    ];
 
    // On mobile, always show expanded sidebar
@@ -102,7 +102,7 @@ export const Sidebar = ({
                       "absolute inset-0 rounded-full bg-white/80 dark:bg-[#23263a]/80 z-10 transition-all duration-200",
                       effectiveCollapsed ? "w-10 h-10" : "w-9 h-9"
                     )}></span>
-                    <img src="/icon.png" alt="DoKi Logo" className={cn(
+                    <img src="/icon.png" alt="DkNex Logo" className={cn(
                       "rounded-full shadow relative z-20 transition-all duration-200",
                       effectiveCollapsed ? "w-6 h-6" : "w-7 h-7"
                     )} />
@@ -111,7 +111,7 @@ export const Sidebar = ({
                      "text-xl font-bold bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent transition-all duration-200",
                      effectiveCollapsed ? "opacity-0 w-0" : "opacity-100 w-auto ml-2"
                   )}>
-                     DoKi
+                     DkNex
                   </span>
                </Link>
 

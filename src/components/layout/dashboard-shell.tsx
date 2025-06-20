@@ -56,7 +56,7 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
       return (
          <AuthLayout>
             <div className="flex flex-col items-center justify-center gap-4 text-center">
-               <h1 className="text-2xl font-bold">Welcome to DoKi@Software</h1>
+               <h1 className="text-2xl font-bold">Welcome to DkNex@Software</h1>
                <p className="text-muted-foreground">
                   Please sign in to continue.
                </p>

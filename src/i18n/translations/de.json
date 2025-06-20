@@ -1,12 +1,12 @@
 {
   "navigation": {
-    "dashboard": "Dashboard",
-    "analytics": "Analytik",
-    "map": "Karte",
-    "calendar": "Kalender",
+    "home": "Startseite",
+    "forms": "Meine Formulare",
+    "templates": "Vorlagen",
+    "routeForms": "Routen-Formulare",
+    "submissions": "Einreichungen",
     "settings": "Einstellungen",
-    "projects": "Projekte",
-    "maskBuilder": "Masken-Builder"
+    "projects": "Projekte"
   },
   "common": {
     "search": "Seiten durchsuchen...",
@@ -26,27 +26,14 @@
     "unread": "Sie haben {count} ungelesene Benachrichtigung",
     "unread_plural": "Sie haben {count} ungelesene Benachrichtigungen",
     "markAsRead": "Als gelesen markieren"
-  },
+      },
   "map": {
-    "generateRoute": "Wanderroute generieren",
-    "routeDescription": "Beschreiben Sie Ihre ideale Wanderung",
-    "routeDescriptionPlaceholder": "z.B. malerischer Bergpfad mit Wasserfällen",
+    "generateRoute": "Route generieren",
+    "routeDescription": "Beschreiben Sie Ihre Route",
+    "routeDescriptionPlaceholder": "z.B. malerische Route mit Stopps",
     "difficulty": "Schwierigkeitsgrad",
     "duration": "Dauer (Stunden)",
     "distance": "Entfernung (km)"
-  },
-  "dashboard": {
-    "kpi": {
-      "activeUsers": "Aktive Nutzer insgesamt",
-      "installed": "Insgesamt installiert",
-      "downloads": "Insgesamt Downloads",
-      "last7days": "letzte 7 Tage"
-    },
-    "welcome": "Willkommen zurück,",
-    "recentActivity": "Letzte Aktivität",
-    "activeProjects": "Aktive Projekte",
-    "upcomingTasks": "Anstehende Aufgaben",
-    "createProject": "Neues Projekt erstellen"
   },
   "calendar": {
     "today": "Heute",

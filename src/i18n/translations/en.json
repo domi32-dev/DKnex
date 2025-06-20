@@ -1,12 +1,12 @@
 {
   "navigation": {
-    "dashboard": "Dashboard",
-    "analytics": "Analytics",
-    "map": "Map",
-    "calendar": "Calendar",
+    "home": "Home",
+    "forms": "My Forms",
+    "templates": "Templates",
+    "routeForms": "Route Forms",
+    "submissions": "Submissions",
     "settings": "Settings",
-    "projects": "Projects",
-    "maskBuilder": "Mask Builder"
+    "projects": "Projects"
   },
   "common": {
     "search": "Search pages...",
@@ -26,27 +26,14 @@
     "unread": "You have {count} unread notification",
     "unread_plural": "You have {count} unread notifications",
     "markAsRead": "Mark as read"
-  },
+      },
   "map": {
-    "generateRoute": "Generate Hiking Route",
-    "routeDescription": "Describe your ideal hike",
-    "routeDescriptionPlaceholder": "e.g., scenic mountain trail with waterfalls",
+    "generateRoute": "Generate Route",
+    "routeDescription": "Describe your route",
+    "routeDescriptionPlaceholder": "e.g., scenic trail with stops",
     "difficulty": "Difficulty Level",
     "duration": "Duration (hours)",
     "distance": "Distance (km)"
-  },
-  "dashboard": {
-    "kpi": {
-      "activeUsers": "Total active users",
-      "installed": "Total installed",
-      "downloads": "Total downloads",
-      "last7days": "last 7 days"
-    },
-    "welcome": "Welcome back,",
-    "recentActivity": "Recent Activity",
-    "activeProjects": "Active Projects",
-    "upcomingTasks": "Upcoming Tasks",
-    "createProject": "Create New Project"
   },
   "calendar": {
     "today": "Today",

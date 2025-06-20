@@ -43,34 +43,34 @@ export function Search({ placeholder, iconOnly, iconClassName }: SearchProps) {
 
   const allPages = [
     {
-      label: t('navigation.dashboard'),
+      label: t('navigation.home'),
       icon: <Home className="h-4 w-4" />,
       href: '/',
-      description: 'Overview of your workspace',
+      description: 'FormFlow homepage and overview',
     },
     {
-      label: t('navigation.analytics'),
-      icon: <BarChart2 className="h-4 w-4" />,
-      href: '/analytics',
-      description: 'View analytics and statistics',
-    },
-    {
-      label: t('navigation.map'),
-      icon: <Map className="h-4 w-4" />,
-      href: '/map',
-      description: 'Interactive map view',
-    },
-    {
-      label: t('navigation.calendar'),
-      icon: <Calendar className="h-4 w-4" />,
-      href: '/calendar',
-      description: 'Manage your schedule',
-    },
-    {
-      label: t('navigation.maskBuilder'),
+      label: t('navigation.forms'),
       icon: <FormInput className="h-4 w-4" />,
-      href: '/mask-builder',
-      description: 'Create and manage custom forms',
+      href: '/forms',
+      description: 'Create and manage your forms',
+    },
+    {
+      label: t('navigation.templates'),
+      icon: <BarChart2 className="h-4 w-4" />,
+      href: '/templates',
+      description: 'Browse pre-built form templates',
+    },
+    {
+      label: t('navigation.routeForms'),
+      icon: <Map className="h-4 w-4" />,
+      href: '/route-forms',
+      description: 'Location-based form workflows',
+    },
+    {
+      label: t('navigation.submissions'),
+      icon: <Calendar className="h-4 w-4" />,
+      href: '/submissions',
+      description: 'View form submissions and responses',
     },
     {
       label: t('common.profile'),

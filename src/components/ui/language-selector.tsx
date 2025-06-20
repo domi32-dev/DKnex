@@ -54,21 +54,25 @@ export function LanguageSelector({
 
   return (
     <Select value={currentLanguage} onValueChange={onLanguageChange}>
-      <SelectTrigger className={cn(onlyFlag ? 'w-10 justify-center' : 'w-[140px] gap-2', className)}>
-        {selectedLanguage?.flag}
-        {!onlyFlag && (
-          <span className="flex-1 text-left">{selectedLanguage?.name}</span>
-        )}
+      <SelectTrigger className={cn(onlyFlag ? 'w-10 justify-center' : 'w-[140px]', className)}>
+        <div className={cn("flex items-center", onlyFlag ? "justify-center" : "gap-2")}>
+          {selectedLanguage?.flag}
+          {!onlyFlag && (
+            <span>{selectedLanguage?.name}</span>
+          )}
+        </div>
       </SelectTrigger>
       <SelectContent>
         {languages.map((language) => (
           <SelectItem
             key={language.code}
             value={language.code}
-            className="flex items-center gap-2"
+            className="pl-2 [&>span:first-child]:hidden"
           >
-            {language.flag}
-            <span>{language.name}</span>
+            <div className="flex items-center gap-2">
+              {language.flag}
+              <span>{language.name}</span>
+            </div>
           </SelectItem>
         ))}
       </SelectContent>

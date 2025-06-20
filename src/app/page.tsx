@@ -1,5 +1,5 @@
 import { DashboardShell } from "@/components/layout/dashboard-shell";
-import { DashboardContent } from "@/components/dashboard/dashboard-content";
+import { FormBuilderLanding } from "@/components/form-builder/form-builder-landing";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export default function Home() {
@@ -7,7 +7,7 @@ export default function Home() {
       <DashboardShell>
          <AuroraBackground className="fixed inset-0 w-full h-full z-0">{null}</AuroraBackground>
          <div className="relative z-10">
-            <DashboardContent />
+            <FormBuilderLanding />
          </div>
       </DashboardShell>
    );
@@ -15,6 +15,6 @@ export default function Home() {
 
 export async function generateMetadata() {
   return {
-    title: "Dashboard | DoKi",
+    title: "Dashboard | DkNex",
   };
 }
