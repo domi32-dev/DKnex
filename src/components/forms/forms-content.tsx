@@ -92,7 +92,7 @@ export function FormsContent() {
         </div>
         <Button
           onClick={() => setShowCreateForm(true)}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg"
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
           Create New Form
@@ -195,7 +195,7 @@ export function FormsContent() {
           {!searchTerm && (
             <Button
               onClick={() => setShowCreateForm(true)}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
             >
               <Plus className="w-4 h-4 mr-2" />
               Create Your First Form
