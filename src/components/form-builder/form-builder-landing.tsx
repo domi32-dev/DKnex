@@ -132,7 +132,7 @@ export function FormBuilderLanding() {
              animate={{ opacity: 1, y: 0 }}
              transition={{ duration: 0.4, delay: index * 0.1 }}
            >
-             <Card className="relative overflow-hidden hover:shadow-lg transition-all duration-300 bg-card border">
+             <Card className="relative overflow-hidden hover:shadow-lg transition-all duration-300 bg-card border"> 
                {/* Background decoration */}
                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-2xl -translate-y-16 translate-x-16" />
                
