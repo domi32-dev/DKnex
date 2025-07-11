@@ -9,7 +9,10 @@
     "lint": "next lint",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reset": "prisma migrate reset && npm run db:seed",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
@@ -80,6 +83,7 @@
     "eslint-config-next": "15.2.5",
     "msw": "^2.7.5",
     "tailwindcss": "^4",
+    "tsx": "^4.20.3",
     "typescript": "^5",
     "vitest": "^3.1.2"
   }
