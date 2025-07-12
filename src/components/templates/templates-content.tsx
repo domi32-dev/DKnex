@@ -126,9 +126,9 @@ export function TemplatesContent() {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold">Form Templates</h1>
+        <h1 className="text-3xl font-bold">{t('templates.title' as const)}</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Choose from our collection of professionally designed form templates to get started quickly
+          {t('templates.subtitle' as const)}
         </p>
       </div>
 
@@ -137,7 +137,7 @@ export function TemplatesContent() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
-            placeholder="Search templates..."
+            placeholder={t('templates.searchPlaceholder' as const)}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -163,7 +163,7 @@ export function TemplatesContent() {
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Star className="w-5 h-5 text-yellow-500" />
-            <h2 className="text-xl font-semibold">Popular Templates</h2>
+            <h2 className="text-xl font-semibold">{t('templates.mostPopular' as const)}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {templates.filter(t => t.popular).map((template) => (
@@ -185,7 +185,7 @@ export function TemplatesContent() {
                       {template.description}
                     </p>
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>{template.fields} fields</span>
+                      <span>{template.fields} {t('forms.fields' as const)}</span>
                       <span className="px-2 py-1 bg-primary/10 text-primary rounded-full">
                         {template.category}
                       </span>
@@ -195,7 +195,7 @@ export function TemplatesContent() {
                       className="w-full opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={() => handleUseTemplate(template.id)}
                     >
-                      Use Template
+                      {t('templates.useTemplate' as const)}
                     </Button>
                   </CardContent>
                 </Card>
@@ -208,7 +208,7 @@ export function TemplatesContent() {
       {/* All Templates */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">
-          {selectedCategory === 'All' ? 'All Templates' : `${selectedCategory} Templates`}
+          {selectedCategory === 'All' ? t('templates.browseAll' as const) : `${selectedCategory} Templates`}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredTemplates.map((template) => (
@@ -235,7 +235,7 @@ export function TemplatesContent() {
                     {template.description}
                   </p>
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>{template.fields} fields</span>
+                    <span>{template.fields} {t('forms.fields' as const)}</span>
                     <span className="px-2 py-1 bg-primary/10 text-primary rounded-full">
                       {template.category}
                     </span>
@@ -245,7 +245,7 @@ export function TemplatesContent() {
                     className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                     onClick={() => handleUseTemplate(template.id)}
                   >
-                    Use Template
+                    {t('templates.useTemplate' as const)}
                   </Button>
                 </CardContent>
               </Card>
@@ -258,9 +258,9 @@ export function TemplatesContent() {
       {filteredTemplates.length === 0 && (
         <div className="text-center py-12">
           <FormInput className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-xl font-semibold mb-2">No templates found</h3>
+          <h3 className="text-xl font-semibold mb-2">{t('templates.noTemplatesFound' as const)}</h3>
           <p className="text-muted-foreground mb-6">
-            Try adjusting your search terms or category filter
+            {t('templates.tryAdjusting' as const)}
           </p>
           <Button
             variant="outline"

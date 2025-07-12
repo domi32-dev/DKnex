@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useTranslation } from '@/i18n/translations';
 // Removed framer-motion to avoid conflicts with drag and drop
 import { 
   Plus, 
@@ -146,9 +147,10 @@ const fieldTypes = [
 ];
 
 export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBuilderProps) {
+  const { t } = useTranslation();
   const [fields, setFields] = useState<FormField[]>(initialFields);
   const [selectedField, setSelectedField] = useState<FormField | null>(null);
-  const [formName, setFormName] = useState('Untitled Form');
+  const [formName, setFormName] = useState(t('formBuilder.untitledForm' as any) || 'Untitled Form');
   const [previewMode, setPreviewMode] = useState(false);
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [isMultiStep, setIsMultiStep] = useState(false);
@@ -164,11 +166,21 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
     setTimeout(() => setNotification(null), 3000);
   };
 
+  // Helper function to get translated field type label
+  const getFieldTypeLabel = (type: string) => {
+    return t(`formBuilder.fieldTypes.${type}` as any) || type;
+  };
+
+  // Helper function to get translated field type description
+  const getFieldTypeDescription = (type: string) => {
+    return t(`formBuilder.fieldDescriptions.${type}` as any) || `${type} field`;
+  };
+
   const addField = useCallback((type: FormField['type']) => {
     const baseField: FormField = {
       id: generateId(),
       type,
-      label: `${fieldTypes.find(f => f.type === type)?.label}`,
+      label: getFieldTypeLabel(type),
       required: false,
       width: 'full',
     };
@@ -282,12 +294,12 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
     }
   }, [fields]);
 
-  const handleSave = useCallback(() => {
-    if (onSave) {
-      onSave(fields, formName);
-    }
-    alert('Form saved successfully! ✨');
-  }, [fields, formName, onSave]);
+      const handleSave = useCallback(() => {
+      if (onSave) {
+        onSave(fields, formName);
+      }
+      showNotification(t('formBuilder.saved' as any) || 'Form saved successfully!');
+    }, [fields, formName, onSave, t]);
 
   // Function to group fields into rows based on their widths
   const groupFieldsIntoRows = useCallback((fields: FormField[]) => {
@@ -1295,7 +1307,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
                 ))}
                 
                 <Button className="w-full h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg text-white">
-                  Submit Form
+                  {t('formBuilder.submitForm' as any) || 'Submit Form'}
                 </Button>
               </CardContent>
             </Card>
@@ -1321,10 +1333,10 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
             value={formName}
             onChange={(e) => setFormName(e.target.value)}
             className="text-2xl font-bold border-none bg-transparent p-0 focus:ring-0 shadow-none"
-            placeholder="Form Title"
+            placeholder={t('formBuilder.formTitle' as any) || 'Form Title'}
           />
           <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 text-xs font-medium rounded-full">
-            {fields.length} fields
+            {fields.length} {t('formBuilder.fieldsCount' as any) || 'fields'}
           </span>
         </div>
         
@@ -1334,7 +1346,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
             onClick={() => setPreviewMode(true)}
           >
             <Eye className="w-4 h-4 mr-2" />
-            Preview
+            {t('formBuilder.preview' as any) || 'Preview'}
           </Button>
           
           <Button
@@ -1342,7 +1354,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg text-white"
           >
             <Save className="w-4 h-4 mr-2" />
-            Save Form
+            {t('formBuilder.saveForm' as any) || 'Save Form'}
           </Button>
         </div>
       </div>
@@ -1589,21 +1601,21 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
           <div className="w-72 bg-card border-r overflow-y-auto">
             <div className="p-4 space-y-4">
               <div>
-                <h3 className="text-lg font-bold mb-2">Form Elements</h3>
-                <p className="text-sm text-muted-foreground">Click to add or drag to position</p>
+                <h3 className="text-lg font-bold mb-2">{t('formBuilder.formElements' as any) || 'Form Elements'}</h3>
+                <p className="text-sm text-muted-foreground">{t('formBuilder.dragToPosition' as any) || 'Click to add or drag to position'}</p>
               </div>
               
               <Tabs defaultValue="input" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="input">Basic</TabsTrigger>
-                <TabsTrigger value="advanced">Advanced</TabsTrigger>
+                <TabsTrigger value="input">{t('formBuilder.tabs.basic' as any) || 'Basic'}</TabsTrigger>
+                <TabsTrigger value="advanced">{t('formBuilder.tabs.advanced' as any) || 'Advanced'}</TabsTrigger>
               </TabsList>
               
               <TabsContent value="input" className="space-y-2 mt-4">
                 <div className="space-y-3">
                   {/* Input Fields */}
                   <div>
-                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">Input Fields</h4>
+                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">{t('formBuilder.categories.input' as any) || 'Input'}</h4>
                     <div className="space-y-2">
                       {fieldTypes
                         .filter(field => field.category === 'Input')
@@ -1618,8 +1630,8 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
                                 {fieldType.icon}
                               </div>
                               <div className="flex-1">
-                                <h4 className="font-medium text-sm">{fieldType.label}</h4>
-                                <p className="text-xs text-muted-foreground">{fieldType.description}</p>
+                                <h4 className="font-medium text-sm">{getFieldTypeLabel(fieldType.type)}</h4>
+                                <p className="text-xs text-muted-foreground">{getFieldTypeDescription(fieldType.type)}</p>
                               </div>
                             </CardContent>
                           </Card>
@@ -1629,7 +1641,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
 
                   {/* Choice Fields */}
                   <div>
-                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">Choice Fields</h4>
+                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">{t('formBuilder.categories.choice' as any) || 'Choice'}</h4>
                     <div className="space-y-2">
                       {fieldTypes
                         .filter(field => field.category === 'Choice')
@@ -1659,7 +1671,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
                 <div className="space-y-3">
                   {/* Advanced Fields */}
                   <div>
-                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">Advanced Fields</h4>
+                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">{t('formBuilder.categories.advanced' as any) || 'Advanced'}</h4>
                     <div className="space-y-2">
                       {fieldTypes
                         .filter(field => field.category === 'Advanced')
@@ -1685,7 +1697,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
 
                   {/* Layout Fields */}
                   <div>
-                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">Layout & Content</h4>
+                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">{t('formBuilder.categories.layout' as any) || 'Layout'}</h4>
                     <div className="space-y-2">
                       {fieldTypes
                         .filter(field => field.category === 'Layout')
@@ -1720,9 +1732,9 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
             <Card className="h-full">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-semibold">
-                  Form Builder Canvas
+                  {t('formBuilder.formBuilderCanvas' as any) || 'Form Builder Canvas'}
                 </CardTitle>
-                <p className="text-sm text-muted-foreground">Design your form by adding and arranging elements</p>
+                <p className="text-sm text-muted-foreground">{t('formBuilder.designYourForm' as any) || 'Design your form by adding and arranging elements'}</p>
               </CardHeader>
               <CardContent className="p-4 h-[calc(100%-80px)]">
                   <Droppable droppableId="form-fields">
@@ -1861,7 +1873,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
           <div className="p-4">
             <h3 className="text-base font-semibold mb-4 flex items-center">
               <Settings className="w-4 h-4 mr-2" />
-              Field Properties
+              {t('formBuilder.fieldProperties' as any) || 'Field Properties'}
             </h3>
             
             {selectedField ? (
@@ -1871,7 +1883,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
                     <div className="w-6 h-6 rounded bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white">
                       {fieldTypes.find(f => f.type === selectedField.type)?.icon}
                     </div>
-                    <span>{fieldTypes.find(f => f.type === selectedField.type)?.label}</span>
+                    <span>{getFieldTypeLabel(selectedField.type)}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-3">
@@ -1884,9 +1896,9 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
                   <Palette className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-medium mb-1">No Field Selected</h4>
+                  <h4 className="font-medium mb-1">{t('formBuilder.noFieldSelected' as any) || 'No Field Selected'}</h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Click on a form field to customize its properties and settings
+                    {t('formBuilder.clickToCustomize' as any) || 'Click on a form field to customize its properties and settings'}
                   </p>
                 </div>
               </div>

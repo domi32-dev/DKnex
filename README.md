@@ -121,7 +121,7 @@ Create a `.env.local` file in the root directory:
 
 ```env
 # Database
-DATABASE_URL="postgresql://username:password@localhost:5432/dknex_db"
+DATABASE_URL="postgresql://username:password@localhost:5432/test"
 
 # NextAuth
 NEXTAUTH_URL="http://localhost:3000"
@@ -136,7 +136,7 @@ EMAIL_SERVER_HOST="smtp.gmail.com"
 EMAIL_SERVER_PORT=587
 EMAIL_SERVER_USER="your-email@gmail.com"
 EMAIL_SERVER_PASSWORD="your-app-password"
-EMAIL_FROM="noreply@dknex.com"
+EMAIL_FROM="noreply@test.com"
 ```
 
 ## 📱 Screenshots
@@ -269,10 +269,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📧 Contact
 
 **Your Name**
-- Email: your.email@example.com
-- LinkedIn: [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)
-- Portfolio: [yourportfolio.com](https://yourportfolio.com)
-- GitHub: [@yourusername](https://github.com/yourusername)
+- Email: domi.kinzel@gmail.com
+- LinkedIn: [https://www.linkedin.com/in/dominik-kinzel](https://www.linkedin.com/in/dominik-kinzel)
+- Portfolio: [dk-dev.com](https://dk-dev.com)
+- GitHub: [@domi32-dev](https://github.com/domi32-dev)
 
 ## 🙏 Acknowledgments
 

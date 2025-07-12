@@ -85,9 +85,9 @@ export function FormsContent() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">My Forms</h1>
+          <h1 className="text-3xl font-bold">{t('forms.title' as const)}</h1>
           <p className="text-muted-foreground mt-1">
-            Create and manage your forms
+            {t('forms.subtitle' as const)}
           </p>
         </div>
         <Button
@@ -95,7 +95,7 @@ export function FormsContent() {
           className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Create New Form
+          {t('forms.createNewForm' as const)}
         </Button>
       </div>
 
@@ -104,7 +104,7 @@ export function FormsContent() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
-            placeholder="Search forms..."
+            placeholder={t('forms.search' as const)}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -112,7 +112,7 @@ export function FormsContent() {
         </div>
         <Button variant="outline">
           <Filter className="w-4 h-4 mr-2" />
-          Filter
+          {t('forms.filter' as const)}
         </Button>
       </div>
 
@@ -146,12 +146,12 @@ export function FormsContent() {
                 </p>
                 
                 <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <span>{form.fields} fields</span>
-                  <span>{form.submissions} submissions</span>
+                  <span>{form.fields} {t('forms.fields' as const)}</span>
+                  <span>{form.submissions} {t('forms.submissions' as const)}</span>
                 </div>
                 
                 <div className="text-xs text-muted-foreground">
-                  Last modified: {form.lastModified}
+                  {t('forms.lastModified' as const)}: {form.lastModified}
                 </div>
 
                 <div className="flex items-center gap-2 pt-2">
@@ -162,7 +162,7 @@ export function FormsContent() {
                     className="flex-1"
                   >
                     <Edit className="w-4 h-4 mr-1" />
-                    Edit
+                    {t('forms.edit' as const)}
                   </Button>
                   <Button
                     size="sm"
@@ -188,9 +188,9 @@ export function FormsContent() {
       {filteredForms.length === 0 && (
         <div className="text-center py-12">
           <FormInput className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-xl font-semibold mb-2">No forms found</h3>
+          <h3 className="text-xl font-semibold mb-2">{t('forms.noFormsFound' as const)}</h3>
           <p className="text-muted-foreground mb-6">
-            {searchTerm ? 'Try adjusting your search terms' : 'Create your first form to get started'}
+            {searchTerm ? t('forms.tryAdjusting' as const) : t('forms.createFirstForm' as const)}
           </p>
           {!searchTerm && (
             <Button
@@ -198,7 +198,7 @@ export function FormsContent() {
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Create Your First Form
+              {t('forms.createFirstForm' as const)}
             </Button>
           )}
         </div>
@@ -221,7 +221,7 @@ export function FormsContent() {
               className="bg-card rounded-lg shadow-xl p-8 max-w-2xl w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-3xl font-bold text-foreground mb-4">Create New Form</h2>
+              <h2 className="text-3xl font-bold text-foreground mb-4">{t('forms.createNewForm' as const)}</h2>
               <p className="text-muted-foreground mb-8">Choose the type of form you want to create</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
