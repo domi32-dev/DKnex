@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { User, Lock, Image as ImageIcon } from "lucide-react";
+import { User, Lock, Image as ImageIcon, AlertCircle } from "lucide-react";
 import { TwoFactorSetup } from './two-factor-setup';
+import { isDemoUser, getDemoMessage } from '@/lib/demo-config';
 
 // Sanitize user input for display
 const sanitizeUserInput = (input: string | null | undefined): string => {
@@ -46,6 +47,8 @@ export function ProfileContent() {
 
   const isGoogleUser = session?.user?.email?.includes('@gmail.com') || 
                       session?.user?.email?.includes('@google.com');
+  
+  const isDemoUserAccount = isDemoUser(session?.user?.email);
 
   const safeUserName = sanitizeUserInput(session?.user?.name);
   const safeUserEmail = sanitizeUserInput(session?.user?.email);
@@ -182,6 +185,21 @@ export function ProfileContent() {
 
   return (
     <div className="min-h-screen p-6 space-y-10">
+      {/* Demo User Warning */}
+      {isDemoUserAccount && (
+        <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+              Demo Account
+            </p>
+            <p className="text-xs text-amber-700 dark:text-amber-300">
+              {getDemoMessage('profileEditDisabled')}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Profile Header */}
       <div className="relative w-full h-56 rounded-3xl overflow-hidden flex items-end bg-gradient-to-br from-blue-900/80 via-indigo-900/70 to-violet-900/80 shadow-2xl border border-blue-400/20 backdrop-blur-xl">
         <div className="absolute inset-0 pointer-events-none z-0">
@@ -224,7 +242,7 @@ export function ProfileContent() {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  disabled={!isEditing}
+                  disabled={!isEditing || isDemoUserAccount}
                   className="bg-white/80 dark:bg-[#23263a]/80 border border-blue-200/30 dark:border-blue-900/30"
                 />
               </div>
@@ -235,7 +253,7 @@ export function ProfileContent() {
                   type="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  disabled={!isEditing || isGoogleUser}
+                  disabled={!isEditing || isGoogleUser || isDemoUserAccount}
                   className="bg-white/80 dark:bg-[#23263a]/80 border border-blue-200/30 dark:border-blue-900/30"
                 />
                 {isGoogleUser && (
@@ -255,7 +273,7 @@ export function ProfileContent() {
                     ) : null}
                     <AvatarFallback className="text-xl font-bold text-blue-900/80 dark:text-white/80">{formData.name?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                   </Avatar>
-                  {isEditing && !isGoogleUser && (
+                  {isEditing && !isGoogleUser && !isDemoUserAccount && (
                     <Button
                       type="button"
                       variant="outline"
@@ -276,6 +294,9 @@ export function ProfileContent() {
                   {isGoogleUser && (
                     <p className="text-xs text-blue-400">Profile image is managed by Google</p>
                   )}
+                  {isDemoUserAccount && (
+                    <p className="text-xs text-amber-600 dark:text-amber-400">Profile image editing is disabled for demo users</p>
+                  )}
                 </div>
               </div>
               {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
@@ -289,8 +310,13 @@ export function ProfileContent() {
                     <Button type="submit" className="bg-gradient-to-r from-blue-500 to-violet-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200">Save Changes</Button>
                   </>
                 ) : (
-                  <Button type="button" className="bg-gradient-to-r from-blue-500 to-violet-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200" onClick={() => setIsEditing(true)}>
-                    Edit Profile
+                  <Button 
+                    type="button" 
+                    className="bg-gradient-to-r from-blue-500 to-violet-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200" 
+                    onClick={() => setIsEditing(true)}
+                    disabled={isDemoUserAccount}
+                  >
+                    {isDemoUserAccount ? 'Edit Disabled' : 'Edit Profile'}
                   </Button>
                 )}
               </div>
@@ -309,6 +335,10 @@ export function ProfileContent() {
               <div className="text-sm text-blue-400 font-medium">
                 Password settings are managed by Google. To change your password, please visit your Google Account settings.
               </div>
+            ) : isDemoUserAccount ? (
+              <div className="text-sm text-amber-600 dark:text-amber-400 font-medium">
+                Password changes are disabled for demo users. This is a portfolio demonstration account.
+              </div>
             ) : (
               <form onSubmit={handlePasswordSubmit} className="space-y-6">
                 <div className="space-y-2">
@@ -318,6 +348,7 @@ export function ProfileContent() {
                     type="password"
                     value={passwordData.currentPassword}
                     onChange={handlePasswordChange}
+                    disabled={isDemoUserAccount}
                     className="bg-white/80 dark:bg-[#23263a]/80 border border-blue-200/30 dark:border-blue-900/30"
                   />
                 </div>
@@ -328,6 +359,7 @@ export function ProfileContent() {
                     type="password"
                     value={passwordData.newPassword}
                     onChange={handlePasswordChange}
+                    disabled={isDemoUserAccount}
                     className="bg-white/80 dark:bg-[#23263a]/80 border border-blue-200/30 dark:border-blue-900/30"
                   />
                 </div>
@@ -338,13 +370,20 @@ export function ProfileContent() {
                     type="password"
                     value={passwordData.confirmPassword}
                     onChange={handlePasswordChange}
+                    disabled={isDemoUserAccount}
                     className="bg-white/80 dark:bg-[#23263a]/80 border border-blue-200/30 dark:border-blue-900/30"
                   />
                 </div>
                 {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
                 {success && <p className="text-green-500 text-sm font-medium">{success}</p>}
                 <div className="flex justify-end">
-                  <Button type="submit" className="bg-gradient-to-r from-blue-500 to-violet-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200">Update Password</Button>
+                  <Button 
+                    type="submit" 
+                    className="bg-gradient-to-r from-blue-500 to-violet-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200"
+                    disabled={isDemoUserAccount}
+                  >
+                    {isDemoUserAccount ? 'Update Disabled' : 'Update Password'}
+                  </Button>
                 </div>
               </form>
             )}
@@ -360,7 +399,13 @@ export function ProfileContent() {
             <CardTitle className="text-xl font-bold text-blue-900 dark:text-white">Two-Factor Authentication</CardTitle>
           </CardHeader>
           <CardContent>
-            <TwoFactorSetup />
+            {isDemoUserAccount ? (
+              <div className="text-sm text-amber-600 dark:text-amber-400 font-medium">
+                Two-Factor Authentication is disabled for demo users. This is a portfolio demonstration account.
+              </div>
+            ) : (
+              <TwoFactorSetup />
+            )}
           </CardContent>
         </Card>
       </div>

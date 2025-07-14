@@ -48,7 +48,9 @@ export const DEMO_CONFIG = {
   messages: {
     demoWarning: "This is a demo environment. Data may be reset periodically.",
     loginPrompt: "Use demo@dknex.com / Demo123!@# to explore the platform",
-    featureDisabled: "This feature is disabled in demo mode"
+    featureDisabled: "This feature is disabled in demo mode",
+    profileEditDisabled: "Profile editing is disabled for demo users",
+    multipleSessionsError: "Demo user is already logged in. Only one session is allowed per demo user."
   }
 };
 
@@ -62,4 +64,10 @@ export const isFeatureDisabled = (feature: keyof typeof DEMO_CONFIG.disabledFeat
 
 export const getDemoMessage = (key: keyof typeof DEMO_CONFIG.messages) => {
   return DEMO_CONFIG.messages[key];
+};
+
+// Check if a user is a demo user
+export const isDemoUser = (email: string | null | undefined) => {
+  if (!email || !isDemoMode()) return false;
+  return DEMO_CONFIG.demoUsers.some(user => user.email === email);
 }; 

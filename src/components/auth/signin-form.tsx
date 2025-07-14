@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { isDemoMode, getDemoCredentials, isFeatureDisabled, getDemoMessage } from '@/lib/demo-config';
+import { isDemoMode, getDemoCredentials, isFeatureDisabled, getDemoMessage, isDemoUser } from '@/lib/demo-config';
 import { DemoBanner } from '@/components/demo-banner';
 import Image from 'next/image';
 
@@ -57,7 +57,13 @@ const SignInForm = () => {
         setLoading(false);
       } else if (res?.error) {
         console.log('Sign in error:', res.error);
-        setErrors({ general: [res.error] });
+        
+        // Check if this is a demo user session conflict
+        if (isDemoUser(email) && (res.error.includes('session') || res.error.includes('already') || res.error.includes('MaxListenersExceededWarning'))) {
+          setErrors({ general: [getDemoMessage('multipleSessionsError')] });
+        } else {
+          setErrors({ general: [res.error] });
+        }
         setLoading(false);
       } else if (res?.ok) {
         console.log('Sign in successful');
@@ -71,7 +77,13 @@ const SignInForm = () => {
       }
     } catch (_error) {
       console.error('Sign in error:', _error);
-      setErrors({ general: ['An unexpected error occurred. Please try again.'] });
+      
+      // Check if this is a demo user trying to login with multiple sessions
+      if (isDemoUser(email)) {
+        setErrors({ general: [getDemoMessage('multipleSessionsError')] });
+      } else {
+        setErrors({ general: ['An unexpected error occurred. Please try again.'] });
+      }
       setLoading(false);
     }
   };
