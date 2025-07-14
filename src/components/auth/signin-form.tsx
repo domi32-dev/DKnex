@@ -8,7 +8,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AuroraBackground } from '@/components/ui/aurora-background';
-import { isDemoMode, getDemoCredentials } from '@/lib/demo-config';
+import { isDemoMode, getDemoCredentials, isFeatureDisabled, getDemoMessage } from '@/lib/demo-config';
+import { DemoBanner } from '@/components/demo-banner';
+import Image from 'next/image';
 
 const inputClasses = "w-full px-4 py-3 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/50 focus:border-transparent transition-all duration-200 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden";
 const labelClasses = "block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300";
@@ -108,8 +110,25 @@ const SignInForm = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    if (isFeatureDisabled('googleAuth')) {
+      setErrors({ general: [getDemoMessage('featureDisabled')] });
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      await signIn('google', { callbackUrl: '/' });
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      setErrors({ general: ['Failed to sign in with Google. Please try again.'] });
+      setLoading(false);
+    }
+  };
+
   return (
     <>
+      <DemoBanner />
       <AuroraBackground className="min-h-[100vh] flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800">
@@ -126,6 +145,23 @@ const SignInForm = () => {
                 Sign In
               </h1>
             </div>
+
+            {/* Demo mode credentials display */}
+            {isDemoMode() && (
+              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+                  💡 Demo Credentials
+                </h3>
+                <div className="text-sm text-blue-800 dark:text-blue-200">
+                  <p className="font-mono bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded">
+                    {demoUser?.email}
+                  </p>
+                  <p className="font-mono bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded mt-1">
+                    {demoUser?.password}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {success && (
               <div className="mb-4 p-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg">
@@ -197,12 +233,52 @@ const SignInForm = () => {
               </Button>
             </form>
 
-            <p className="mt-6 text-sm text-center text-gray-600 dark:text-gray-400">
-                                Don&apos;t have an account?{' '}
-              <Link href="/auth/register" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
-                Register here
-              </Link>
-            </p>
+            {/* Divider */}
+            <div className="flex items-center my-6">
+              <div className="flex-1 border-t border-gray-200 dark:border-gray-700"></div>
+              <span className="px-3 text-sm text-gray-500 dark:text-gray-400">or</span>
+              <div className="flex-1 border-t border-gray-200 dark:border-gray-700"></div>
+            </div>
+
+            {/* Google OAuth Button */}
+            <Button
+              type="button"
+              onClick={handleGoogleSignIn}
+              disabled={loading || isFeatureDisabled('googleAuth')}
+              className={`w-full flex items-center justify-center gap-3 py-3 px-4 rounded-lg border transition-all duration-200 ${
+                isFeatureDisabled('googleAuth')
+                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-gray-300 dark:border-gray-600 cursor-not-allowed'
+                  : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+              }`}
+            >
+              <Image
+                src="/google.svg"
+                alt="Google"
+                width={20}
+                height={20}
+                className={isFeatureDisabled('googleAuth') ? 'opacity-50' : ''}
+              />
+              <span className="font-medium">
+                {isFeatureDisabled('googleAuth') ? 'Google Sign In (Demo Disabled)' : 'Continue with Google'}
+              </span>
+            </Button>
+
+            {/* Register Link */}
+            <div className="mt-6 text-sm text-center text-gray-600 dark:text-gray-400">
+              Don&apos;t have an account?{' '}
+              {isFeatureDisabled('registration') ? (
+                <span className="text-gray-400 dark:text-gray-500 cursor-not-allowed">
+                  Register here (Demo Disabled)
+                </span>
+              ) : (
+                <Link 
+                  href="/auth/register" 
+                  className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                >
+                  Register here
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </AuroraBackground>

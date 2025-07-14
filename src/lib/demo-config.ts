@@ -1,7 +1,12 @@
 // Demo configuration for portfolio showcase
 export const DEMO_CONFIG = {
-  // Enable demo mode in production
-  enabled: process.env.NODE_ENV === 'production' && process.env.DEMO_MODE === 'true',
+  // Enable demo mode in production - support both server and client side
+  enabled: (
+    (typeof window === 'undefined' 
+      ? process.env.NODE_ENV === 'production' && process.env.DEMO_MODE === 'true'
+      : process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+    ) || process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+  ),
   
   // Demo user credentials
   demoUsers: [
