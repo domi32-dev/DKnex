@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AuroraBackground } from '@/components/ui/aurora-background';
+import { isDemoMode, getDemoCredentials, isFeatureDisabled } from '@/lib/demo-config';
 
 const inputClasses = "w-full px-4 py-3 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/50 focus:border-transparent transition-all duration-200 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden";
 const labelClasses = "block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300";
@@ -17,8 +18,9 @@ interface ValidationErrors {
 }
 
 const SignInForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const demoUser = isDemoMode() ? getDemoCredentials()[0] : null;
+  const [email, setEmail] = useState(demoUser?.email || '');
+  const [password, setPassword] = useState(demoUser?.password || '');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors | null>(null);
   const [success, setSuccess] = useState<string | null>(null);

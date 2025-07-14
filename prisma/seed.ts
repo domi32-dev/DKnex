@@ -3,6 +3,20 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
+// Demo users for portfolio showcase
+const DEMO_USERS = [
+  {
+    email: 'demo@dknex.com',
+    password: 'Demo123!@#',
+    name: 'Demo User',
+  },
+  {
+    email: 'admin@dknex.com',
+    password: 'Admin123!@#',
+    name: 'Admin Demo',
+  }
+];
+
 async function main() {
   console.log('🌱 Starting database seeding...');
 
@@ -13,6 +27,24 @@ async function main() {
   await prisma.session.deleteMany();
   await prisma.account.deleteMany();
   await prisma.user.deleteMany();
+
+  // Create demo users first
+  console.log('👤 Creating demo users...');
+  for (const demoUser of DEMO_USERS) {
+    const hashedPassword = await bcrypt.hash(demoUser.password, 12);
+    
+    await prisma.user.create({
+      data: {
+        email: demoUser.email,
+        name: demoUser.name,
+        password: hashedPassword,
+        emailVerified: new Date(),
+        twoFactorEnabled: false, // Disable 2FA for demo users
+      },
+    });
+    
+    console.log(`✅ Created demo user: ${demoUser.email}`);
+  }
 
   // Create demo users
   const hashedPassword = await bcrypt.hash('demo123', 12);
