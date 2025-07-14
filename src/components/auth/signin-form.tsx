@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { AuroraBackground } from '@/components/ui/aurora-background';
 import { isDemoMode, getDemoCredentials, isFeatureDisabled, getDemoMessage } from '@/lib/demo-config';
 import { DemoBanner } from '@/components/demo-banner';
 import Image from 'next/image';
@@ -129,7 +128,7 @@ const SignInForm = () => {
   return (
     <>
       <DemoBanner />
-      <AuroraBackground className="min-h-[100vh] flex items-center justify-center p-4">
+      <div className="min-h-[100vh] flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800">
             <div className="flex items-center mb-8 relative">
@@ -281,7 +280,7 @@ const SignInForm = () => {
             </div>
           </div>
         </div>
-      </AuroraBackground>
+      </div>
 
       <Dialog open={showTwoFactorDialog} onOpenChange={setShowTwoFactorDialog}>
         <DialogContent className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200 dark:border-gray-800">

@@ -10,6 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import AuthLayout from "@/components/layout/auth-layout";
 import { cn } from "@/lib/utils";
+import { isDemoMode, isFeatureDisabled, getDemoMessage } from '@/lib/demo-config';
 
 export const DashboardShell = ({ children }: { children: ReactNode }) => {
    const [collapsed, setCollapsed] = useState(() => {
@@ -76,17 +77,28 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
                   {/* Google sign-in */}
                   <Button
                      variant="outline"
-                     className="p-2 w-10 h-10 rounded-md flex items-center justify-center cursor-pointer"
-                     onClick={() => signIn("google")}
-                     aria-label="Sign in with Google"
-                     title="Sign in using your Google account"
+                     className={`p-2 w-10 h-10 rounded-md flex items-center justify-center ${
+                        isFeatureDisabled('googleAuth') 
+                           ? 'cursor-not-allowed opacity-50' 
+                           : 'cursor-pointer'
+                     }`}
+                     onClick={() => {
+                        if (isFeatureDisabled('googleAuth')) {
+                           console.log(getDemoMessage('featureDisabled'));
+                           return;
+                        }
+                        signIn("google");
+                     }}
+                     disabled={isFeatureDisabled('googleAuth')}
+                     aria-label={isFeatureDisabled('googleAuth') ? 'Google Sign In (Demo Disabled)' : 'Sign in with Google'}
+                     title={isFeatureDisabled('googleAuth') ? 'Google Sign In disabled in demo mode' : 'Sign in using your Google account'}
                   >
                      <Image
                         src="/google.svg"
                         alt="Google logo"
                         width={20}
                         height={20}
-                        className="dark:invert-0"
+                        className={`dark:invert-0 ${isFeatureDisabled('googleAuth') ? 'opacity-50' : ''}`}
                      />
                   </Button>
                </div>

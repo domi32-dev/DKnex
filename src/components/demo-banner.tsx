@@ -27,7 +27,7 @@ export function DemoBanner() {
           <div className="flex items-center gap-3">
             <Info className="w-5 h-5 flex-shrink-0" />
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <span className="font-medium">🚀 Portfolio Demo</span>
+              <span className="font-medium">🚀 DkNex Demo</span>
               <span className="text-sm opacity-90">{loginPrompt}</span>
             </div>
           </div>
