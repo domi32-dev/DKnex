@@ -16,7 +16,6 @@ import {
   Share2,
   Map,
   Bookmark,
-  Star,
   ChevronRight,
   Navigation,
   Mountain,

@@ -42,7 +42,7 @@ export function TwoFactorSetup() {
       } else {
         setError(data.error || 'Failed to setup 2FA');
       }
-    } catch (_err) {
+    } catch (_err) { // eslint-disable-line @typescript-eslint/no-unused-vars
       setError('Failed to setup 2FA');
     }
   };
@@ -74,7 +74,7 @@ export function TwoFactorSetup() {
       } else {
         setError(data.error || 'Invalid verification code');
       }
-    } catch (_err) {
+    } catch (_err) { // eslint-disable-line @typescript-eslint/no-unused-vars
       setError('Failed to verify code');
     } finally {
       setIsVerifying(false);

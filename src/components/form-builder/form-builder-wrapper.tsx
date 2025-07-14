@@ -18,7 +18,7 @@ export function FormBuilderWrapper({ params, searchParams }: FormBuilderWrapperP
   
   const isNew = resolvedParams.formId === 'new';
   const isResponsive = resolvedSearchParams.responsive === 'true';
-  const [initialFields, setInitialFields] = useState<any[]>([]);
+  const [initialFields, setInitialFields] = useState<any[]>([]); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [isLoading, setIsLoading] = useState(!isNew);
 
   // Load existing form data if not new
@@ -201,7 +201,7 @@ export function FormBuilderWrapper({ params, searchParams }: FormBuilderWrapperP
     }
   }, [isNew, resolvedParams.formId]);
 
-  const handleSave = async (fields: any[], formName: string) => {
+  const handleSave = async (fields: any[], formName: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     console.log('Saving form:', { formName, fields, isResponsive });
     
     // Example API call:

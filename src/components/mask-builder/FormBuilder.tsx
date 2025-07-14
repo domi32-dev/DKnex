@@ -9,12 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Rnd, RndResizeCallback } from 'react-rnd';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Maximize2, Minimize2, GripVertical, Eye, EyeOff, Grid, LayoutGrid, ZoomIn, ZoomOut, Settings, Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Eye, EyeOff, Grid, LayoutGrid, ZoomIn, ZoomOut, Settings, Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 
@@ -62,7 +60,7 @@ interface FormField {
     format?: string;
     placeholder?: string;
     helpText?: string;
-    defaultValue?: any;
+    defaultValue?: unknown;
   };
   fieldOptions?: {
     multiple?: boolean;
@@ -177,7 +175,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
   const [viewMode, setViewMode] = useState<'design' | 'preview'>('design');
   const [showSettings, setShowSettings] = useState(false);
   const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
-  const canvasRef = useRef<HTMLDivElement>(null);
+  // const canvasRef = useRef<HTMLDivElement>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   // Memoize filtered fields for better performance
   const filteredFields = useMemo(() => {
@@ -194,7 +192,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
     if (selectedField?.id === fieldId) {
       setSelectedField(null);
     }
-  }, [onFormChange]);
+  }, [onFormChange, selectedField?.id]);
 
   // Update handleDragEnd to allow free positioning
   const handleDragEnd = useCallback((result: DropResult) => {
@@ -219,7 +217,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
           zIndex: fields.length + 1,
         },
         fieldType: {
-          type: fieldType.type as any,
+          type: fieldType.type as 'text' | 'number' | 'email' | 'tel' | 'url' | 'password' | 'date' | 'time' | 'datetime-local' | 'color' | 'file' | 'image' | 'signature' | 'barcode' | 'qr' | 'location' | 'rating' | 'slider' | 'toggle' | 'repeater' | 'table' | 'grid' | 'section' | 'divider' | 'spacer' | 'html' | 'calculation',
           placeholder: `Enter ${fieldType.label.toLowerCase()}`,
         },
         fieldOptions: {
@@ -265,7 +263,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
   }, [fields, settings.snapToGrid, settings.gridSize, handleFieldUpdate]);
 
   // Optimized field resize handler
-  const handleFieldResize: RndResizeCallback = useCallback((e, direction, ref, delta, position) => {
+  const handleFieldResize: RndResizeCallback = useCallback((e, direction, ref, _delta, _position) => { // eslint-disable-line @typescript-eslint/no-unused-vars
     const fieldId = ref.getAttribute('data-field-id');
     if (!fieldId) return;
 
@@ -634,7 +632,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFormChange }) => {
                         handleFieldUpdate(selectedField.id, {
                           fieldType: {
                             ...selectedField.fieldType,
-                            type: value as any,
+                            type: value as 'text' | 'number' | 'email' | 'tel' | 'url' | 'password' | 'date' | 'time' | 'datetime-local' | 'color' | 'file' | 'image' | 'signature' | 'barcode' | 'qr' | 'location' | 'rating' | 'slider' | 'toggle' | 'repeater' | 'table' | 'grid' | 'section' | 'divider' | 'spacer' | 'html' | 'calculation',
                           },
                         })
                       }

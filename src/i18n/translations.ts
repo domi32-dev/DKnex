@@ -33,13 +33,13 @@ export function useTranslation() {
 
   const t = useCallback((key: TranslationPath) => {
     const keys = key.split('.');
-    let value: any = translations[context.language];
+    let value: unknown = translations[context.language];
     
     for (const k of keys) {
-      value = value?.[k];
+      value = (value as Record<string, unknown>)?.[k];
     }
     
-    return value || key;
+    return (typeof value === 'string' ? value : key);
   }, [context.language]);
 
   return {

@@ -10,7 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import AuthLayout from "@/components/layout/auth-layout";
 import { cn } from "@/lib/utils";
-import { isDemoMode, isFeatureDisabled, getDemoMessage } from '@/lib/demo-config';
+import { isFeatureDisabled, getDemoMessage } from '@/lib/demo-config';
 
 export const DashboardShell = ({ children }: { children: ReactNode }) => {
    const [collapsed, setCollapsed] = useState(() => {

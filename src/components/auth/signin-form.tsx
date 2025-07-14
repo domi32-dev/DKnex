@@ -114,7 +114,7 @@ const SignInForm = () => {
       } else {
         setErrors({ twoFactor: ['An unexpected error occurred. Please try again.'] });
       }
-    } catch (_error) {
+    } catch (_error) { // eslint-disable-line @typescript-eslint/no-unused-vars
       setErrors({ twoFactor: ['An unexpected error occurred. Please try again.'] });
     } finally {
       setLoading(false);

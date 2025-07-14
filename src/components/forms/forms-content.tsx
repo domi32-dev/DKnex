@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Search, Filter, MoreVertical, FormInput, Eye, Edit, Trash2, Copy } from 'lucide-react';
+import { Plus, Search, Filter, MoreVertical, FormInput, Eye, Edit, Copy } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';

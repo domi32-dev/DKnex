@@ -36,7 +36,7 @@ interface Submission {
   submitterEmail: string;
   status: "new" | "reviewed" | "responded" | "archived";
   rating?: number;
-  fields: Record<string, any>;
+  fields: Record<string, unknown>;
   attachments?: string[];
 }
 
@@ -310,6 +310,7 @@ export function SubmissionsContent() {
             size="sm"
             onClick={() => setStatusFilter("all")}
           >
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {t('submissions.status.all' as any)}
           </Button>
           <Button
@@ -317,6 +318,7 @@ export function SubmissionsContent() {
             size="sm"
             onClick={() => setStatusFilter("new")}
           >
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {t('submissions.status.new' as any)}
           </Button>
           <Button
@@ -324,6 +326,7 @@ export function SubmissionsContent() {
             size="sm"
             onClick={() => setStatusFilter("reviewed")}
           >
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {t('submissions.status.reviewed' as any)}
           </Button>
           <Button
@@ -331,6 +334,7 @@ export function SubmissionsContent() {
             size="sm"
             onClick={() => setStatusFilter("responded")}
           >
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {t('submissions.status.responded' as any)}
           </Button>
         </div>
@@ -477,7 +481,7 @@ export function SubmissionsContent() {
                     <span className="text-sm font-medium text-muted-foreground capitalize">
                       {key.replace(/([A-Z])/g, ' $1').trim()}
                     </span>
-                    <p className="font-medium">{value}</p>
+                    <p className="font-medium">{String(value)}</p>
                   </div>
                 ))}
               </div>

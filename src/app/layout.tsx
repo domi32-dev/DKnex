@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { SessionWrapper } from '@/components/auth/session-wrapper';
@@ -7,6 +7,14 @@ import { DemoBanner } from '@/components/demo-banner';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
+
+export const viewport: Viewport = {
+  colorScheme: 'light dark',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  ],
+}
 
 export const metadata: Metadata = {
   title: {
@@ -85,11 +93,6 @@ export const metadata: Metadata = {
   category: 'technology',
   classification: 'Business Software',
   referrer: 'origin-when-cross-origin',
-  colorScheme: 'light dark',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
-  ],
   manifest: '/site.webmanifest',
   appleWebApp: {
     capable: true,

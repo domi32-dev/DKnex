@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "@/i18n/translations";
@@ -101,10 +102,16 @@ export const Sidebar = ({
                       "absolute inset-0 rounded-full bg-white/80 dark:bg-[#23263a]/80 z-10 transition-all duration-200",
                       effectiveCollapsed ? "w-10 h-10" : "w-9 h-9"
                     )}></span>
-                    <img src="/icon.png" alt="DkNex Logo" className={cn(
-                      "rounded-full shadow relative z-20 transition-all duration-200",
-                      effectiveCollapsed ? "w-6 h-6" : "w-7 h-7"
-                    )} />
+                    <Image 
+                      src="/icon.png" 
+                      alt="DkNex Logo" 
+                      width={effectiveCollapsed ? 24 : 28}
+                      height={effectiveCollapsed ? 24 : 28}
+                      className={cn(
+                        "rounded-full shadow relative z-20 transition-all duration-200",
+                        effectiveCollapsed ? "w-6 h-6" : "w-7 h-7"
+                      )} 
+                    />
                   </span>
                   <span className={cn(
                      "text-xl font-bold bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent transition-all duration-200",

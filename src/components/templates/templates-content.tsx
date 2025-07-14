@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, FormInput, Users, Briefcase, Heart, ShoppingCart, MessageSquare, Calendar, FileText, Star } from 'lucide-react';
+import { Search, FormInput, Users, Briefcase, Heart, ShoppingCart, MessageSquare, Calendar, FileText, Star } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';

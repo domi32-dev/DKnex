@@ -8,6 +8,14 @@ const prisma = new PrismaClient();
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
+interface UserUpdateData {
+  updatedAt: Date;
+  name?: string;
+  email?: string;
+  image?: string;
+  password?: string;
+}
+
 function isValidBase64Image(base64String: string) {
   // Check if it's a valid base64 data URL
   if (!base64String.startsWith('data:image/')) {
@@ -66,7 +74,7 @@ export async function PUT(request: Request) {
     }
 
     // Handle profile update
-    const updateData: Record<string, any> = {
+    const updateData: UserUpdateData = {
       updatedAt: new Date(),
     };
 

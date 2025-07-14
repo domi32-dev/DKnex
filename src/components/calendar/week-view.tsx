@@ -45,7 +45,7 @@ export function WeekView({ currentDate, events }: {
             )}>
               {/* Sticky header for each day */}
               <div className="sticky top-0 z-10 h-14 flex flex-col items-center justify-center bg-white/80 dark:bg-[#23263a]/80 backdrop-blur-xl border-b border-muted/20">
-                <div className={cn("font-semibold text-blue-900 dark:text-white text-base", isToday ? "text-blue-700 dark:text-violet-300" : "")}>{t(`calendar.${weekday.toLowerCase()}` as any)}</div>
+                <div className={cn("font-semibold text-blue-900 dark:text-white text-base", isToday ? "text-blue-700 dark:text-violet-300" : "")}>{t(`calendar.${weekday.toLowerCase()}` as any)}</div> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
                 <div className="text-xs text-muted-foreground">{d.format("dddd, MMM D")}</div>
               </div>
               <div className="divide-y divide-muted-foreground/10">

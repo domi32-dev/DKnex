@@ -63,8 +63,8 @@ export function ModernCalendar() {
           <span className="rounded-full bg-blue-100/60 dark:bg-blue-900/40 p-2 shadow mb-2">
             <Calendar className="w-7 h-7 text-blue-700 dark:text-blue-200" />
           </span>
-          <CardTitle className="text-2xl font-bold text-blue-900 dark:text-white text-center">{t("calendar.title" as any)}</CardTitle>
-          <div className="text-sm font-medium text-muted-foreground mt-0.5 mb-2 text-center whitespace-nowrap max-w-[320px] overflow-hidden text-ellipsis">{t("calendar.subtitle" as any)}</div>
+          <CardTitle className="text-2xl font-bold text-blue-900 dark:text-white text-center">{t("calendar.title" as any)}</CardTitle> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
+          <div className="text-sm font-medium text-muted-foreground mt-0.5 mb-2 text-center whitespace-nowrap max-w-[320px] overflow-hidden text-ellipsis">{t("calendar.subtitle" as any)}</div> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
           <div className="flex flex-row items-center justify-center gap-4 w-full mb-2">
             <Button size="icon" variant="ghost" onClick={handlePrev} className="rounded-full">
               <ChevronLeft className="w-5 h-5" />
@@ -80,7 +80,7 @@ export function ModernCalendar() {
             <TabsList className="bg-blue-100/60 dark:bg-blue-900/40 rounded-xl p-1">
               {VIEWS.map(v => (
                 <TabsTrigger key={v.key} value={v.key} className="data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-4 py-1 transition-all">
-                  {t(v.labelKey as any)}
+                  {t(v.labelKey as any)} {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -102,7 +102,7 @@ export function ModernCalendar() {
         {/* Vibrant Floating Add Event Button */}
         <Button className="fixed md:absolute bottom-8 right-8 bg-gradient-to-br from-blue-500 via-violet-500 to-fuchsia-500 text-white font-semibold shadow-2xl hover:brightness-110 transition-all rounded-full px-7 py-4 text-lg z-30 cursor-pointer" style={{boxShadow: '0 8px 32px 0 rgba(80,80,255,0.18)'}}>
           <DiamondPlus className="w-5 h-5 mr-2" />
-          {t("calendar.newEvent" as any)}
+          {t("calendar.newEvent" as any)} {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
         </Button>
       </CardContent>
     </Card>
