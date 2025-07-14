@@ -3,14 +3,23 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Initialize Supabase client conditionally
+const supabase = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY 
+  ? createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    )
+  : null;
 
 export async function POST(request: Request) {
   try {
+    // Check if Supabase is configured
+    if (!supabase) {
+      return NextResponse.json({ 
+        error: 'File upload not configured in demo mode' 
+      }, { status: 503 });
+    }
+
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
@@ -41,7 +50,7 @@ export async function POST(request: Request) {
     const filePath = `profile-images/${fileName}`;
 
     // Upload to Supabase Storage
-    const { data: _data, error } = await supabase.storage
+    const { data: _data, error } = await supabase!.storage
       .from('profile-images')
       .upload(filePath, file, {
         cacheControl: '3600',
@@ -54,7 +63,7 @@ export async function POST(request: Request) {
     }
 
     // Get the public URL
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabase!.storage
       .from('profile-images')
       .getPublicUrl(filePath);
 
