@@ -2,7 +2,7 @@
 // run `npx prisma generate` in your project root to update the Prisma client.
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
