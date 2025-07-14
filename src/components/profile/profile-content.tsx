@@ -29,7 +29,7 @@ const isValidAvatarUrl = (url: string | null | undefined): boolean => {
 };
 
 export function ProfileContent() {
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: session?.user?.name || "",

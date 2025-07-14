@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Card, CardContent } from './ui/card';
+import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Alert, AlertDescription } from './ui/alert';
 import { Copy, Eye, EyeOff, Info, X } from 'lucide-react';
@@ -15,7 +15,6 @@ export function DemoBanner() {
 
   const demoUsers = getDemoCredentials();
   const loginPrompt = getDemoMessage('loginPrompt');
-  const demoWarning = getDemoMessage('demoWarning');
 
   const copyCredentials = (email: string, password: string) => {
     navigator.clipboard.writeText(`${email} / ${password}`);

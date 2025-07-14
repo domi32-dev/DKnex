@@ -78,7 +78,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                We're sorry, but something unexpected happened. Please try refreshing the page or go back to the homepage.
+                We&apos;re sorry, but something unexpected happened. Please try refreshing the page or go back to the homepage.
               </p>
               
               {process.env.NODE_ENV === 'development' && this.state.error && (

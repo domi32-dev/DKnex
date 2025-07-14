@@ -33,7 +33,7 @@ export function WeekView({ currentDate, events }: {
     >
       <div className="grid grid-cols-7 gap-0 w-full">
         {/* 7 day columns */}
-        {days.map((d, idx) => {
+        {days.map((d) => {
           const dateStr = d.format("YYYY-MM-DD");
           const isToday = dateStr === todayStr;
           const dayEvents = events.filter(e => e.date === dateStr);

@@ -10,7 +10,6 @@ import {
   Filter,
   Download,
   Eye,
-  Trash2,
   Calendar,
   User,
   FileText,
@@ -22,8 +21,6 @@ import {
   Users,
   FormInput,
   Mail,
-  Phone,
-  Building,
   Star,
   MessageSquare,
 } from "lucide-react";

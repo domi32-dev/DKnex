@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       data: {
         twoFactorEnabled: true,
         twoFactorSecret: secret,
-      } as any,
+      },
     });
 
     return NextResponse.json({ success: true });

@@ -26,12 +26,12 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/i18n/translations";
 
-interface RoutePreferences {
-  description: string;
-  difficulty: number;
-  duration: number;
-  distance: number;
-}
+// interface RoutePreferences {
+//   description: string;
+//   difficulty: number;
+//   duration: number;
+//   distance: number;
+// }
 
 interface GeneratedRoute {
   id: string;

@@ -23,7 +23,7 @@ const VIEWS = [
 export function ModernCalendar() {
   const [view, setView] = useState("month");
   const [currentDate, setCurrentDate] = useState(dayjs());
-  const [events, setEvents] = useState<CalendarEvent[]>([
+  const [events] = useState<CalendarEvent[]>([
     { id: "1", title: "Tech Conf", date: "2025-04-15", time: "10:30", color: "bg-blue-500" },
     { id: "2", title: "Art Exhibition", date: "2025-04-21", time: "12:00", color: "bg-purple-500" },
     { id: "3", title: "Charity Gala", date: "2025-04-18", color: "bg-red-400" },
@@ -63,7 +63,7 @@ export function ModernCalendar() {
           <span className="rounded-full bg-blue-100/60 dark:bg-blue-900/40 p-2 shadow mb-2">
             <Calendar className="w-7 h-7 text-blue-700 dark:text-blue-200" />
           </span>
-          <CardTitle className="text-2xl font-bold text-blue-900 dark:text-white text-center">{t("navigation.calendar" as const)}</CardTitle>
+          <CardTitle className="text-2xl font-bold text-blue-900 dark:text-white text-center">{t("calendar.title" as any)}</CardTitle>
           <div className="text-sm font-medium text-muted-foreground mt-0.5 mb-2 text-center whitespace-nowrap max-w-[320px] overflow-hidden text-ellipsis">{t("calendar.subtitle" as any)}</div>
           <div className="flex flex-row items-center justify-center gap-4 w-full mb-2">
             <Button size="icon" variant="ghost" onClick={handlePrev} className="rounded-full">

@@ -30,7 +30,7 @@ export async function POST() {
       where: { email: session.user.email },
       data: {
         twoFactorSecret: secret.base32,
-      } as any,
+      },
     });
 
     return NextResponse.json({

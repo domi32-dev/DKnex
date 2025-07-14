@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AuroraBackground } from '@/components/ui/aurora-background';
-import { isDemoMode, getDemoCredentials, isFeatureDisabled } from '@/lib/demo-config';
+import { isDemoMode, getDemoCredentials } from '@/lib/demo-config';
 
 const inputClasses = "w-full px-4 py-3 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/50 focus:border-transparent transition-all duration-200 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden";
 const labelClasses = "block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300";
@@ -68,8 +68,8 @@ const SignInForm = () => {
         setErrors({ general: ['An unexpected error occurred. Please try again.'] });
         setLoading(false);
       }
-    } catch (error) {
-      console.error('Sign in error:', error);
+    } catch (_error) {
+      console.error('Sign in error:', _error);
       setErrors({ general: ['An unexpected error occurred. Please try again.'] });
       setLoading(false);
     }
@@ -101,7 +101,7 @@ const SignInForm = () => {
       } else {
         setErrors({ twoFactor: ['An unexpected error occurred. Please try again.'] });
       }
-    } catch (error) {
+    } catch (_error) {
       setErrors({ twoFactor: ['An unexpected error occurred. Please try again.'] });
     } finally {
       setLoading(false);
@@ -198,7 +198,7 @@ const SignInForm = () => {
             </form>
 
             <p className="mt-6 text-sm text-center text-gray-600 dark:text-gray-400">
-              Don't have an account?{' '}
+                                Don&apos;t have an account?{' '}
               <Link href="/auth/register" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
                 Register here
               </Link>

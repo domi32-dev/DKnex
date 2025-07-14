@@ -8,7 +8,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  const userId = (session?.user as any)?.id;
+  const userId = (session?.user as { id: string })?.id;
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
 
     // Convert dates to proper format
     const result = Array.isArray(notifications) 
-      ? notifications.map((n: any) => ({
+      ? notifications.map((n: { id: string; title: string; description: string; time: string; type: string; read: boolean; readAt: string | null }) => ({
           id: n.id,
           title: n.title,
           description: n.description,

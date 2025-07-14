@@ -3,7 +3,6 @@
 import {
    Home,
    BarChart2,
-   Users,
    Settings,
    ChevronLeft,
    ChevronRight,

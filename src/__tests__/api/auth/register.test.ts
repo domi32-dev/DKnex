@@ -12,7 +12,7 @@ describe('Registration API', () => {
     await cleanupDatabase();
   });
 
-  async function makeRegisterRequest(data: any) {
+  async function makeRegisterRequest(data: Record<string, unknown>) {
     const req = new NextRequest('http://localhost/api/auth/register', {
       method: 'POST',
       body: JSON.stringify(data),

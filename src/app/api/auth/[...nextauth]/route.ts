@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions, Session, User } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { Prisma, PrismaClient } from '.prisma/client';
+import { PrismaClient } from '.prisma/client';
 import bcrypt from "bcryptjs";
 import { JWT } from "next-auth/jwt";
 import { SessionStrategy } from "next-auth";
@@ -102,8 +102,8 @@ export const authOptions: NextAuthOptions = {
       },
       async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
          if (token?.id) {
-            (session.user as any).id = token.id;
-            (session.user as any).twoFactorEnabled = token.twoFactorEnabled;
+            (session.user as { id: string; twoFactorEnabled: boolean }).id = token.id;
+            (session.user as { id: string; twoFactorEnabled: boolean }).twoFactorEnabled = token.twoFactorEnabled || false;
          }
          return session;
       },

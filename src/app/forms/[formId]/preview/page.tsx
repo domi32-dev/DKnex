@@ -7,7 +7,7 @@ interface PageProps {
   }>;
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ formId: string }> }) {
+export async function generateMetadata({ params: _params }: { params: Promise<{ formId: string }> }) {
   return {
     title: `Form Preview | FormFlow`,
   };

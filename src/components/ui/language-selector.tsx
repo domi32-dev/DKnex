@@ -1,6 +1,5 @@
 'use client';
 
-import { Globe } from 'lucide-react';
 import {
   Select,
   SelectContent,

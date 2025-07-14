@@ -13,7 +13,7 @@ describe('Rate Limiting Middleware', () => {
 
   beforeEach(() => {
     // Reset rate limit store before each test
-    // @ts-ignore - accessing private store for testing
+    // @ts-expect-error - accessing private store for testing
     global._rateLimitStore = {};
   });
 
