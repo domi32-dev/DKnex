@@ -1,9 +1,26 @@
 {
+  "auth": {
+    "signin": {
+      "title": "Sign In",
+      "subtitle": "Welcome back! Please sign in to your account.",
+      "button": "Sign In"
+    },
+    "register": {
+      "title": "Register"
+    },
+    "email": "Email",
+    "password": "Password",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "signingIn": "Signing in...",
+    "orContinueWith": "Or continue with",
+    "signInWithGoogle": "Sign in with Google",
+    "noAccount": "Don't have an account?"
+  },
   "navigation": {
     "home": "Home",
     "forms": "My Forms",
     "templates": "Templates",
-    "routeForms": "Route Generator",
     "submissions": "Submissions",
     "settings": "Settings",
     "projects": "Projects"
@@ -27,14 +44,7 @@
     "unread_plural": "You have {count} unread notifications",
     "markAsRead": "Mark as read"
       },
-  "map": {
-    "generateRoute": "Generate Route",
-    "routeDescription": "Describe your route",
-    "routeDescriptionPlaceholder": "e.g., scenic trail with stops",
-    "difficulty": "Difficulty Level",
-    "duration": "Duration (hours)",
-    "distance": "Distance (km)"
-  },
+
   "calendar": {
     "today": "Today",
     "7days": "Week",
@@ -99,45 +109,7 @@
       "archived": "Archived"
     }
   },
-  "routeGenerator": {
-    "title": "Route Generator",
-    "subtitle": "Create personalized routes for running, hiking, cycling and more",
-    "generateNewRoute": "Generate New Route",
-    "routeDescription": "Route Description",
-    "routeDescriptionPlaceholder": "e.g., Morning jog through the park...",
-    "difficulty": "Difficulty",
-    "duration": "Duration",
-    "distance": "Distance",
-    "generateRoute": "Generate Route",
-    "generatingRoute": "Generating Route...",
-    "yourStats": "Your Stats",
-    "routesGenerated": "Routes Generated",
-    "totalDistance": "Total Distance",
-    "avgDuration": "Avg. Duration",
-    "favoriteType": "Favorite Type",
-    "quickActions": "Quick Actions",
-    "mountainTrail": "Mountain Trail",
-    "cityLoop": "City Loop",
-    "coastalPath": "Coastal Path",
-    "generatedRoute": "Generated Route",
-    "saveRoute": "Save Route",
-    "savedRoutes": "Saved Routes",
-    "routes": "routes",
-    "aiPowered": "AI Powered",
-    "gpsReady": "GPS Ready",
-    "difficulty": {
-      "easy": "Easy",
-      "moderate": "Moderate", 
-      "hard": "Hard",
-      "expert": "Expert"
-    },
-    "routeTypes": {
-      "walking": "Walking",
-      "running": "Running",
-      "cycling": "Cycling",
-      "hiking": "Hiking"
-    }
-  },
+
   "submissions": {
     "title": "Form Submissions",
     "subtitle": "View and manage all form submissions from your users",

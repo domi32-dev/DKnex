@@ -6,7 +6,6 @@ import {
    Settings,
    ChevronLeft,
    ChevronRight,
-   Map,
    Menu,
    Calendar,
    X as XIcon,
@@ -39,7 +38,6 @@ export const Sidebar = ({
       { label: t('navigation.home'), icon: <Home />, href: '/' },
       { label: t('navigation.forms'), icon: <FormInput />, href: '/forms' },
       { label: t('navigation.templates'), icon: <BarChart2 />, href: '/templates' },
-      { label: t('navigation.routeForms'), icon: <Map />, href: '/route-forms' },
       { label: t('navigation.submissions'), icon: <Calendar />, href: '/submissions' },
    ];
 
@@ -60,10 +58,10 @@ export const Sidebar = ({
             </Button>
          )}
 
-         {/* Mobile: overlay to close sidebar, covers only area outside sidebar */}
+         {/* Mobile: overlay to close sidebar - full screen */}
          {isMobile && isMobileOpen && (
             <div
-               className="fixed inset-0 left-64 bg-black/20 z-50 backdrop-blur-sm transition-opacity"
+               className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm transition-opacity"
                onClick={() => setIsMobileOpen(false)}
             />
          )}
@@ -75,7 +73,7 @@ export const Sidebar = ({
                effectiveCollapsed ? "w-20" : "w-80",
                isMobile
                   ? isMobileOpen
-                     ? "block z-60 w-64" // Show as drawer on mobile, above overlay
+                     ? "block z-60 w-full bg-white/95 dark:bg-[#23263a]/95" // Better mobile background
                      : "hidden"
                   : "z-40"
             )}
@@ -84,7 +82,9 @@ export const Sidebar = ({
             <div className={cn(
                "relative border-b border-blue-400/10 px-4 flex items-center transition-all duration-200",
                "h-16",
-               effectiveCollapsed ? "justify-between" : "justify-between"
+               effectiveCollapsed ? "justify-between" : "justify-between",
+               // Mobile specific styling
+               isMobile && "px-6 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-900/20 dark:to-purple-900/20"
             )}>
                <Link href="/" className={cn(
                   "flex items-center transition-all duration-200",
@@ -114,7 +114,7 @@ export const Sidebar = ({
                     />
                   </span>
                   <span className={cn(
-                     "text-xl font-bold bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent transition-all duration-200",
+                     "text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent transition-all duration-200",
                      effectiveCollapsed ? "opacity-0 w-0" : "opacity-100 w-auto ml-2"
                   )}>
                      DkNex
@@ -152,7 +152,7 @@ export const Sidebar = ({
                {/* Mobile close (X) button */}
                {isMobile && (
                   <button
-                     className="absolute top-4 right-4 z-20 p-2 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors"
+                     className="p-2 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors"
                      onClick={() => setIsMobileOpen(false)}
                      aria-label="Close sidebar"
                   >
@@ -162,7 +162,11 @@ export const Sidebar = ({
             </div>
 
             {/* Nav items */}
-            <nav className="space-y-2 p-4">
+            <nav className={cn(
+               "space-y-2 p-4",
+               // Mobile specific styling
+               isMobile && "p-6 space-y-3 flex-1 overflow-y-auto"
+            )}>
                {navItems.map((item) => {
                   const isActive = pathname === item.href;
                   return (
@@ -170,12 +174,17 @@ export const Sidebar = ({
                         href={item.href}
                         key={item.label}
                         className={cn(
-                           "flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200",
+                           "flex items-center text-sm font-medium rounded-xl transition-all duration-200",
                            "hover:bg-blue-100/50 dark:hover:bg-blue-900/30",
                            "active:scale-[0.98]",
-                           isActive ? "bg-gradient-to-r from-blue-500/10 to-violet-500/10 text-blue-900 dark:text-white" : "text-blue-900/70 dark:text-white/70",
-                           effectiveCollapsed ? "justify-center" : "gap-3"
+                           // Fixed active state styling for both modes
+                           isActive ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-900 dark:text-white border border-blue-200/50 dark:border-blue-700/50" : "text-blue-900/70 dark:text-white/70",
+                           // Better spacing for different modes
+                           effectiveCollapsed && !isMobile ? "justify-center p-3" : "gap-3 px-4 py-3",
+                           // Mobile specific styling
+                           isMobile && "px-4 py-4 shadow-sm hover:shadow-md"
                         )}
+                        onClick={() => isMobile && setIsMobileOpen(false)}
                      >
                         <span className={cn(
                            "h-5 w-5 shrink-0 transition-colors",
@@ -183,7 +192,7 @@ export const Sidebar = ({
                         )}>
                            {item.icon}
                         </span>
-                        {!effectiveCollapsed && (
+                        {(!effectiveCollapsed || isMobile) && (
                            <span className={cn(
                               "truncate transition-opacity duration-200",
                               isActive ? "font-semibold" : "font-medium"
@@ -197,22 +206,31 @@ export const Sidebar = ({
             </nav>
 
             {/* Settings section at bottom */}
-            <div className="absolute bottom-0 w-full p-4 border-t border-blue-400/10">
+            <div className={cn(
+               "absolute bottom-0 w-full p-4 border-t border-blue-400/10",
+               // Mobile specific styling
+               isMobile && "relative p-6 border-t border-blue-400/20 bg-gradient-to-r from-blue-50/30 to-purple-50/30 dark:from-blue-900/10 dark:to-purple-900/10"
+            )}>
                <Link
                   href="/settings"
                   className={cn(
-                     "flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200",
+                     "flex items-center text-sm font-medium rounded-xl transition-all duration-200",
                      "hover:bg-blue-100/50 dark:hover:bg-blue-900/30",
                      "active:scale-[0.98]",
-                     pathname === '/settings' ? "bg-gradient-to-r from-blue-500/10 to-violet-500/10 text-blue-900 dark:text-white" : "text-blue-900/70 dark:text-white/70",
-                     effectiveCollapsed ? "justify-center" : "gap-3"
+                     // Fixed active state styling for both modes
+                     pathname === '/settings' ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-900 dark:text-white border border-blue-200/50 dark:border-blue-700/50" : "text-blue-900/70 dark:text-white/70",
+                     // Better spacing for different modes
+                     effectiveCollapsed && !isMobile ? "justify-center p-3" : "gap-3 px-4 py-3",
+                     // Mobile specific styling
+                     isMobile && "px-4 py-4 shadow-sm hover:shadow-md"
                   )}
+                  onClick={() => isMobile && setIsMobileOpen(false)}
                >
                   <Settings className={cn(
                      "h-5 w-5 shrink-0 transition-colors",
                      pathname === '/settings' ? "text-blue-900 dark:text-white" : "text-blue-900/70 dark:text-white/70"
                   )} />
-                  {!effectiveCollapsed && (
+                  {(!effectiveCollapsed || isMobile) && (
                      <span className={cn(
                         "truncate transition-opacity duration-200",
                         pathname === '/settings' ? "font-semibold" : "font-medium"

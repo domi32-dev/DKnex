@@ -8,7 +8,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { isDemoMode, getDemoCredentials, isFeatureDisabled, getDemoMessage, isDemoUser } from '@/lib/demo-config';
-import { DemoBanner } from '@/components/demo-banner';
+import { useTranslation } from '@/i18n/translations';
+import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 import Image from 'next/image';
 
 const inputClasses = "w-full px-4 py-3 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/50 focus:border-transparent transition-all duration-200 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden";
@@ -18,84 +20,65 @@ interface ValidationErrors {
   [key: string]: string[];
 }
 
-const SignInForm = () => {
-  const demoUser = isDemoMode() ? getDemoCredentials()[0] : null;
-  const [email, setEmail] = useState(demoUser?.email || '');
-  const [password, setPassword] = useState(demoUser?.password || '');
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<ValidationErrors | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [showTwoFactorDialog, setShowTwoFactorDialog] = useState(false);
-  const [twoFactorCode, setTwoFactorCode] = useState('');
-  const router = useRouter();
+export function SigninForm() {
+   const { t } = useTranslation();
+   const router = useRouter();
+   const { data: session } = useSession();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrors(null);
-    setSuccess(null);
-    setLoading(true);
-
-    try {
-      console.log('Attempting sign in...');
-      const res = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-        code: twoFactorCode,
-      });
-
-      console.log('Sign in response:', res);
-
-      if (res?.error === '2FA_REQUIRED') {
-        console.log('2FA required');
-        setShowTwoFactorDialog(true);
-        setLoading(false);
-      } else if (res?.error === 'INVALID_2FA_CODE') {
-        console.log('Invalid 2FA code');
-        setErrors({ twoFactor: ['Invalid verification code. Please try again.'] });
-        setLoading(false);
-      } else if (res?.error) {
-        console.log('Sign in error:', res.error);
-        
-        // Check if this is a demo user session conflict
-        if (isDemoUser(email) && (res.error.includes('session') || res.error.includes('already') || res.error.includes('MaxListenersExceededWarning'))) {
-          setErrors({ general: [getDemoMessage('multipleSessionsError')] });
-        } else {
-          setErrors({ general: [res.error] });
-        }
-        setLoading(false);
-      } else if (res?.ok) {
-        console.log('Sign in successful');
-        setSuccess('Sign in successful! Redirecting...');
-        setShowTwoFactorDialog(false);
-        router.push('/');
-      } else {
-        console.log('Unexpected response:', res);
-        setErrors({ general: ['An unexpected error occurred. Please try again.'] });
-        setLoading(false);
+   // Redirect if already authenticated
+   useEffect(() => {
+      if (session) {
+         router.push('/');
       }
-    } catch (_error) {
-      console.error('Sign in error:', _error);
-      
-      // Check if this is a demo user trying to login with multiple sessions
-      if (isDemoUser(email)) {
-        setErrors({ general: [getDemoMessage('multipleSessionsError')] });
-      } else {
-        setErrors({ general: ['An unexpected error occurred. Please try again.'] });
-      }
-      setLoading(false);
-    }
-  };
+   }, [session, router]);
 
-  const handleTwoFactorSubmit = async () => {
+   const [email, setEmail] = useState('');
+   const [password, setPassword] = useState('');
+   const [error, setError] = useState('');
+   const [loading, setLoading] = useState(false);
+   const [showTwoFactorDialog, setShowTwoFactorDialog] = useState(false);
+   const [twoFactorCode, setTwoFactorCode] = useState('');
+
+   const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setError('');
+      setLoading(true);
+
+      try {
+         const result = await signIn('credentials', {
+            email,
+            password,
+            redirect: false,
+            code: twoFactorCode,
+         });
+
+         if (result?.error === '2FA_REQUIRED') {
+            setShowTwoFactorDialog(true);
+         } else if (result?.error === 'INVALID_2FA_CODE') {
+            setError('Invalid verification code. Please try again.');
+         } else if (result?.error) {
+            setError('Invalid credentials');
+         } else if (result?.ok) {
+            // Redirect to dashboard on success
+            router.push('/');
+         } else {
+            setError('An unexpected error occurred. Please try again.');
+         }
+      } catch (error) {
+         setError('An error occurred. Please try again.');
+      } finally {
+         setLoading(false);
+      }
+   };
+
+   const handleTwoFactorSubmit = async () => {
     if (!twoFactorCode) {
-      setErrors({ twoFactor: ['Please enter the verification code'] });
+      setError('Please enter the verification code');
       return;
     }
 
     setLoading(true);
-    setErrors(null);
+    setError('');
 
     try {
       const res = await signIn('credentials', {
@@ -106,16 +89,16 @@ const SignInForm = () => {
       });
 
       if (res?.error === 'INVALID_2FA_CODE') {
-        setErrors({ twoFactor: ['Invalid verification code. Please try again.'] });
+        setError('Invalid verification code. Please try again.');
       } else if (res?.ok) {
-        setSuccess('Sign in successful! Redirecting...');
+        setError('Sign in successful! Redirecting...');
         setShowTwoFactorDialog(false);
         router.push('/');
       } else {
-        setErrors({ twoFactor: ['An unexpected error occurred. Please try again.'] });
+        setError('An unexpected error occurred. Please try again.');
       }
     } catch (_error) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      setErrors({ twoFactor: ['An unexpected error occurred. Please try again.'] });
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -123,7 +106,7 @@ const SignInForm = () => {
 
   const handleGoogleSignIn = async () => {
     if (isFeatureDisabled('googleAuth')) {
-      setErrors({ general: [getDemoMessage('featureDisabled')] });
+      setError(getDemoMessage('featureDisabled'));
       return;
     }
     
@@ -132,172 +115,115 @@ const SignInForm = () => {
       await signIn('google', { callbackUrl: '/' });
     } catch (error) {
       console.error('Google sign in error:', error);
-      setErrors({ general: ['Failed to sign in with Google. Please try again.'] });
+      setError('Failed to sign in with Google. Please try again.');
       setLoading(false);
     }
   };
 
   return (
     <>
-      <DemoBanner />
-      <div className="min-h-[100vh] flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800">
-            <div className="flex items-center mb-8 relative">
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors cursor-pointer z-10"
-                role="button"
-                aria-label="Go back"
-              >
-                <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              </Link>
-              <h1 className="text-2xl font-bold absolute w-full text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-violet-500">
-                Sign In
-              </h1>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+         <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl max-w-md w-full border border-gray-200 dark:border-gray-700">
+            <div className="text-center mb-8">
+               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                  {t('auth.signin.title')}
+               </h1>
+               <p className="text-gray-600 dark:text-gray-300">
+                  {t('auth.signin.subtitle')}
+               </p>
             </div>
-
-            {/* Demo mode credentials display */}
-            {isDemoMode() && (
-              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
-                  💡 Demo Credentials
-                </h3>
-                <div className="text-sm text-blue-800 dark:text-blue-200">
-                  <p className="font-mono bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded">
-                    {demoUser?.email}
-                  </p>
-                  <p className="font-mono bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded mt-1">
-                    {demoUser?.password}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {success && (
-              <div className="mb-4 p-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg">
-                {success}
-              </div>
-            )}
-
-            {errors?.general && (
-              <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg">
-                {errors.general.map((error, i) => (
-                  <div key={i}>{error}</div>
-                ))}
-              </div>
-            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="email" className={labelClasses}>
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className={inputClasses}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="password" className={labelClasses}>
-                  Password
-                </label>
-                <div className="relative">
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                     {t('auth.email')}
+                  </label>
                   <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    className={inputClasses}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    autoComplete="current-password"
-                    placeholder="••••••••"
+                     type="email"
+                     value={email}
+                     onChange={(e) => setEmail(e.target.value)}
+                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                     placeholder={t('auth.emailPlaceholder')}
+                     required
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
+               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 text-white font-medium py-3 rounded-lg transition-all duration-200" 
-                disabled={loading}
-              >
-                {loading ? 'Signing in...' : 'Sign In'}
-              </Button>
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                     {t('auth.password')}
+                  </label>
+                  <input
+                     type="password"
+                     value={password}
+                     onChange={(e) => setPassword(e.target.value)}
+                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                     placeholder={t('auth.passwordPlaceholder')}
+                     required
+                  />
+               </div>
+
+               {error && (
+                  <div className="text-red-600 dark:text-red-400 text-sm text-center bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+                     {error}
+                  </div>
+               )}
+
+               <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+               >
+                  {loading ? t('auth.signingIn') : t('auth.signin.button')}
+               </button>
             </form>
 
-            {/* Divider */}
-            <div className="flex items-center my-6">
-              <div className="flex-1 border-t border-gray-200 dark:border-gray-700"></div>
-              <span className="px-3 text-sm text-gray-500 dark:text-gray-400">or</span>
-              <div className="flex-1 border-t border-gray-200 dark:border-gray-700"></div>
+            <div className="mt-8 text-center">
+               <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                     <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                     <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                        {t('auth.orContinueWith')}
+                     </span>
+                  </div>
+               </div>
+
+               <div className="mt-6">
+                  <button
+                     onClick={handleGoogleSignIn}
+                     disabled={isFeatureDisabled('googleAuth')}
+                     className={`w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200 ${
+                        isFeatureDisabled('googleAuth') ? 'opacity-50 cursor-not-allowed' : ''
+                     }`}
+                  >
+                     <Image
+                        src="/google.svg"
+                        alt="Google"
+                        width={20}
+                        height={20}
+                        className="mr-2"
+                     />
+                     {t('auth.signInWithGoogle')}
+                  </button>
+               </div>
             </div>
 
-            {/* Google OAuth Button */}
-            <Button
-              type="button"
-              onClick={handleGoogleSignIn}
-              disabled={loading || isFeatureDisabled('googleAuth')}
-              className={`w-full flex items-center justify-center gap-3 py-3 px-4 rounded-lg border transition-all duration-200 ${
-                isFeatureDisabled('googleAuth')
-                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-gray-300 dark:border-gray-600 cursor-not-allowed'
-                  : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
-            >
-              <Image
-                src="/google.svg"
-                alt="Google"
-                width={20}
-                height={20}
-                className={isFeatureDisabled('googleAuth') ? 'opacity-50' : ''}
-              />
-              <span className="font-medium">
-                {isFeatureDisabled('googleAuth') ? 'Google Sign In (Demo Disabled)' : 'Continue with Google'}
-              </span>
-            </Button>
-
-            {/* Register Link */}
-            <div className="mt-6 text-sm text-center text-gray-600 dark:text-gray-400">
-              Don&apos;t have an account?{' '}
-              {isFeatureDisabled('registration') ? (
-                <span className="text-gray-400 dark:text-gray-500 cursor-not-allowed">
-                  Register here (Demo Disabled)
-                </span>
-              ) : (
-                <Link 
-                  href="/auth/register" 
-                  className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-                >
-                  Register here
-                </Link>
-              )}
+            <div className="mt-6 text-center">
+               <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {t('auth.noAccount')}{' '}
+                  <Link href="/auth/register" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
+                     {t('auth.register.title')}
+                  </Link>
+               </p>
             </div>
-          </div>
-        </div>
+         </div>
       </div>
 
       <Dialog open={showTwoFactorDialog} onOpenChange={setShowTwoFactorDialog}>
         <DialogContent className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200 dark:border-gray-800">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-violet-500">
+            <DialogTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
               Two-Factor Authentication
             </DialogTitle>
           </DialogHeader>
@@ -318,16 +244,14 @@ const SignInForm = () => {
                 pattern="[0-9]*"
                 inputMode="numeric"
               />
-              {errors?.twoFactor && (
+              {error && (
                 <div className="mt-2 text-sm text-red-600 dark:text-red-400">
-                  {errors.twoFactor.map((error, i) => (
-                    <div key={i}>{error}</div>
-                  ))}
+                  {error}
                 </div>
               )}
             </div>
             <Button
-              className="w-full bg-gradient-to-r from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 text-white font-medium py-3 rounded-lg transition-all duration-200"
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium py-3 rounded-lg transition-all duration-200"
               onClick={handleTwoFactorSubmit}
               disabled={loading}
             >
@@ -338,6 +262,4 @@ const SignInForm = () => {
       </Dialog>
     </>
   );
-};
-
-export default SignInForm;
+}

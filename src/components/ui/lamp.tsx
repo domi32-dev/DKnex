@@ -29,7 +29,7 @@ export function LampContainer({
           style={{
             backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
           }}
-          className="absolute inset-auto right-1/2 h-[22rem] overflow-visible w-[60rem] bg-gradient-conic from-cyan-400 via-blue-400 to-violet-400 dark:from-cyan-500 dark:via-blue-700 dark:to-indigo-800 text-white [--conic-position:from_70deg_at_center_top]"
+          className="absolute inset-auto right-1/2 h-[22rem] overflow-visible w-[60rem] bg-gradient-conic from-blue-400 via-indigo-500 to-purple-500 dark:from-blue-500 dark:via-indigo-600 dark:to-purple-600 text-white [--conic-position:from_70deg_at_center_top]"
         >
           <div className="absolute  w-[100%] left-0 bg-transparent dark:bg-[#23263a] h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />
           <div className="absolute  w-40 h-[100%] left-0 bg-transparent dark:bg-[#23263a]  bottom-0 z-20 [mask-image:linear-gradient(to_right,white,transparent)]" />
@@ -45,7 +45,7 @@ export function LampContainer({
           style={{
             backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
           }}
-          className="absolute inset-auto left-1/2 h-[22rem] w-[60rem] bg-gradient-conic from-transparent via-transparent to-cyan-400 dark:to-cyan-500 text-white [--conic-position:from_290deg_at_center_top]"
+          className="absolute inset-auto left-1/2 h-[22rem] w-[60rem] bg-gradient-conic from-transparent via-transparent to-purple-400 dark:to-purple-500 text-white [--conic-position:from_290deg_at_center_top]"
         >
           <div className="absolute  w-40 h-[100%] right-0 bg-transparent dark:bg-[#23263a]  bottom-0 z-20 [mask-image:linear-gradient(to_left,white,transparent)]" />
           <div className="absolute  w-[100%] right-0 bg-transparent dark:bg-[#23263a] h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />

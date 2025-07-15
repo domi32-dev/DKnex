@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "maplibre-gl/dist/maplibre-gl.css";
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -47,60 +47,60 @@
 :root {
   --radius: 0.625rem;
   
-  /* Base colors from the palette */
-  --background: #f3f4f6;
-  --foreground: #262626;
+  /* Base colors - Blue-Purple theme */
+  --background: #f8fafc;
+  --foreground: #1e293b;
   
-  /* Card and popover */
+  /* Card and popover - subtle blue tint */
   --card: #ffffff;
-  --card-foreground: #262626;
+  --card-foreground: #1e293b;
   --popover: #ffffff;
-  --popover-foreground: #262626;
+  --popover-foreground: #1e293b;
   
-  /* Primary - Neutral 800 */
-  --primary: #262626;
+  /* Primary - Blue 600 */
+  --primary: #3b82f6;
   --primary-foreground: #ffffff;
   
-  /* Secondary - Blue 600 */
-  --secondary: #1e40af;
+  /* Secondary - Purple 600 */
+  --secondary: #8b5cf6;
   --secondary-foreground: #ffffff;
   
-  /* Accent - Sky 600 */
-  --accent: #0284c7;
+  /* Accent - Indigo 600 */
+  --accent: #6366f1;
   --accent-foreground: #ffffff;
   
-  /* Muted - Gray */
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
+  /* Muted - Blue-gray */
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
   
   /* Destructive */
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   
-  /* Borders and inputs */
-  --border: #e5e7eb;
-  --input: #e5e7eb;
-  --ring: #6b7280;
+  /* Borders and inputs - blue-gray tint */
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #6366f1;
   
-  /* Chart colors */
-  --chart-1: #262626;
-  --chart-2: #1e40af;
-  --chart-3: #0284c7;
-  --chart-4: #6b7280;
-  --chart-5: #f3f4f6;
+  /* Chart colors - Blue-Purple theme */
+  --chart-1: #3b82f6;
+  --chart-2: #8b5cf6;
+  --chart-3: #6366f1;
+  --chart-4: #06b6d4;
+  --chart-5: #f1f5f9;
   
-  /* Sidebar */
+  /* Sidebar - Blue-Purple theme */
   --sidebar: #ffffff;
-  --sidebar-foreground: #262626;
-  --sidebar-primary: #262626;
+  --sidebar-foreground: #1e293b;
+  --sidebar-primary: #3b82f6;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f3f4f6;
-  --sidebar-accent-foreground: #262626;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: #6b7280;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #1e293b;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #6366f1;
   
-  /* KPI Bar */
-  --kpi-bar: #262626;
+  /* KPI Bar - Blue-Purple gradient */
+  --kpi-bar: #3b82f6;
 }
 
 .dark {

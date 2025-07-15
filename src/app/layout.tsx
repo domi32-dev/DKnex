@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { SessionWrapper } from '@/components/auth/session-wrapper';
 import { I18nProvider } from '@/i18n/I18nProvider';
-import { DemoBanner } from '@/components/demo-banner';
+import { DemoIndicator } from '@/components/demo-banner';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -181,10 +181,8 @@ export default function RootLayout({
         >
           <SessionWrapper>
             <I18nProvider>
-              <DemoBanner />
-              <div className="relative">
-                {children}
-              </div>
+              {children}
+              <DemoIndicator />
             </I18nProvider>
           </SessionWrapper>
         </ThemeProvider>

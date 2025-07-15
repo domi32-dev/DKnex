@@ -1653,7 +1653,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
                             onClick={() => addField(fieldType.type as FormField['type'])}
                           >
                             <CardContent className="flex items-center space-x-4 p-4">
-                              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-green-500 to-teal-500 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow">
+                              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow">
                                 {fieldType.icon}
                               </div>
                               <div className="flex-1">
@@ -1683,7 +1683,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
                             onClick={() => addField(fieldType.type as FormField['type'])}
                           >
                             <CardContent className="flex items-center space-x-4 p-4">
-                              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow">
+                              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow">
                                 {fieldType.icon}
                               </div>
                               <div className="flex-1">
@@ -1709,7 +1709,7 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
                             onClick={() => addField(fieldType.type as FormField['type'])}
                           >
                             <CardContent className="flex items-center space-x-4 p-4">
-                              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow">
+                              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow">
                                 {fieldType.icon}
                               </div>
                               <div className="flex-1">

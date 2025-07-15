@@ -64,15 +64,15 @@ export const Topbar = () => {
    };
 
    return (
-      <header className="relative sticky top-0 z-30 h-16 border-b/10 bg-white/30 dark:bg-[#23263a]/30 backdrop-blur-xl">
+      <header className="relative sticky top-0 z-30 h-16 border-b/10 bg-white/30 dark:bg-[#23263a]/30 backdrop-blur-xl overflow-hidden">
          {/* Centered search bar (desktop only) */}
-         <div className="hidden md:flex absolute left-0 right-0 top-1/2 -translate-y-1/2 justify-center pointer-events-none min-w-0">
+         <div className="hidden md:flex absolute left-0 right-0 top-1/2 -translate-y-1/2 justify-center pointer-events-none min-w-0 z-10">
             <div className="pointer-events-auto w-full max-w-xs md:max-w-sm lg:max-w-md mx-auto">
                <Search placeholder={t("common.search")} />
             </div>
          </div>
          {/* Right controls always at screen edge (desktop) */}
-         <div className="hidden md:flex absolute right-0 top-0 h-full items-center gap-2 px-4 z-10">
+         <div className="hidden md:flex absolute right-0 top-0 h-full items-center gap-2 px-4 z-20">
             <div className="hover:bg-secondary/5 rounded-md transition-colors">
                <LanguageSelector
                   currentLanguage={language}
@@ -94,38 +94,35 @@ export const Topbar = () => {
                <UserMenu />
             </div>
          </div>
-         {/* Mobile: all controls in one row, evenly spaced */}
-         <div className="flex items-center gap-2 md:hidden w-full justify-end px-2 h-full">
-            <span className="p-2">
-               <Search
-                  iconOnly
-                  placeholder={t("common.search")}
-                  iconClassName="text-blue-900 dark:text-white"
-               />
-            </span>
-            <span className="p-2">
-               <LanguageSelector
-                  currentLanguage={language}
-                  onLanguageChange={handleLanguageChange}
-                  onlyFlag
-                  className="bg-transparent border-none shadow-none hover:bg-transparent focus:bg-transparent [&_[data-slot=select-trigger]]:bg-transparent [&_[data-slot=select-trigger]]:border-none [&_[data-slot=select-trigger]]:shadow-none [&_[data-slot=select-trigger]]:hover:bg-transparent [&_[data-slot=select-trigger]]:focus:bg-transparent [&_svg.size-4]:text-blue-900 dark:[&_svg.size-4]:text-white"
-               />
-            </span>
-            <span className="p-2">
-               <Notifications
-                  notifications={notifications}
-                  onNotificationClick={handleNotificationClick}
-               />
-            </span>
-            <span className="p-2">
-               <DarkToggler />
-            </span>
-            <span className="p-2">
-               <UserMenu />
-            </span>
+         {/* Mobile: essential controls only - prioritize user menu */}
+         <div className="flex items-center gap-1 md:hidden justify-between px-4 h-full pl-16 overflow-hidden">
+            {/* Left side: empty space for hamburger button */}
+            <div className="flex-1 min-w-0" />
+            
+            {/* Right side: controls */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+               <span className="p-1">
+                  <LanguageSelector
+                     currentLanguage={language}
+                     onLanguageChange={handleLanguageChange}
+                     onlyFlag
+                     className="bg-transparent border-none shadow-none hover:bg-transparent focus:bg-transparent [&_[data-slot=select-trigger]]:bg-transparent [&_[data-slot=select-trigger]]:border-none [&_[data-slot=select-trigger]]:shadow-none [&_[data-slot=select-trigger]]:hover:bg-transparent [&_[data-slot=select-trigger]]:focus:bg-transparent [&_svg.size-4]:text-blue-900 dark:[&_svg.size-4]:text-white"
+                  />
+               </span>
+               <span className="p-1">
+                  <Notifications
+                     notifications={notifications}
+                     onNotificationClick={handleNotificationClick}
+                  />
+               </span>
+               <span className="p-1">
+                  <DarkToggler />
+               </span>
+               <span className="p-1 flex-shrink-0">
+                  <UserMenu />
+               </span>
+            </div>
          </div>
-         {/* Main content container for height alignment */}
-         <div className="h-full max-w-[1800px] mx-auto" />
       </header>
    );
 };

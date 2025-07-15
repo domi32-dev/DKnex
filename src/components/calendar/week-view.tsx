@@ -67,7 +67,7 @@ export function WeekView({ currentDate, events }: {
                       <div className="ml-14 flex-1 flex flex-col gap-1">
                         {hourEvents.length === 0 ? null : hourEvents.map(event => (
                           <div key={event.id} className={cn(
-                            "rounded-xl px-2 py-1 bg-gradient-to-br from-blue-400/80 via-violet-400/70 to-fuchsia-400/70 dark:from-[#23263a]/90 dark:to-blue-900/70 shadow text-white font-medium text-xs",
+                            "rounded-xl px-2 py-1 bg-gradient-to-br from-blue-400/80 via-indigo-400/70 to-purple-400/70 dark:from-[#23263a]/90 dark:to-blue-900/70 shadow text-white font-medium text-xs",
                             event.color || "bg-blue-500"
                           )}>
                             <span>{event.title}</span>

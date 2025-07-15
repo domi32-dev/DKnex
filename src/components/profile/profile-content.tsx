@@ -201,9 +201,9 @@ export function ProfileContent() {
       )}
 
       {/* Profile Header */}
-      <div className="relative w-full h-56 rounded-3xl overflow-hidden flex items-end bg-gradient-to-br from-blue-900/80 via-indigo-900/70 to-violet-900/80 shadow-2xl border border-blue-400/20 backdrop-blur-xl">
+               <div className="relative w-full h-56 rounded-3xl overflow-hidden flex items-end bg-gradient-to-br from-blue-900/80 via-indigo-900/70 to-purple-900/80 shadow-2xl border border-blue-400/20 backdrop-blur-xl">
         <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="w-full h-full bg-gradient-to-br from-blue-400/20 via-violet-400/10 to-transparent blur-2xl" />
+                      <div className="w-full h-full bg-gradient-to-br from-blue-400/20 via-purple-400/10 to-transparent blur-2xl" />
         </div>
         <div className="relative z-10 flex items-end gap-6 px-10 pb-8">
           <Avatar className="h-24 w-24 border-4 border-white/30 shadow-2xl bg-white/10 backdrop-blur-xl ring-2 ring-blue-400/30 hover:scale-105 transition-transform duration-200">
@@ -307,12 +307,12 @@ export function ProfileContent() {
                     <Button type="button" variant="outline" className="border-blue-400/30" onClick={() => setIsEditing(false)}>
                       Cancel
                     </Button>
-                    <Button type="submit" className="bg-gradient-to-r from-blue-500 to-violet-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200">Save Changes</Button>
+                    <Button type="submit" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200">Save Changes</Button>
                   </>
                 ) : (
                   <Button 
                     type="button" 
-                    className="bg-gradient-to-r from-blue-500 to-violet-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200" 
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200" 
                     onClick={() => setIsEditing(true)}
                     disabled={isDemoUserAccount}
                   >
@@ -379,7 +379,7 @@ export function ProfileContent() {
                 <div className="flex justify-end">
                   <Button 
                     type="submit" 
-                    className="bg-gradient-to-r from-blue-500 to-violet-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200"
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200"
                     disabled={isDemoUserAccount}
                   >
                     {isDemoUserAccount ? 'Update Disabled' : 'Update Password'}

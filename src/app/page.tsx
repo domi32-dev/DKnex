@@ -4,12 +4,14 @@ import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export default function Home() {
    return (
-      <DashboardShell>
-         <AuroraBackground className="fixed inset-0 w-full h-full z-0">{null}</AuroraBackground>
-         <div className="relative z-10">
-            <FormBuilderLanding />
-         </div>
-      </DashboardShell>
+      <>
+         <DashboardShell>
+            <AuroraBackground className="fixed inset-0 w-full h-full z-0">{null}</AuroraBackground>
+            <div className="relative z-10">
+               <FormBuilderLanding />
+            </div>
+         </DashboardShell>
+      </>
    );
 }
 

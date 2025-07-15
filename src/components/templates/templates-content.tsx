@@ -34,7 +34,7 @@ export function TemplatesContent() {
       category: 'Business',
       icon: <MessageSquare className="w-6 h-6" />,
       fields: 5,
-      color: 'from-blue-500 to-cyan-500',
+      color: 'from-blue-500 to-purple-500',
       popular: true
     },
     {
@@ -44,7 +44,7 @@ export function TemplatesContent() {
       category: 'HR',
       icon: <Briefcase className="w-6 h-6" />,
       fields: 12,
-      color: 'from-purple-500 to-pink-500',
+      color: 'from-purple-500 to-indigo-500',
       popular: true
     },
     {
@@ -54,7 +54,7 @@ export function TemplatesContent() {
       category: 'Events',
       icon: <Calendar className="w-6 h-6" />,
       fields: 8,
-      color: 'from-green-500 to-emerald-500',
+      color: 'from-indigo-500 to-blue-500',
       popular: false
     },
     {
@@ -64,7 +64,7 @@ export function TemplatesContent() {
       category: 'Research',
       icon: <Users className="w-6 h-6" />,
       fields: 10,
-      color: 'from-orange-500 to-red-500',
+      color: 'from-blue-600 to-purple-600',
       popular: true
     },
     {
@@ -74,7 +74,7 @@ export function TemplatesContent() {
       category: 'E-commerce',
       icon: <ShoppingCart className="w-6 h-6" />,
       fields: 7,
-      color: 'from-indigo-500 to-purple-500',
+      color: 'from-indigo-600 to-purple-600',
       popular: false
     },
     {
@@ -84,7 +84,7 @@ export function TemplatesContent() {
       category: 'Business',
       icon: <Heart className="w-6 h-6" />,
       fields: 6,
-      color: 'from-pink-500 to-rose-500',
+      color: 'from-purple-600 to-blue-600',
       popular: false
     },
     {
@@ -94,7 +94,7 @@ export function TemplatesContent() {
       category: 'Marketing',
       icon: <FileText className="w-6 h-6" />,
       fields: 3,
-      color: 'from-teal-500 to-cyan-500',
+      color: 'from-blue-600 to-indigo-600',
       popular: true
     },
     {
@@ -104,7 +104,7 @@ export function TemplatesContent() {
       category: 'Support',
       icon: <MessageSquare className="w-6 h-6" />,
       fields: 9,
-      color: 'from-amber-500 to-orange-500',
+      color: 'from-indigo-600 to-purple-600',
       popular: false
     }
   ];

@@ -100,7 +100,7 @@ export function ModernCalendar() {
           </TabsContent>
         </Tabs>
         {/* Vibrant Floating Add Event Button */}
-        <Button className="fixed md:absolute bottom-8 right-8 bg-gradient-to-br from-blue-500 via-violet-500 to-fuchsia-500 text-white font-semibold shadow-2xl hover:brightness-110 transition-all rounded-full px-7 py-4 text-lg z-30 cursor-pointer" style={{boxShadow: '0 8px 32px 0 rgba(80,80,255,0.18)'}}>
+        <Button className="fixed md:absolute bottom-8 right-8 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white font-semibold shadow-2xl hover:brightness-110 transition-all rounded-full px-7 py-4 text-lg z-30 cursor-pointer" style={{boxShadow: '0 8px 32px 0 rgba(80,80,255,0.18)'}}>
           <DiamondPlus className="w-5 h-5 mr-2" />
           {t("calendar.newEvent" as any)} {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
         </Button>

@@ -240,7 +240,7 @@ export function FormsContent() {
                   className="p-6 hover:border-primary/50 transition-colors cursor-pointer hover:shadow-lg" 
                   onClick={() => handleCreateForm(false)}
                 >
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white mb-4">
                     <FormInput className="w-6 h-6" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Desktop Only</h3>

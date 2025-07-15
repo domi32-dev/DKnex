@@ -9,7 +9,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
    return (
       <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] bg-background text-foreground relative">
          {/* Left Side - Better contrast in light mode */}
-         <div className="hidden lg:flex flex-col justify-center items-center px-10 py-12 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-muted/30 dark:to-muted text-left text-foreground relative">
+         <div className="hidden lg:flex flex-col justify-center items-center px-10 py-12 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-muted/30 dark:to-muted text-left text-foreground relative">
             {/* DkNex brand */}
             <div className="absolute top-6 left-6 text-2xl font-bold text-primary">
                <Link href="/" passHref>

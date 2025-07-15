@@ -1,9 +1,26 @@
 {
+  "auth": {
+    "signin": {
+      "title": "Anmelden",
+      "subtitle": "Willkommen zurück! Bitte melden Sie sich in Ihrem Konto an.",
+      "button": "Anmelden"
+    },
+    "register": {
+      "title": "Registrieren"
+    },
+    "email": "E-Mail",
+    "password": "Passwort",
+    "emailPlaceholder": "E-Mail eingeben",
+    "passwordPlaceholder": "Passwort eingeben",
+    "signingIn": "Anmelden...",
+    "orContinueWith": "Oder weiter mit",
+    "signInWithGoogle": "Mit Google anmelden",
+    "noAccount": "Kein Konto vorhanden?"
+  },
   "navigation": {
     "home": "Startseite",
     "forms": "Meine Formulare",
     "templates": "Vorlagen",
-    "routeForms": "Routen-Generator",
     "submissions": "Einreichungen",
     "settings": "Einstellungen",
     "projects": "Projekte"
@@ -98,45 +115,7 @@
       "archived": "Archiviert"
     }
   },
-  "routeGenerator": {
-    "title": "Routen-Generator",
-    "subtitle": "Erstellen Sie personalisierte Routen zum Laufen, Wandern, Radfahren und mehr",
-    "generateNewRoute": "Neue Route generieren",
-    "routeDescription": "Routenbeschreibung",
-    "routeDescriptionPlaceholder": "z.B. Morgendlicher Lauf durch den Park...",
-    "difficulty": "Schwierigkeit",
-    "duration": "Dauer",
-    "distance": "Entfernung",
-    "generateRoute": "Route generieren",
-    "generatingRoute": "Route wird generiert...",
-    "yourStats": "Ihre Statistiken",
-    "routesGenerated": "Routen generiert",
-    "totalDistance": "Gesamtentfernung",
-    "avgDuration": "Durchschn. Dauer",
-    "favoriteType": "Lieblings-Typ",
-    "quickActions": "Schnellaktionen",
-    "mountainTrail": "Bergpfad",
-    "cityLoop": "Stadtschleife",
-    "coastalPath": "Küstenweg",
-    "generatedRoute": "Generierte Route",
-    "saveRoute": "Route speichern",
-    "savedRoutes": "Gespeicherte Routen",
-    "routes": "Routen",
-    "aiPowered": "KI-gestützt",
-    "gpsReady": "GPS-bereit",
-    "difficulty": {
-      "easy": "Einfach",
-      "moderate": "Mäßig", 
-      "hard": "Schwer",
-      "expert": "Experte"
-    },
-    "routeTypes": {
-      "walking": "Gehen",
-      "running": "Laufen",
-      "cycling": "Radfahren",
-      "hiking": "Wandern"
-    }
-  },
+
   "submissions": {
     "title": "Formular-Einreichungen",
     "subtitle": "Anzeigen und verwalten Sie alle Formular-Einreichungen Ihrer Benutzer",

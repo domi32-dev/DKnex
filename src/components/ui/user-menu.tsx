@@ -91,7 +91,7 @@ export function UserMenu() {
           <div className="flex flex-col items-center p-6 border-b border-gray-200 dark:border-gray-700">
             {/* Profile image with gradient ring and shadow */}
             <div className="relative mb-4">
-              <span className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-400 via-violet-400 to-pink-400 p-1 shadow-lg" aria-hidden="true"></span>
+              <span className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-400 via-indigo-400 to-purple-400 p-1 shadow-lg" aria-hidden="true"></span>
               <Avatar className="w-20 h-20 border-4 border-white dark:border-gray-900 relative z-10 shadow-md">
                 {safeUserImage ? (
                   <AvatarImage 
