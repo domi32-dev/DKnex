@@ -5,9 +5,8 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { isDemoMode, getDemoCredentials, isFeatureDisabled, getDemoMessage, isDemoUser } from '@/lib/demo-config';
+import { isFeatureDisabled, getDemoMessage } from '@/lib/demo-config';
 import { useTranslation } from '@/i18n/translations';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
@@ -15,10 +14,6 @@ import Image from 'next/image';
 
 const inputClasses = "w-full px-4 py-3 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/50 focus:border-transparent transition-all duration-200 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden";
 const labelClasses = "block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300";
-
-interface ValidationErrors {
-  [key: string]: string[];
-}
 
 export function SigninForm() {
    const { t } = useTranslation();
@@ -64,7 +59,7 @@ export function SigninForm() {
          } else {
             setError('An unexpected error occurred. Please try again.');
          }
-      } catch (error) {
+      } catch (_error) {
          setError('An error occurred. Please try again.');
       } finally {
          setLoading(false);

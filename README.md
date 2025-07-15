@@ -47,12 +47,6 @@ A comprehensive **Form Builder Platform** with dashboard that enables users to c
 - **Calendar Synchronization** with external providers
 - **Recurring Events** support
 
-### 🗺️ **Maps & Navigation**
-- **3D Maps** powered by Cesium.js
-- **Route Generator** for geographical data
-- **MapLibre GL** for interactive mapping
-- **Geolocation Services** integration
-
 ### 🌐 **Internationalization**
 - **Multi-language Support** (English, German)
 - **Dynamic Translations** with i18next
@@ -216,6 +210,13 @@ GET /api/analytics/users    # User analytics
 GET /api/analytics/export   # Export data
 ```
 
+### Notifications
+```typescript
+GET    /api/notifications   # Get user notifications
+POST   /api/notifications   # Create notification
+PATCH  /api/notifications/[id]/read  # Mark as read
+```
+
 ## 🏗️ Project Structure
 
 ```
@@ -223,13 +224,17 @@ src/
 ├── app/                    # Next.js app router
 │   ├── api/               # API routes
 │   ├── auth/              # Authentication pages
-│   └── forms/             # Form-related pages
+│   ├── forms/             # Form-related pages
+│   ├── profile/           # User profile page
+│   └── submissions/       # Form submissions
 ├── components/            # React components
 │   ├── ui/               # Reusable UI components
 │   ├── form-builder/     # Form builder components
-│   └── layout/           # Layout components
+│   ├── layout/           # Layout components
+│   └── calendar/         # Calendar components
 ├── lib/                   # Utility libraries
 ├── types/                 # TypeScript type definitions
+├── i18n/                  # Internationalization
 └── __tests__/            # Test files
 ```
 

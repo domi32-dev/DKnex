@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 'use client';
 
-import { useState, useRef, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult, DroppableProvided, DraggableProvided } from '@hello-pangea/dnd';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

@@ -133,24 +133,24 @@ const fieldTypes = [
   { type: 'rating', label: 'Rating', icon: <Star className="w-5 h-5" />, category: 'Choice', description: 'Star rating' },
   { type: 'toggle', label: 'Toggle', icon: <ToggleLeft className="w-5 h-5" />, category: 'Choice', description: 'On/Off switch' },
   
+  // Layout Fields
+  { type: 'heading', label: 'Heading', icon: <Type className="w-5 h-5" />, category: 'Layout', description: 'Heading text' },
+  { type: 'paragraph', label: 'Paragraph', icon: <FileText className="w-5 h-5" />, category: 'Layout', description: 'Paragraph text' },
+  { type: 'divider', label: 'Divider', icon: <Minus className="w-5 h-5" />, category: 'Layout', description: 'Visual divider' },
+  { type: 'section', label: 'Section', icon: <Layout className="w-5 h-5" />, category: 'Layout', description: 'Section divider' },
+  
   // Advanced Fields
   { type: 'signature', label: 'Signature', icon: <Edit className="w-5 h-5" />, category: 'Advanced', description: 'Digital signature pad' },
-  { type: 'richtext', label: 'Rich Text', icon: <Type className="w-5 h-5" />, category: 'Advanced', description: 'WYSIWYG editor' },
-  { type: 'matrix', label: 'Matrix/Grid', icon: <Layout className="w-5 h-5" />, category: 'Advanced', description: 'Grid of inputs' },
+  { type: 'richtext', label: 'Rich Text', icon: <FileText className="w-5 h-5" />, category: 'Advanced', description: 'Rich text editor' },
+  { type: 'matrix', label: 'Matrix', icon: <BarChart className="w-5 h-5" />, category: 'Advanced', description: 'Matrix/Grid input' },
   { type: 'calculation', label: 'Calculation', icon: <Hash className="w-5 h-5" />, category: 'Advanced', description: 'Auto-calculated field' },
-  
-  // Layout Fields
-  { type: 'section', label: 'Section', icon: <Layout className="w-5 h-5" />, category: 'Layout', description: 'Collapsible section' },
-  { type: 'heading', label: 'Heading', icon: <Type className="w-5 h-5" />, category: 'Layout', description: 'Section title' },
-  { type: 'paragraph', label: 'Paragraph', icon: <FileText className="w-5 h-5" />, category: 'Layout', description: 'Text content' },
-  { type: 'divider', label: 'Divider', icon: <Minus className="w-5 h-5" />, category: 'Layout', description: 'Section separator' },
 ];
 
-export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBuilderProps) {
+export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave }: FormBuilderProps) {
   const { t } = useTranslation();
   const [fields, setFields] = useState<FormField[]>(initialFields);
   const [selectedField, setSelectedField] = useState<FormField | null>(null);
-  const [formName, setFormName] = useState(t('formBuilder.untitledForm' as any) || 'Untitled Form');
+  const [formName, setFormName] = useState<string>(t('formBuilder.untitledForm' as keyof typeof t) || 'Untitled Form');
   const [previewMode, setPreviewMode] = useState(false);
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [isMultiStep, setIsMultiStep] = useState(false);
@@ -167,86 +167,36 @@ export function ModernFormBuilder({ formId, initialFields = [], onSave }: FormBu
   };
 
   // Helper function to get translated field type label
-  const getFieldTypeLabel = (type: string) => {
-    return t(`formBuilder.fieldTypes.${type}` as any) || type;
+  const getFieldTypeLabel = (type: string): string => {
+    return t(`formBuilder.fieldTypes.${type}` as keyof typeof t) || type;
   };
 
   // Helper function to get translated field type description
-  const getFieldTypeDescription = (type: string) => {
-    return t(`formBuilder.fieldDescriptions.${type}` as any) || `${type} field`;
+  const getFieldTypeDescription = (type: string): string => {
+    return t(`formBuilder.fieldDescriptions.${type}` as keyof typeof t) || `${type} field`;
   };
 
   const addField = useCallback((type: FormField['type']) => {
     const baseField: FormField = {
-      id: generateId(),
+      id: `field-${Date.now()}`,
       type,
       label: getFieldTypeLabel(type),
       required: false,
+      placeholder: '',
+      options: type === 'select' || type === 'checkbox' || type === 'radio' ? ['Option 1', 'Option 2'] : undefined,
+      validation: {},
+      style: {},
       width: 'full',
     };
-
-    // Add type-specific defaults
-    switch (type) {
-      case 'select':
-      case 'radio':
-      case 'checkbox':
-        baseField.options = ['Option 1', 'Option 2', 'Option 3'];
-        break;
-      
-      case 'heading':
-        baseField.style = { fontSize: '2xl', fontWeight: 'bold' };
-        break;
-      
-      case 'paragraph':
-        baseField.style = { fontSize: 'base', fontWeight: 'normal' };
-        break;
-      
-      case 'file':
-        baseField.fileSettings = {
-          maxSize: 10, // 10MB
-          allowedTypes: ['image/*', 'application/pdf', '.doc,.docx'],
-          maxFiles: 1,
-          showPreview: true
-        };
-        break;
-      
-      case 'matrix':
-        baseField.matrixSettings = {
-          rows: ['Row 1', 'Row 2', 'Row 3'],
-          columns: ['Column 1', 'Column 2', 'Column 3'],
-          inputType: 'radio'
-        };
-        break;
-      
-      case 'section':
-        baseField.sectionSettings = {
-          collapsible: true,
-          defaultCollapsed: false,
-          description: 'Section description'
-        };
-        break;
-      
-      case 'calculation':
-        baseField.calculations = {
-          enabled: true,
-          formula: '',
-          dependsOn: []
-        };
-        break;
-      
-      case 'signature':
-        baseField.label = 'Digital Signature';
-        break;
-      
-      case 'richtext':
-        baseField.label = 'Rich Text Content';
-        baseField.placeholder = 'Enter rich text content...';
-        break;
+    
+    // Add default options for choice fields
+    if (type === 'rating') {
+      baseField.options = ['1', '2', '3', '4', '5'];
     }
     
     setFields(prev => [...prev, baseField]);
     setSelectedField(baseField);
-  }, []);
+  }, [getFieldTypeLabel, getFieldTypeDescription]);
 
   const updateField = useCallback((fieldId: string, updates: Partial<FormField>) => {
     setFields(prev => prev.map(field => 
