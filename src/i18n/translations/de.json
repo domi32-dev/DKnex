@@ -8,6 +8,18 @@
     "register": {
       "title": "Registrieren"
     },
+    "welcome": {
+      "title": "Hallo, Willkommen zurück",
+      "subtitle": "zu DkNex, Ihrem effektiven KI-Power-Tool."
+    },
+    "demo": {
+      "title": "Demo-Modus",
+      "loginPrompt": "Verwenden Sie demo@dknex.com / Demo123!@# um die Plattform zu erkunden",
+      "warning": "Dies ist eine Demo-Umgebung. Daten können regelmäßig zurückgesetzt werden.",
+      "featureDisabled": "Diese Funktion ist im Demo-Modus deaktiviert",
+      "profileEditDisabled": "Profilbearbeitung ist für Demo-Benutzer deaktiviert",
+      "multipleSessionsError": "Demo-Benutzer ist bereits angemeldet. Nur eine Sitzung pro Demo-Benutzer ist erlaubt."
+    },
     "email": "E-Mail",
     "password": "Passwort",
     "emailPlaceholder": "E-Mail eingeben",

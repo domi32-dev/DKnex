@@ -1,15 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { isFeatureDisabled, getDemoMessage } from '@/lib/demo-config';
+import { isFeatureDisabled, getDemoMessage, isDemoMode, getDemoCredentials } from '@/lib/demo-config';
 import { useTranslation } from '@/i18n/translations';
 import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
 import Image from 'next/image';
 
 const inputClasses = "w-full px-4 py-3 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/50 focus:border-transparent transition-all duration-200 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden";
@@ -33,6 +32,17 @@ export function SigninForm() {
    const [loading, setLoading] = useState(false);
    const [showTwoFactorDialog, setShowTwoFactorDialog] = useState(false);
    const [twoFactorCode, setTwoFactorCode] = useState('');
+
+   // Auto-fill demo credentials when in demo mode
+   useEffect(() => {
+      if (isDemoMode()) {
+         const demoCredentials = getDemoCredentials();
+         if (demoCredentials[0]) {
+            setEmail(demoCredentials[0].email);
+            setPassword(demoCredentials[0].password);
+         }
+      }
+   }, []);
 
    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -117,8 +127,8 @@ export function SigninForm() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
-         <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl max-w-md w-full border border-gray-200 dark:border-gray-700">
+      <div className="w-full max-w-md mx-auto">
+         <div className="p-8 rounded-2xl shadow-xl bg-transparent backdrop-blur-sm border border-gray-200/20 dark:border-gray-700/30">
             <div className="text-center mb-8">
                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                   {t('auth.signin.title')}
@@ -127,6 +137,16 @@ export function SigninForm() {
                   {t('auth.signin.subtitle')}
                </p>
             </div>
+
+            {/* Demo Mode Notice */}
+            {isDemoMode() && (
+               <div className="mb-6 p-4 bg-blue-50/80 dark:bg-blue-900/40 border border-blue-200/50 dark:border-blue-800/50 rounded-lg backdrop-blur-sm">
+                  <p className="text-sm text-blue-800 dark:text-blue-200 text-center">
+                     <strong>{t('auth.demo.title')}</strong><br />
+                     {t('auth.demo.loginPrompt')}
+                  </p>
+               </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
                <div>
@@ -137,7 +157,7 @@ export function SigninForm() {
                      type="email"
                      value={email}
                      onChange={(e) => setEmail(e.target.value)}
-                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                     className="w-full px-4 py-3 rounded-lg border border-gray-300/50 dark:border-gray-600/50 bg-white/10 dark:bg-gray-700/30 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
                      placeholder={t('auth.emailPlaceholder')}
                      required
                   />
@@ -151,14 +171,14 @@ export function SigninForm() {
                      type="password"
                      value={password}
                      onChange={(e) => setPassword(e.target.value)}
-                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                     className="w-full px-4 py-3 rounded-lg border border-gray-300/50 dark:border-gray-600/50 bg-white/10 dark:bg-gray-700/30 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
                      placeholder={t('auth.passwordPlaceholder')}
                      required
                   />
                </div>
 
                {error && (
-                  <div className="text-red-600 dark:text-red-400 text-sm text-center bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+                  <div className="text-red-600 dark:text-red-400 text-sm text-center bg-red-50/80 dark:bg-red-900/40 p-3 rounded-lg backdrop-blur-sm">
                      {error}
                   </div>
                )}
@@ -175,10 +195,10 @@ export function SigninForm() {
             <div className="mt-8 text-center">
                <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                     <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                     <div className="w-full border-t border-gray-300/50 dark:border-gray-600/50"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                     <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                     <span className="px-2 bg-transparent text-gray-500 dark:text-gray-400">
                         {t('auth.orContinueWith')}
                      </span>
                   </div>
@@ -188,7 +208,7 @@ export function SigninForm() {
                   <button
                      onClick={handleGoogleSignIn}
                      disabled={isFeatureDisabled('googleAuth')}
-                     className={`w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200 ${
+                     className={`w-full flex items-center justify-center px-4 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/10 dark:bg-gray-700/30 hover:bg-white/20 dark:hover:bg-gray-600/40 transition-colors duration-200 backdrop-blur-sm ${
                         isFeatureDisabled('googleAuth') ? 'opacity-50 cursor-not-allowed' : ''
                      }`}
                   >
@@ -200,6 +220,9 @@ export function SigninForm() {
                         className="mr-2"
                      />
                      {t('auth.signInWithGoogle')}
+                     {isFeatureDisabled('googleAuth') && (
+                        <span className="ml-2 text-xs text-gray-500">(Demo disabled)</span>
+                     )}
                   </button>
                </div>
             </div>
@@ -207,9 +230,15 @@ export function SigninForm() {
             <div className="mt-6 text-center">
                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {t('auth.noAccount')}{' '}
-                  <Link href="/auth/register" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
-                     {t('auth.register.title')}
-                  </Link>
+                  {isFeatureDisabled('registration') ? (
+                     <span className="text-gray-500 dark:text-gray-400">
+                        {t('auth.register.title')} <span className="text-xs">(Demo disabled)</span>
+                     </span>
+                  ) : (
+                     <Link href="/auth/register" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
+                        {t('auth.register.title')}
+                     </Link>
+                  )}
                </p>
             </div>
          </div>

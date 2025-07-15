@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Alert, AlertDescription } from './ui/alert';
 import { Copy, Eye, EyeOff, Info, X, Sparkles } from 'lucide-react';
-import { isDemoMode, getDemoCredentials, getDemoMessage } from '@/lib/demo-config';
+import { isDemoMode, getDemoCredentials } from '@/lib/demo-config';
+import { useTranslation } from '@/i18n/translations';
 
 // Hook for localStorage with SSR safety
 function useLocalStorage(key: string, initialValue: boolean) {
@@ -37,11 +38,12 @@ function useLocalStorage(key: string, initialValue: boolean) {
 export function DemoBanner() {
   const [dismissed, setDismissed] = useLocalStorage('demo-banner-dismissed', false);
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useTranslation();
 
   if (!isDemoMode() || dismissed) return null;
 
   const demoUsers = getDemoCredentials();
-  const loginPrompt = getDemoMessage('loginPrompt');
+  const loginPrompt = t('auth.demo.loginPrompt');
 
   const copyCredentials = (email: string, password: string) => {
     navigator.clipboard.writeText(`${email} / ${password}`);
@@ -54,7 +56,7 @@ export function DemoBanner() {
           <div className="flex items-center gap-3">
             <Info className="w-4 h-4 flex-shrink-0" />
             <div className="flex items-center gap-2">
-              <span className="font-medium text-sm">🚀 Demo Mode</span>
+              <span className="font-medium text-sm">🚀 {t('auth.demo.title')}</span>
               <span className="text-xs opacity-90 hidden sm:inline">{loginPrompt}</span>
             </div>
           </div>
@@ -129,26 +131,30 @@ export function DemoBanner() {
 
 // Small floating demo indicator for main pages
 export function DemoIndicator() {
+  const { t } = useTranslation();
+  
   if (!isDemoMode()) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-2 rounded-full shadow-lg border border-blue-500/20 flex items-center gap-2">
         <Sparkles className="w-4 h-4" />
-        <span className="text-sm font-medium">Demo</span>
+        <span className="text-sm font-medium">{t('auth.demo.title')}</span>
       </div>
     </div>
   );
 }
 
 export function DemoWarning() {
+  const { t } = useTranslation();
+  
   if (!isDemoMode()) return null;
 
   return (
     <Alert className="mb-4 bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800">
       <Info className="h-4 w-4 text-amber-600" />
       <AlertDescription className="text-amber-800 dark:text-amber-200">
-        {getDemoMessage('demoWarning')}
+        {t('auth.demo.warning')}
       </AlertDescription>
     </Alert>
   );

@@ -8,6 +8,18 @@
     "register": {
       "title": "Register"
     },
+    "welcome": {
+      "title": "Hi, Welcome back",
+      "subtitle": "to DkNex, your effective AI power Tool."
+    },
+    "demo": {
+      "title": "Demo Mode",
+      "loginPrompt": "Use demo@dknex.com / Demo123!@# to explore the platform",
+      "warning": "This is a demo environment. Data may be reset periodically.",
+      "featureDisabled": "This feature is disabled in demo mode",
+      "profileEditDisabled": "Profile editing is disabled for demo users",
+      "multipleSessionsError": "Demo user is already logged in. Only one session is allowed per demo user."
+    },
     "email": "Email",
     "password": "Password",
     "emailPlaceholder": "Enter your email",
