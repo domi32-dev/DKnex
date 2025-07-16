@@ -42,7 +42,8 @@ import {
   BarChart,
   GitBranch,
   Upload,
-  Download
+  Download,
+  X
 } from 'lucide-react';
 
 interface FormField {
@@ -1547,9 +1548,9 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
       )}
 
       <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-        <div className={`flex ${showAnalytics || showLogicRules || showSettings ? 'h-[calc(100vh-280px)]' : 'h-[calc(100vh-125px)]'}`}>
-          {/* Left Sidebar - Field Types */}
-          <div className="w-72 bg-card border-r overflow-y-auto">
+        <div className={`flex flex-col lg:flex-row ${showAnalytics || showLogicRules || showSettings ? 'h-[calc(100vh-280px)]' : 'h-[calc(100vh-125px)]'}`}>
+          {/* Left Sidebar - Field Types (Hidden on mobile) */}
+          <div className="hidden lg:block w-72 bg-card border-r overflow-y-auto">
             <div className="p-4 space-y-4">
               <div>
                 <h3 className="text-lg font-bold mb-2">{t('formBuilder.formElements' as any) || 'Form Elements'}</h3> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
@@ -1563,299 +1564,309 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
               </TabsList>
               
               <TabsContent value="input" className="space-y-2 mt-4">
-                <div className="space-y-3">
-                  {/* Input Fields */}
-                  <div>
-                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">{t('formBuilder.categories.input' as any) || 'Input'}</h4> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
-                    <div className="space-y-2">
-                      {fieldTypes
-                        .filter(field => field.category === 'Input')
-                        .map((fieldType) => (
-                          <Card
-                            key={fieldType.type}
-                            className="cursor-pointer hover:shadow-sm transition-all duration-200 hover:border-primary/50 group"
-                            onClick={() => addField(fieldType.type as FormField['type'])}
-                          >
-                            <CardContent className="flex items-center space-x-3 p-3">
-                              <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white">
-                                {fieldType.icon}
-                              </div>
-                              <div className="flex-1">
-                                <h4 className="font-medium text-sm">{getFieldTypeLabel(fieldType.type)}</h4>
-                                <p className="text-xs text-muted-foreground">{getFieldTypeDescription(fieldType.type)}</p>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
+                {[
+                  { type: 'text', icon: <Type className="w-5 h-5" />, label: 'Text Input', description: 'Single line text input' },
+                  { type: 'textarea', icon: <FileText className="w-5 h-5" />, label: 'Textarea', description: 'Multi-line text input' },
+                  { type: 'email', icon: <Mail className="w-5 h-5" />, label: 'Email', description: 'Email address input' },
+                  { type: 'number', icon: <Hash className="w-5 h-5" />, label: 'Number', description: 'Numeric input field' },
+                  { type: 'phone', icon: <Phone className="w-5 h-5" />, label: 'Phone', description: 'Phone number input' },
+                  { type: 'date', icon: <Calendar className="w-5 h-5" />, label: 'Date', description: 'Date picker input' },
+                  { type: 'url', icon: <Link className="w-5 h-5" />, label: 'URL', description: 'Website URL input' },
+                  { type: 'file', icon: <Upload className="w-5 h-5" />, label: 'File Upload', description: 'File upload input' },
+                ].map((fieldType) => (
+                  <Button
+                    key={fieldType.type}
+                    variant="ghost"
+                    className="w-full justify-start p-3 h-auto hover:bg-muted/50 transition-colors"
+                    onClick={() => addField(fieldType.type as FormField['type'])}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white flex-shrink-0">
+                        {fieldType.icon}
+                      </div>
+                      <div className="text-left">
+                        <div className="font-medium text-sm">{getFieldTypeLabel(fieldType.type)}</div>
+                        <div className="text-xs text-muted-foreground">{getFieldTypeDescription(fieldType.type)}</div>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Choice Fields */}
-                  <div>
-                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">{t('formBuilder.categories.choice' as any) || 'Choice'}</h4> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
-                    <div className="space-y-2">
-                      {fieldTypes
-                        .filter(field => field.category === 'Choice')
-                        .map((fieldType) => (
-                          <Card
-                            key={fieldType.type}
-                            className="cursor-pointer hover:shadow-md transition-all duration-200 hover:border-primary/50 group hover:scale-105"
-                            onClick={() => addField(fieldType.type as FormField['type'])}
-                          >
-                            <CardContent className="flex items-center space-x-4 p-4">
-                              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow">
-                                {fieldType.icon}
-                              </div>
-                              <div className="flex-1">
-                                <h4 className="font-semibold text-sm">{fieldType.label}</h4>
-                                <p className="text-xs text-muted-foreground">{fieldType.description}</p>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                    </div>
-                  </div>
-                </div>
+                  </Button>
+                ))}
               </TabsContent>
-
+              
               <TabsContent value="advanced" className="space-y-2 mt-4">
-                <div className="space-y-3">
-                  {/* Advanced Fields */}
-                  <div>
-                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">{t('formBuilder.categories.advanced' as any) || 'Advanced'}</h4> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
-                    <div className="space-y-2">
-                      {fieldTypes
-                        .filter(field => field.category === 'Advanced')
-                        .map((fieldType) => (
-                          <Card
-                            key={fieldType.type}
-                            className="cursor-pointer hover:shadow-md transition-all duration-200 hover:border-primary/50 group hover:scale-105"
-                            onClick={() => addField(fieldType.type as FormField['type'])}
-                          >
-                            <CardContent className="flex items-center space-x-4 p-4">
-                              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow">
-                                {fieldType.icon}
-                              </div>
-                              <div className="flex-1">
-                                <h4 className="font-semibold text-sm">{fieldType.label}</h4>
-                                <p className="text-xs text-muted-foreground">{fieldType.description}</p>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
+                {[
+                  { type: 'select', icon: <ChevronDown className="w-5 h-5" />, label: 'Dropdown', description: 'Select from options' },
+                  { type: 'radio', icon: <Circle className="w-5 h-5" />, label: 'Radio Button', description: 'Single choice selection' },
+                  { type: 'checkbox', icon: <CheckSquare className="w-5 h-5" />, label: 'Checkbox', description: 'Multiple choice selection' },
+                  { type: 'rating', icon: <Star className="w-5 h-5" />, label: 'Rating', description: 'Star rating input' },
+                  { type: 'toggle', icon: <ToggleLeft className="w-5 h-5" />, label: 'Toggle', description: 'On/off switch' },
+                  { type: 'divider', icon: <Minus className="w-5 h-5" />, label: 'Divider', description: 'Section divider' },
+                  { type: 'heading', icon: <Type className="w-5 h-5" />, label: 'Heading', description: 'Section heading' },
+                  { type: 'paragraph', icon: <FileText className="w-5 h-5" />, label: 'Paragraph', description: 'Text paragraph' },
+                ].map((fieldType) => (
+                  <Button
+                    key={fieldType.type}
+                    variant="ghost"
+                    className="w-full justify-start p-3 h-auto hover:bg-muted/50 transition-colors"
+                    onClick={() => addField(fieldType.type as FormField['type'])}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center text-white flex-shrink-0">
+                        {fieldType.icon}
+                      </div>
+                      <div className="text-left">
+                        <div className="font-medium text-sm">{getFieldTypeLabel(fieldType.type)}</div>
+                        <div className="text-xs text-muted-foreground">{getFieldTypeDescription(fieldType.type)}</div>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Layout Fields */}
-                  <div>
-                    <h4 className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">{t('formBuilder.categories.layout' as any) || 'Layout'}</h4> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
-                    <div className="space-y-2">
-                      {fieldTypes
-                        .filter(field => field.category === 'Layout')
-                        .map((fieldType) => (
-                          <Card
-                            key={fieldType.type}
-                            className="cursor-pointer hover:shadow-md transition-all duration-200 hover:border-primary/50 group hover:scale-105"
-                            onClick={() => addField(fieldType.type as FormField['type'])}
-                          >
-                            <CardContent className="flex items-center space-x-4 p-4">
-                              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow">
-                                {fieldType.icon}
-                              </div>
-                              <div className="flex-1">
-                                <h4 className="font-semibold text-sm">{fieldType.label}</h4>
-                                <p className="text-xs text-muted-foreground">{fieldType.description}</p>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                    </div>
-                  </div>
-                </div>
+                  </Button>
+                ))}
               </TabsContent>
             </Tabs>
+            </div>
           </div>
-        </div>
 
-        {/* Center - Form Builder Canvas */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="h-full">
-            <Card className="h-full">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold">
-                  {t('formBuilder.formBuilderCanvas' as any) || 'Form Builder Canvas'} {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
-                </CardTitle>
-                <p className="text-sm text-muted-foreground">{t('formBuilder.designYourForm' as any) || 'Design your form by adding and arranging elements'}</p> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
-              </CardHeader>
-              <CardContent className="p-4 h-[calc(100%-80px)]">
+          {/* Mobile Field Types Drawer/Modal - Show only on mobile */}
+          <div className="lg:hidden mb-4">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setShowSettings(!showSettings)}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Field
+            </Button>
+            
+            {showSettings && (
+              <div className="mt-4 p-4 bg-card border rounded-lg">
+                <Tabs defaultValue="input" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="input">{t('formBuilder.tabs.basic' as any) || 'Basic'}</TabsTrigger> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
+                    <TabsTrigger value="advanced">{t('formBuilder.tabs.advanced' as any) || 'Advanced'}</TabsTrigger> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
+                  </TabsList>
+                  
+                  <TabsContent value="input" className="grid grid-cols-2 gap-2 mt-4">
+                    {[
+                      { type: 'text', icon: <Type className="w-4 h-4" />, label: 'Text' },
+                      { type: 'textarea', icon: <FileText className="w-4 h-4" />, label: 'Textarea' },
+                      { type: 'email', icon: <Mail className="w-4 h-4" />, label: 'Email' },
+                      { type: 'number', icon: <Hash className="w-4 h-4" />, label: 'Number' },
+                      { type: 'phone', icon: <Phone className="w-4 h-4" />, label: 'Phone' },
+                      { type: 'date', icon: <Calendar className="w-4 h-4" />, label: 'Date' },
+                      { type: 'url', icon: <Link className="w-4 h-4" />, label: 'URL' },
+                      { type: 'file', icon: <Upload className="w-4 h-4" />, label: 'File' },
+                    ].map((fieldType) => (
+                      <Button
+                        key={fieldType.type}
+                        variant="ghost"
+                        className="p-2 h-auto hover:bg-muted/50 transition-colors"
+                        onClick={() => {
+                          addField(fieldType.type as FormField['type']);
+                          setShowSettings(false);
+                        }}
+                      >
+                        <div className="flex flex-col items-center gap-1">
+                          <div className="w-6 h-6 rounded bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white">
+                            {fieldType.icon}
+                          </div>
+                          <span className="text-xs">{fieldType.label}</span>
+                        </div>
+                      </Button>
+                    ))}
+                  </TabsContent>
+                  
+                  <TabsContent value="advanced" className="grid grid-cols-2 gap-2 mt-4">
+                    {[
+                      { type: 'select', icon: <ChevronDown className="w-4 h-4" />, label: 'Dropdown' },
+                      { type: 'radio', icon: <Circle className="w-4 h-4" />, label: 'Radio' },
+                      { type: 'checkbox', icon: <CheckSquare className="w-4 h-4" />, label: 'Checkbox' },
+                      { type: 'rating', icon: <Star className="w-4 h-4" />, label: 'Rating' },
+                      { type: 'toggle', icon: <ToggleLeft className="w-4 h-4" />, label: 'Toggle' },
+                      { type: 'divider', icon: <Minus className="w-4 h-4" />, label: 'Divider' },
+                      { type: 'heading', icon: <Type className="w-4 h-4" />, label: 'Heading' },
+                      { type: 'paragraph', icon: <FileText className="w-4 h-4" />, label: 'Paragraph' },
+                    ].map((fieldType) => (
+                      <Button
+                        key={fieldType.type}
+                        variant="ghost"
+                        className="p-2 h-auto hover:bg-muted/50 transition-colors"
+                        onClick={() => {
+                          addField(fieldType.type as FormField['type']);
+                          setShowSettings(false);
+                        }}
+                      >
+                        <div className="flex flex-col items-center gap-1">
+                          <div className="w-6 h-6 rounded bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center text-white">
+                            {fieldType.icon}
+                          </div>
+                          <span className="text-xs">{fieldType.label}</span>
+                        </div>
+                      </Button>
+                    ))}
+                  </TabsContent>
+                </Tabs>
+              </div>
+            )}
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="h-full">
+              <Card className="h-full">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg font-semibold">
+                    {t('formBuilder.formBuilderCanvas' as any) || 'Form Builder Canvas'} {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">{t('formBuilder.designYourForm' as any) || 'Design your form by adding and arranging elements'}</p> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
+                </CardHeader>
+                <CardContent className="p-4 h-[calc(100%-80px)]">
                   <Droppable droppableId="form-fields">
                     {(provided, snapshot) => (
                       <div
                         {...provided.droppableProps}
                         ref={provided.innerRef}
-                        className={`space-y-3 min-h-full p-4 border-2 border-dashed rounded-lg transition-all duration-200 ${
+                        className={`min-h-[200px] p-4 border-2 border-dashed rounded-lg transition-all duration-200 ${
                           snapshot.isDraggingOver
-                            ? 'border-primary bg-primary/5 shadow-inner border-solid'
-                            : 'border-border bg-muted/20'
+                            ? 'border-primary bg-primary/5'
+                            : 'border-muted-foreground/25 hover:border-muted-foreground/50'
                         }`}
                       >
-                        {groupFieldsIntoRows(fields).map((row, rowIndex) => (
-                          <div key={`row-${rowIndex}`} className="flex flex-wrap -mr-2">
-                            {row.map((field, _fieldIndex) => { // eslint-disable-line @typescript-eslint/no-unused-vars
-                              const globalIndex = fields.findIndex(f => f.id === field.id);
-                              return (
-                                <Draggable key={field.id} draggableId={field.id} index={globalIndex}>
-                                  {(provided, snapshot) => (
-                                    <div
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      className={`${getFieldWidthClass(field.width)} mb-4`}
-                                      style={provided.draggableProps.style}
-                                    >
-                                      <div
-                                        className={`group relative p-4 border-2 rounded-lg bg-card transition-all duration-200 h-full ${
-                                          selectedField?.id === field.id
-                                            ? 'border-primary ring-1 ring-primary/20 shadow-md'
-                                            : 'border-border hover:border-primary/50 hover:shadow-sm'
-                                        } ${
-                                          snapshot.isDragging 
-                                            ? 'shadow-xl scale-105 z-[9999] opacity-90' 
-                                            : ''
-                                        }`}
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setSelectedField(field);
-                                        }}
-                                      >
-                                        <div className="flex items-start justify-between h-full">
-                                          <div className="flex-1 space-y-2">
-                                            {!['heading', 'paragraph', 'divider'].includes(field.type) && (
-                                              <Label className="text-base font-semibold text-foreground block">
-                                                {field.label}
-                                                {field.required && <span className="text-red-500 ml-2">*</span>}
-                                              </Label>
-                                            )}
-                                            {renderField(field)}
-                                          </div>
-                                          
-                                          <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity ml-4">
-                                            <div 
-                                              {...provided.dragHandleProps}
-                                              className="p-2 rounded-lg hover:bg-muted cursor-grab active:cursor-grabbing touch-none border border-transparent hover:border-border"
-                                              onMouseDown={(e) => e.stopPropagation()}
-                                              title="Drag to reorder"
-                                            >
-                                              <GripVertical className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                        {fields.length === 0 ? (
+                          <div className="text-center py-12">
+                            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+                              <Layout className="w-8 h-8 text-white" />
+                            </div>
+                            <h3 className="text-lg font-semibold mb-2">{t('formBuilder.emptyCanvas' as any) || 'Start building your form'}</h3> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
+                            <p className="text-muted-foreground text-sm max-w-md mx-auto">
+                              {t('formBuilder.emptyCanvasDescription' as any) || 'Add form elements from the sidebar or click the button above to get started.'} {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            {groupFieldsIntoRows(fields).map((row, rowIndex) => (
+                              <div key={`row-${rowIndex}`} className="flex flex-wrap -mr-2">
+                                {row.map((field, fieldIndex) => {
+                                  const globalIndex = fields.indexOf(field);
+                                  return (
+                                    <Draggable key={field.id} draggableId={field.id} index={globalIndex}>
+                                      {(provided, snapshot) => (
+                                        <div
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          className={`${getFieldWidthClass(field.width)} mb-4`}
+                                          style={provided.draggableProps.style}
+                                        >
+                                          <div
+                                            className={`group relative p-4 border-2 rounded-lg bg-card transition-all duration-200 h-full ${
+                                              selectedField?.id === field.id
+                                                ? 'border-primary ring-1 ring-primary/20 shadow-md'
+                                                : 'border-border hover:border-primary/50 hover:shadow-sm'
+                                            } ${
+                                              snapshot.isDragging 
+                                                ? 'shadow-xl scale-105 z-[9999] opacity-90' 
+                                                : ''
+                                            }`}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setSelectedField(field);
+                                            }}
+                                          >
+                                            <div className="flex items-start justify-between h-full">
+                                              <div className="flex-1 space-y-2">
+                                                {!['heading', 'paragraph', 'divider'].includes(field.type) && (
+                                                  <Label className="text-base font-semibold text-foreground block">
+                                                    {field.label}
+                                                    {field.required && <span className="text-red-500 ml-2">*</span>}
+                                                  </Label>
+                                                )}
+                                                {renderField(field)}
+                                              </div>
+                                              
+                                              <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity ml-4">
+                                                <div 
+                                                  {...provided.dragHandleProps}
+                                                  className="p-2 rounded-lg hover:bg-muted cursor-grab active:cursor-grabbing touch-none border border-transparent hover:border-border"
+                                                  onMouseDown={(e) => e.stopPropagation()}
+                                                  title="Drag to reorder"
+                                                >
+                                                  <GripVertical className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                                                </div>
+                                                                                                 <Button
+                                                   variant="ghost"
+                                                   size="sm"
+                                                   className="p-2 h-8 w-8 hover:bg-muted rounded-lg"
+                                                   onClick={(e) => {
+                                                     e.stopPropagation();
+                                                     duplicateField(field);
+                                                   }}
+                                                   title="Duplicate field"
+                                                 >
+                                                   <Copy className="w-4 h-4" />
+                                                 </Button>
+                                                 <Button
+                                                   variant="ghost"
+                                                   size="sm"
+                                                   className="p-2 h-8 w-8 hover:bg-destructive hover:text-destructive-foreground rounded-lg"
+                                                   onClick={(e) => {
+                                                     e.stopPropagation();
+                                                     deleteField(field.id);
+                                                   }}
+                                                   title="Delete field"
+                                                 >
+                                                   <Trash2 className="w-4 h-4" />
+                                                 </Button>
+                                              </div>
                                             </div>
-                                            
-                                            <Button
-                                              variant="ghost"
-                                              size="icon"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                duplicateField(field);
-                                              }}
-                                              className="hover:bg-blue-100 dark:hover:bg-blue-900/20"
-                                            >
-                                              <Copy className="w-4 h-4" />
-                                            </Button>
-                                            
-                                            <Button
-                                              variant="ghost"
-                                              size="icon"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                deleteField(field.id);
-                                              }}
-                                              className="hover:bg-red-100 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400"
-                                            >
-                                              <Trash2 className="w-4 h-4" />
-                                            </Button>
                                           </div>
                                         </div>
-                                      </div>
-                                    </div>
-                                  )}
-                                </Draggable>
-                              );
-                            })}
-                          </div>
-                        ))}
-                        
-                        {fields.length === 0 && !snapshot.isDraggingOver && (
-                          <div className="text-center py-20">
-                            <div className="w-20 h-20 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center mx-auto mb-6">
-                              <Layout className="w-10 h-10 text-white" />
-                            </div>
-                            <h3 className="text-2xl font-bold mb-3">
-                              Start Building Your Form
-                            </h3>
-                            <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
-                              Drag form elements from the left panel or click to add them to your form
-                            </p>
+                                      )}
+                                    </Draggable>
+                                  );
+                                })}
+                              </div>
+                            ))}
                           </div>
                         )}
-                        
-                        {fields.length === 0 && snapshot.isDraggingOver && (
-                          <div className="text-center py-20">
-                            <div className="w-20 h-20 rounded-lg bg-primary/20 border-2 border-primary border-dashed flex items-center justify-center mx-auto mb-6">
-                              <Plus className="w-10 h-10 text-primary" />
-                            </div>
-                            <h3 className="text-2xl font-bold mb-3 text-primary">
-                              Drop Here
-                            </h3>
-                            <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
-                              Release to add this element to your form
-                            </p>
-                          </div>
-                        )}
-                        
                         {provided.placeholder}
                       </div>
                     )}
                   </Droppable>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Right Sidebar - Field Properties */}
-        <div className="w-72 bg-card border-l overflow-y-auto">
-          <div className="p-4">
-            <h3 className="text-base font-semibold mb-4 flex items-center">
-              <Settings className="w-4 h-4 mr-2" />
-              {t('formBuilder.fieldProperties' as any) || 'Field Properties'}
-            </h3>
-            
-            {selectedField ? (
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm flex items-center space-x-2">
-                    <div className="w-6 h-6 rounded bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white">
-                      {fieldTypes.find(f => f.type === selectedField.type)?.icon}
-                    </div>
-                    <span>{getFieldTypeLabel(selectedField.type)}</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-3">
-                  {renderFieldEditor()}
                 </CardContent>
               </Card>
-            ) : (
-              <div className="text-center py-12 space-y-3">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center mx-auto">
-                  <Palette className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-medium mb-1">{t('formBuilder.noFieldSelected' as any) || 'No Field Selected'}</h4> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {t('formBuilder.clickToCustomize' as any) || 'Click on a form field to customize its properties and settings'} {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
+            </div>
+          </div>
+
+          {/* Right Sidebar - Properties Panel */}
+          <div className={`w-80 bg-card border-l overflow-y-auto transition-all duration-300 ${
+            selectedField ? 'block' : 'hidden lg:block'
+          }`}>
+            <div className="p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold">
+                  {selectedField ? t('formBuilder.fieldProperties' as any) || 'Field Properties' : t('formBuilder.noFieldSelected' as any) || 'Select a field'}
+                </h3>
+                {selectedField && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="lg:hidden"
+                    onClick={() => setSelectedField(null)}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+              
+              {selectedField ? renderFieldEditor() : (
+                <div className="text-center py-8">
+                  <Settings className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-sm text-muted-foreground">
+                    {t('formBuilder.selectFieldToEdit' as any) || 'Select a field to edit its properties'}
                   </p>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
         </div>
       </DragDropContext>
     </div>

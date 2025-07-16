@@ -313,6 +313,38 @@
       "desktop": "Desktop",
       "tablet": "Tablet",
       "mobile": "Mobil"
-    }
+    },
+    "mobilePreview": {
+      "newForm": "Neues Formular",
+      "contactForm": "Kontaktformular",
+      "description": "Dies ist eine Vorschau Ihres Formulars auf mobilen Geräten",
+      "fields": {
+        "name": "Name",
+        "email": "E-Mail",
+        "message": "Nachricht"
+      },
+      "placeholders": {
+        "name": "Geben Sie Ihren Namen ein",
+        "email": "Geben Sie Ihre E-Mail ein",
+        "message": "Geben Sie Ihre Nachricht ein"
+      },
+      "banner": {
+        "title": "Formular-Erstellung funktioniert am besten auf Desktop",
+        "description": "Sie sehen eine mobile Vorschau. Für volle Bearbeitungsfunktionen verwenden Sie bitte einen Desktop oder Laptop.",
+        "recommendation": "Empfohlen: Desktop oder Laptop (1024px+ Bildschirm)"
+      },
+      "previewLabel": "Mobile Vorschau",
+      "submitButton": "Formular absenden (Vorschau)",
+      "whyDesktop": {
+        "title": "Warum Desktop?",
+        "dragDrop": "Drag-and-Drop Formular-Erstellung",
+        "customization": "Erweiterte Feldanpassung",
+        "panels": "Mehrere Panels und Symbolleisten",
+        "positioning": "Präzise Positionierung und Größenbestimmung"
+      }
+    },
+    "emptyCanvas": "Beginnen Sie mit der Erstellung Ihres Formulars",
+    "emptyCanvasDescription": "Fügen Sie Formularelemente aus der Seitenleiste hinzu oder klicken Sie auf die Schaltfläche oben, um zu beginnen.",
+    "selectFieldToEdit": "Wählen Sie ein Feld aus, um dessen Eigenschaften zu bearbeiten"
   }
 } 

@@ -307,6 +307,38 @@
       "desktop": "Desktop",
       "tablet": "Tablet",
       "mobile": "Mobile"
-    }
+    },
+    "mobilePreview": {
+      "newForm": "New Form",
+      "contactForm": "Contact Form",
+      "description": "This is a preview of your form on mobile devices",
+      "fields": {
+        "name": "Name",
+        "email": "Email",
+        "message": "Message"
+      },
+      "placeholders": {
+        "name": "Enter your name",
+        "email": "Enter your email",
+        "message": "Enter your message"
+      },
+      "banner": {
+        "title": "Form Building Works Best on Desktop",
+        "description": "You're viewing a mobile preview. For full editing capabilities, please use a desktop or laptop computer.",
+        "recommendation": "Recommended: Desktop or laptop (1024px+ screen)"
+      },
+      "previewLabel": "Mobile Preview",
+      "submitButton": "Submit Form (Preview)",
+      "whyDesktop": {
+        "title": "Why Desktop?",
+        "dragDrop": "Drag-and-drop form building",
+        "customization": "Advanced field customization",
+        "panels": "Multiple panels and toolbars",
+        "positioning": "Precise positioning and sizing"
+      }
+    },
+    "emptyCanvas": "Start building your form",
+    "emptyCanvasDescription": "Add form elements from the sidebar or click the button above to get started.",
+    "selectFieldToEdit": "Select a field to edit its properties"
   }
 } 

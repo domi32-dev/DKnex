@@ -211,45 +211,57 @@ export function FormsContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
             onClick={() => setShowCreateForm(false)}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-card rounded-lg shadow-xl p-8 max-w-2xl w-full"
+              className="bg-card rounded-lg shadow-xl p-3 sm:p-4 md:p-6 lg:p-8 w-[95vw] max-w-[350px] sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[85vh] overflow-y-auto mx-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-3xl font-bold text-foreground mb-4">{t('forms.createNewForm' as const)}</h2>
-              <p className="text-muted-foreground mb-8">Choose the type of form you want to create</p>
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2 sm:mb-3 md:mb-4">
+                {t('forms.createNewForm' as const)}
+              </h2>
+              <p className="text-muted-foreground mb-4 sm:mb-6 md:mb-8 text-xs sm:text-sm md:text-base">
+                Choose the type of form you want to create
+              </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                 <Card 
-                  className="p-6 hover:border-primary/50 transition-colors cursor-pointer hover:shadow-lg" 
+                  className="p-3 sm:p-4 md:p-6 hover:border-primary/50 transition-colors cursor-pointer hover:shadow-lg" 
                   onClick={() => handleCreateForm(true)}
                 >
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white mb-4">
-                    <FormInput className="w-6 h-6" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white mb-2 sm:mb-3 md:mb-4">
+                    <FormInput className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Responsive Form</h3>
-                  <p className="text-muted-foreground">Create a form that adapts to different screen sizes</p>
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2">Responsive Form</h3>
+                  <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
+                    Create a form that adapts to different screen sizes
+                  </p>
                 </Card>
                 
                 <Card 
-                  className="p-6 hover:border-primary/50 transition-colors cursor-pointer hover:shadow-lg" 
+                  className="p-3 sm:p-4 md:p-6 hover:border-primary/50 transition-colors cursor-pointer hover:shadow-lg" 
                   onClick={() => handleCreateForm(false)}
                 >
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white mb-4">
-                    <FormInput className="w-6 h-6" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white mb-2 sm:mb-3 md:mb-4">
+                    <FormInput className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Desktop Only</h3>
-                  <p className="text-muted-foreground">Create a form optimized for desktop viewing</p>
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2">Desktop Only</h3>
+                  <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
+                    Create a form optimized for desktop viewing
+                  </p>
                 </Card>
               </div>
 
-              <div className="flex justify-end gap-4 mt-8">
-                <Button variant="outline" onClick={() => setShowCreateForm(false)}>
+              <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-3 md:gap-4 mt-4 sm:mt-6 md:mt-8">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowCreateForm(false)}
+                  className="w-full sm:w-auto text-sm sm:text-base"
+                >
                   Cancel
                 </Button>
               </div>

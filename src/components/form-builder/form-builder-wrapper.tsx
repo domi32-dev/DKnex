@@ -2,6 +2,12 @@
 
 import { ModernFormBuilder } from './modern-form-builder';
 import { use, useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Monitor, Smartphone, AlertCircle } from 'lucide-react';
+import { useTranslation } from '@/i18n/translations';
 
 interface FormBuilderWrapperProps {
   params: Promise<{
@@ -15,11 +21,25 @@ interface FormBuilderWrapperProps {
 export function FormBuilderWrapper({ params, searchParams }: FormBuilderWrapperProps) {
   const resolvedParams = use(params);
   const resolvedSearchParams = use(searchParams);
+  const { t } = useTranslation();
   
   const isNew = resolvedParams.formId === 'new';
   const isResponsive = resolvedSearchParams.responsive === 'true';
   const [initialFields, setInitialFields] = useState<any[]>([]); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [isLoading, setIsLoading] = useState(!isNew);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Load existing form data if not new
   useEffect(() => {
@@ -217,22 +237,129 @@ export function FormBuilderWrapper({ params, searchParams }: FormBuilderWrapperP
     // });
   };
 
+  // Mobile Preview Component
+  const MobilePreview = () => {
+    const sampleForm = {
+      name: isNew ? (t('formBuilder.mobilePreview.newForm' as any) || 'New Form') : (t('formBuilder.mobilePreview.contactForm' as any) || 'Contact Form'),
+      description: t('formBuilder.mobilePreview.description' as any) || 'This is a preview of your form on mobile devices',
+      fields: initialFields.length > 0 ? initialFields : [
+        { id: '1', type: 'text', label: t('formBuilder.mobilePreview.fields.name' as any) || 'Name', required: true, placeholder: t('formBuilder.mobilePreview.placeholders.name' as any) || 'Enter your name' },
+        { id: '2', type: 'email', label: t('formBuilder.mobilePreview.fields.email' as any) || 'Email', required: true, placeholder: t('formBuilder.mobilePreview.placeholders.email' as any) || 'Enter your email' },
+        { id: '3', type: 'textarea', label: t('formBuilder.mobilePreview.fields.message' as any) || 'Message', required: false, placeholder: t('formBuilder.mobilePreview.placeholders.message' as any) || 'Enter your message' },
+      ]
+    };
+
+    return (
+      <div className="min-h-screen p-4 space-y-6">
+        {/* Desktop Recommendation Banner */}
+        <Card className="border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+              <div className="space-y-2">
+                <h3 className="font-semibold text-amber-800 dark:text-amber-200">
+                  {t('formBuilder.mobilePreview.banner.title' as any) || 'Form Building Works Best on Desktop'}
+                </h3>
+                <p className="text-sm text-amber-700 dark:text-amber-300">
+                  {t('formBuilder.mobilePreview.banner.description' as any) || 'You\'re viewing a mobile preview. For full editing capabilities, please use a desktop or laptop computer.'}
+                </p>
+                <div className="flex items-center gap-2 mt-2">
+                  <Monitor className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <span className="text-xs text-amber-600 dark:text-amber-400">
+                    {t('formBuilder.mobilePreview.banner.recommendation' as any) || 'Recommended: Desktop or laptop (1024px+ screen)'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Form Preview */}
+        <Card className="shadow-lg">
+          <CardHeader className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Smartphone className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium text-muted-foreground">
+                {t('formBuilder.mobilePreview.previewLabel' as any) || 'Mobile Preview'}
+              </span>
+            </div>
+            <CardTitle className="text-xl">{sampleForm.name}</CardTitle>
+            <p className="text-muted-foreground text-sm">{sampleForm.description}</p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {sampleForm.fields.map((field: any) => (
+              <div key={field.id} className="space-y-2">
+                <Label htmlFor={field.id} className="text-sm font-medium">
+                  {field.label}
+                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                </Label>
+                {field.type === 'textarea' ? (
+                  <textarea
+                    id={field.id}
+                    placeholder={field.placeholder}
+                    className="w-full px-3 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent min-h-[100px] resize-vertical text-sm"
+                    disabled
+                  />
+                ) : (
+                  <Input
+                    id={field.id}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    className="text-sm"
+                    disabled
+                  />
+                )}
+              </div>
+            ))}
+            
+            <Button className="w-full mt-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white" disabled>
+              {t('formBuilder.mobilePreview.submitButton' as any) || 'Submit Form (Preview)'}
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Help Text */}
+        <Card>
+          <CardContent className="p-4">
+            <h4 className="font-medium mb-2">{t('formBuilder.mobilePreview.whyDesktop.title' as any) || 'Why Desktop?'}</h4>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li>• {t('formBuilder.mobilePreview.whyDesktop.dragDrop' as any) || 'Drag-and-drop form building'}</li>
+              <li>• {t('formBuilder.mobilePreview.whyDesktop.customization' as any) || 'Advanced field customization'}</li>
+              <li>• {t('formBuilder.mobilePreview.whyDesktop.panels' as any) || 'Multiple panels and toolbars'}</li>
+              <li>• {t('formBuilder.mobilePreview.whyDesktop.positioning' as any) || 'Precise positioning and sizing'}</li>
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading form...</p>
+      <div className="min-h-screen p-6 space-y-8 max-w-full overflow-hidden">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">{t('formBuilder.loading' as any) || 'Loading form...'}</p>
+          </div>
         </div>
       </div>
     );
   }
 
+  // Show mobile preview on mobile devices
+  if (isMobile) {
+    return <MobilePreview />;
+  }
+
+  // Show full form builder on desktop
   return (
-    <ModernFormBuilder
-      formId={isNew ? undefined : resolvedParams.formId}
-      initialFields={initialFields}
-      onSave={handleSave}
-    />
+    <div className="min-h-screen p-6 space-y-8 max-w-full overflow-hidden">
+      <ModernFormBuilder
+        formId={isNew ? undefined : resolvedParams.formId}
+        initialFields={initialFields}
+        onSave={handleSave}
+      />
+    </div>
   );
 } 

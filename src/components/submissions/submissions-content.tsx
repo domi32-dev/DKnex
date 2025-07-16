@@ -232,7 +232,7 @@ export function SubmissionsContent() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="min-h-screen p-6 space-y-8 max-w-full overflow-hidden">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -293,7 +293,7 @@ export function SubmissionsContent() {
       </div>
 
       {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-4 md:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
@@ -304,7 +304,7 @@ export function SubmissionsContent() {
           />
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
             variant={statusFilter === "all" ? "default" : "outline"}
             size="sm"
@@ -356,10 +356,10 @@ export function SubmissionsContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors gap-4"
               >
-                <div className="flex items-center gap-4 flex-1">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold">
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold flex-shrink-0">
                     {submission.submitterName.charAt(0)}
                   </div>
                   
@@ -368,37 +368,37 @@ export function SubmissionsContent() {
                       <h4 className="font-semibold truncate">{submission.submitterName}</h4>
                       {renderStars(submission.rating)}
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Mail className="w-3 h-3" />
-                        {submission.submitterEmail}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1 truncate">
+                        <Mail className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{submission.submitterEmail}</span>
                       </span>
-                      <span className="flex items-center gap-1">
-                        <FormInput className="w-3 h-3" />
-                        {submission.formName}
+                      <span className="flex items-center gap-1 truncate">
+                        <FormInput className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{submission.formName}</span>
                       </span>
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
+                      <span className="flex items-center gap-1 whitespace-nowrap">
+                        <Calendar className="w-3 h-3 flex-shrink-0" />
                         {formatDate(submission.submittedAt)}
                       </span>
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-2">
-                    <Badge className={getStatusColor(submission.status)}>
-                      {getStatusIcon(submission.status)}
-                      <span className="ml-1 capitalize">{submission.status}</span>
-                    </Badge>
-                    
-                    {submission.attachments && submission.attachments.length > 0 && (
-                      <Badge variant="outline" className="text-xs">
-                        {submission.attachments.length} {t('submissions.files' as const)}
-                      </Badge>
-                    )}
-                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 ml-4">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge className={getStatusColor(submission.status)}>
+                    {getStatusIcon(submission.status)}
+                    <span className="ml-1 capitalize">{submission.status}</span>
+                  </Badge>
+                  
+                  {submission.attachments && submission.attachments.length > 0 && (
+                    <Badge variant="outline" className="text-xs">
+                      {submission.attachments.length} {t('submissions.files' as const)}
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
                     size="sm"
@@ -451,7 +451,7 @@ export function SubmissionsContent() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <span className="text-sm font-medium text-muted-foreground">{t('submissions.form' as const)}</span>
                   <p className="font-semibold">{selectedSubmission.formName}</p>
@@ -481,7 +481,7 @@ export function SubmissionsContent() {
                     <span className="text-sm font-medium text-muted-foreground capitalize">
                       {key.replace(/([A-Z])/g, ' $1').trim()}
                     </span>
-                    <p className="font-medium">{String(value)}</p>
+                    <p className="font-medium break-words">{String(value)}</p>
                   </div>
                 ))}
               </div>
@@ -492,7 +492,7 @@ export function SubmissionsContent() {
                   {selectedSubmission.attachments.map((file, index) => (
                     <div key={index} className="flex items-center gap-2 p-2 border rounded">
                       <FileText className="w-4 h-4" />
-                      <span className="flex-1">{file}</span>
+                      <span className="flex-1 truncate">{file}</span>
                       <Button variant="outline" size="sm">
                         <Download className="w-4 h-4" />
                       </Button>

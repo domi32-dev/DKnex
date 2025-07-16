@@ -1,5 +1,6 @@
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { FormBuilderWrapper } from "@/components/form-builder/form-builder-wrapper";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 
 interface PageProps {
   params: Promise<{
@@ -21,7 +22,8 @@ export async function generateMetadata({ params }: { params: Promise<{ formId: s
 export default function FormBuilderPage({ params, searchParams }: PageProps) {
   return (
     <DashboardShell>
-      <div className="w-full max-w-none">
+      <AuroraBackground className="fixed inset-0 w-full h-full z-0">{null}</AuroraBackground>
+      <div className="relative z-10">
         <FormBuilderWrapper params={params} searchParams={searchParams} />
       </div>
     </DashboardShell>

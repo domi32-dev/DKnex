@@ -337,7 +337,7 @@ export function ProfileContent() {
               </div>
             ) : isDemoUserAccount ? (
               <div className="text-sm text-amber-600 dark:text-amber-400 font-medium">
-                Password changes are disabled for demo users. This is a portfolio demonstration account.
+                Password changes are disabled for demo users.
               </div>
             ) : (
               <form onSubmit={handlePasswordSubmit} className="space-y-6">
@@ -401,7 +401,7 @@ export function ProfileContent() {
           <CardContent>
             {isDemoUserAccount ? (
               <div className="text-sm text-amber-600 dark:text-amber-400 font-medium">
-                Two-Factor Authentication is disabled for demo users. This is a portfolio demonstration account.
+                Two-Factor Authentication is disabled for demo users.
               </div>
             ) : (
               <TwoFactorSetup />

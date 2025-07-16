@@ -10,7 +10,7 @@
 
 ## 🌟 Live Demo & Portfolio
 
-**🚀 [Live Demo](https://d-knex.vercel.app/)** | **📊 [Portfolio](https://dk-dev.com)** | **💼 [LinkedIn](https://linkedin.com/in/dominik-kinzel)**
+**🚀 [Live Demo](https://dknex.vercel.app/)** | **📊 [Portfolio](https://dk-dev.com)** | **💼 [LinkedIn](https://linkedin.com/in/dominik-kinzel)**
 
 > **Demo Credentials**: `demo@dknex.com` / `Demo123!@#` (2FA disabled for demo)
 
