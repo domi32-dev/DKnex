@@ -22,5 +22,19 @@ export default function manifest(): MetadataRoute.Manifest {
         type: 'image/png',
       },
     ],
+    screenshots: [
+      {
+        src: '/screenshots/dknex-appmanifest.png',
+        sizes: '1280x720',
+        type: 'image/png',
+        form_factor: 'wide',
+      },
+      {
+        src: '/screenshots/dknex-appmanifest-mobile.png',
+        sizes: '540x720',
+        type: 'image/png',
+        form_factor: 'narrow',
+      },
+    ],
   };
 } 
