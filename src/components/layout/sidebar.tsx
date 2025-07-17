@@ -3,7 +3,6 @@
 import {
    Home,
    BarChart2,
-   Settings,
    ChevronLeft,
    ChevronRight,
    Menu,
@@ -204,42 +203,6 @@ export const Sidebar = ({
                   );
                })}
             </nav>
-
-            {/* Settings section at bottom */}
-            <div className={cn(
-               "absolute bottom-0 w-full p-4 border-t border-blue-400/10",
-               // Mobile specific styling
-               isMobile && "relative p-6 border-t border-blue-400/20 bg-gradient-to-r from-blue-50/30 to-purple-50/30 dark:from-blue-900/10 dark:to-purple-900/10"
-            )}>
-               <Link
-                  href="/settings"
-                  className={cn(
-                     "flex items-center text-sm font-medium rounded-xl transition-all duration-200",
-                     "hover:bg-blue-100/50 dark:hover:bg-blue-900/30",
-                     "active:scale-[0.98]",
-                     // Fixed active state styling for both modes
-                     pathname === '/settings' ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-900 dark:text-white border border-blue-200/50 dark:border-blue-700/50" : "text-blue-900/70 dark:text-white/70",
-                     // Better spacing for different modes
-                     effectiveCollapsed && !isMobile ? "justify-center p-3" : "gap-3 px-4 py-3",
-                     // Mobile specific styling
-                     isMobile && "px-4 py-4 shadow-sm hover:shadow-md"
-                  )}
-                  onClick={() => isMobile && setIsMobileOpen(false)}
-               >
-                  <Settings className={cn(
-                     "h-5 w-5 shrink-0 transition-colors",
-                     pathname === '/settings' ? "text-blue-900 dark:text-white" : "text-blue-900/70 dark:text-white/70"
-                  )} />
-                  {(!effectiveCollapsed || isMobile) && (
-                     <span className={cn(
-                        "truncate transition-opacity duration-200",
-                        pathname === '/settings' ? "font-semibold" : "font-medium"
-                     )}>
-                        {t('navigation.settings')}
-                     </span>
-                  )}
-               </Link>
-            </div>
          </aside>
       </>
    );

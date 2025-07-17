@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { User, Lock, Image as ImageIcon, AlertCircle } from "lucide-react";
+import { User, Lock, Image as ImageIcon, AlertCircle, Shield, Mail, Camera } from "lucide-react";
 import { TwoFactorSetup } from './two-factor-setup';
 import { isDemoUser, getDemoMessage } from '@/lib/demo-config';
+import { useTranslation } from '@/i18n/translations';
 
 // Sanitize user input for display
 const sanitizeUserInput = (input: string | null | undefined): string => {
@@ -31,6 +32,7 @@ const isValidAvatarUrl = (url: string | null | undefined): boolean => {
 
 export function ProfileContent() {
   const { data: session } = useSession();
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: session?.user?.name || "",
@@ -57,18 +59,25 @@ export function ProfileContent() {
     : null;
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isDemoUserAccount) return; // Prevent editing for demo users
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isDemoUserAccount) return; // Prevent editing for demo users
     const { name, value } = e.target;
     setPasswordData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isDemoUserAccount) {
+      setError(t('profile.profileImageEditingDisabled'));
+      return;
+    }
+    
     if (isGoogleUser) {
-      setError("Profile image is managed by Google");
+      setError(t('profile.profileImageManagedByGoogle'));
       return;
     }
 
@@ -78,13 +87,13 @@ export function ProfileContent() {
     // Validate file size (max 5MB)
     const maxSize = 5 * 1024 * 1024; // 5MB in bytes
     if (file.size > maxSize) {
-      setError("Image size must be less than 5MB");
+      setError(t('profile.imageSizeTooLarge'));
       return;
     }
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      setError("File must be an image");
+      setError(t('profile.fileMustBeImage'));
       return;
     }
 
@@ -101,7 +110,7 @@ export function ProfileContent() {
 
       if (!uploadResponse.ok) {
         const data = await uploadResponse.json();
-        throw new Error(data.error || 'Failed to upload image');
+        throw new Error(data.error || t('profile.failedToUploadImage'));
       }
 
       const { url } = await uploadResponse.json();
@@ -109,12 +118,17 @@ export function ProfileContent() {
       // Update form data with the new image URL
       setFormData(prev => ({ ...prev, image: url }));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to upload image. Please try again.");
+      setError(err instanceof Error ? err.message : t('profile.failedToUploadImage'));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isDemoUserAccount) {
+      setError(t('profile.profileEditingDisabled'));
+      return;
+    }
+    
     setError("");
     setSuccess("");
 
@@ -133,29 +147,34 @@ export function ProfileContent() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to update profile');
+        throw new Error(data.error || t('profile.failedToUpdateProfile'));
       }
 
       const data = await response.json();
-      setSuccess(data.message || "Profile updated successfully!");
+      setSuccess(data.message || t('profile.profileUpdated'));
       setIsEditing(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update profile. Please try again.");
+      setError(err instanceof Error ? err.message : t('profile.failedToUpdateProfile'));
     }
   };
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isDemoUserAccount) {
+      setError(t('profile.passwordChangesDisabled'));
+      return;
+    }
+    
     setError("");
     setSuccess("");
 
     if (isGoogleUser) {
-      setError("Password cannot be changed for Google accounts");
+      setError(t('profile.passwordManagedByGoogle'));
       return;
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setError("New passwords do not match");
+      setError(t('profile.passwordsDoNotMatch'));
       return;
     }
 
@@ -173,27 +192,27 @@ export function ProfileContent() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to update password');
+        throw new Error(data.error || t('profile.failedToUpdatePassword'));
       }
 
-      setSuccess("Password updated successfully!");
+      setSuccess(t('profile.passwordUpdated'));
       setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update password. Please try again.");
+      setError(err instanceof Error ? err.message : t('profile.failedToUpdatePassword'));
     }
   };
 
   return (
-    <div className="min-h-screen p-6 space-y-10">
+    <div className="space-y-6">
       {/* Demo User Warning */}
       {isDemoUserAccount && (
-        <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
-              Demo Account
+              {t('common.demoAccount')}
             </p>
-            <p className="text-xs text-amber-700 dark:text-amber-300">
+            <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
               {getDemoMessage('profileEditDisabled')}
             </p>
           </div>
@@ -201,213 +220,294 @@ export function ProfileContent() {
       )}
 
       {/* Profile Header */}
-               <div className="relative w-full h-56 rounded-3xl overflow-hidden flex items-end bg-gradient-to-br from-blue-900/80 via-indigo-900/70 to-purple-900/80 shadow-2xl border border-blue-400/20 backdrop-blur-xl">
-        <div className="absolute inset-0 pointer-events-none z-0">
-                      <div className="w-full h-full bg-gradient-to-br from-blue-400/20 via-purple-400/10 to-transparent blur-2xl" />
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        {/* Avatar Section */}
+        <div className="relative">
+          <div className="relative">
+            <Avatar className="h-20 w-20 md:h-24 md:w-24 border-4 border-gray-200 dark:border-gray-600">
+              {safeUserImage ? (
+                <AvatarImage 
+                  src={safeUserImage} 
+                  alt={safeUserName || 'User'}
+                  referrerPolicy="no-referrer"
+                />
+              ) : null}
+              <AvatarFallback className="text-2xl md:text-3xl font-bold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                {safeUserName ? safeUserName[0].toUpperCase() : 'U'}
+              </AvatarFallback>
+            </Avatar>
+            {isEditing && !isGoogleUser && !isDemoUserAccount && (
+              <Button
+                size="sm"
+                className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full p-0 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-lg border border-gray-200 dark:border-gray-600"
+                onClick={() => document.getElementById('image-upload')?.click()}
+              >
+                <Camera className="h-4 w-4" />
+                <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+              </Button>
+            )}
+          </div>
         </div>
-        <div className="relative z-10 flex items-end gap-6 px-10 pb-8">
-          <Avatar className="h-24 w-24 border-4 border-white/30 shadow-2xl bg-white/10 backdrop-blur-xl ring-2 ring-blue-400/30 hover:scale-105 transition-transform duration-200">
-            {safeUserImage ? (
-              <AvatarImage 
-                src={safeUserImage} 
-                alt={safeUserName || 'User'}
-                referrerPolicy="no-referrer"
-              />
-            ) : null}
-            <AvatarFallback className="text-3xl font-bold text-blue-900/80 dark:text-white/80 bg-white/30 dark:bg-blue-900/30">{safeUserName ? safeUserName[0].toUpperCase() : 'U'}</AvatarFallback>
-          </Avatar>
-          <div className="pb-2">
-            <div className="text-3xl font-extrabold text-white drop-shadow-lg tracking-tight">{safeUserName || 'Unknown User'}</div>
-            <div className="text-base text-blue-100/90 drop-shadow font-light">{safeUserEmail || 'No Email'}</div>
+
+        {/* User Info */}
+        <div className="text-center md:text-left">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            {safeUserName || t('common.unknownUser')}
+          </h1>
+          <div className="flex flex-col md:flex-row items-center md:items-center gap-2 md:gap-4 text-gray-600 dark:text-gray-400">
+            <div className="flex items-center gap-2">
+              <Mail className="h-4 w-4" />
+              <span className="text-sm md:text-base">{safeUserEmail || t('common.noEmail')}</span>
+            </div>
             {isGoogleUser && (
-              <div className="text-xs text-blue-200/80 mt-1 font-medium">Google Account</div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-sm">{t('common.googleAccount')}</span>
+              </div>
+            )}
+            {isDemoUserAccount && (
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                <span className="text-sm">{t('common.demoAccount')}</span>
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Profile Settings */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Profile Information */}
-        <Card className="rounded-3xl border-0 bg-white/70 dark:bg-[#23263a]/80 backdrop-blur-xl border border-blue-400/10 shadow-xl dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.65)] hover:shadow-2xl transition-all duration-200">
-          <CardHeader className="flex flex-row items-center gap-3 pb-2">
-            <User className="text-blue-500 w-6 h-6" />
-            <CardTitle className="text-xl font-bold text-blue-900 dark:text-white">Profile Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold">Name</label>
-                <Input
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  disabled={!isEditing || isDemoUserAccount}
-                  className="bg-white/80 dark:bg-[#23263a]/80 border border-blue-200/30 dark:border-blue-900/30"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold">Email</label>
-                <Input
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  disabled={!isEditing || isGoogleUser || isDemoUserAccount}
-                  className="bg-white/80 dark:bg-[#23263a]/80 border border-blue-200/30 dark:border-blue-900/30"
-                />
-                {isGoogleUser && (
-                  <p className="text-xs text-blue-400 mt-1">Email is managed by Google</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold">Profile Image</label>
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-14 w-14 border-2 border-blue-400/30 bg-white/30 dark:bg-blue-900/30">
-                    {formData.image ? (
-                      <AvatarImage 
-                        src={formData.image} 
-                        alt={formData.name || 'User'}
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : null}
-                    <AvatarFallback className="text-xl font-bold text-blue-900/80 dark:text-white/80">{formData.name?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
-                  </Avatar>
-                  {isEditing && !isGoogleUser && !isDemoUserAccount && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="relative border-blue-400/30"
-                      onClick={() => document.getElementById('image-upload')?.click()}
-                    >
-                      <ImageIcon className="h-4 w-4 mr-2" />
-                      Change Image
-                      <input
-                        id="image-upload"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleImageChange}
-                      />
-                    </Button>
-                  )}
-                  {isGoogleUser && (
-                    <p className="text-xs text-blue-400">Profile image is managed by Google</p>
-                  )}
-                  {isDemoUserAccount && (
-                    <p className="text-xs text-amber-600 dark:text-amber-400">Profile image editing is disabled for demo users</p>
-                  )}
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Profile Information - Takes 2 columns on large screens */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Profile Information Card */}
+          <Card>
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
+                <CardTitle className="text-xl font-semibold">{t('profile.profileInformation')}</CardTitle>
               </div>
-              {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
-              {success && <p className="text-green-500 text-sm font-medium">{success}</p>}
-              <div className="flex justify-end gap-2">
-                {isEditing ? (
-                  <>
-                    <Button type="button" variant="outline" className="border-blue-400/30" onClick={() => setIsEditing(false)}>
-                      Cancel
-                    </Button>
-                    <Button type="submit" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200">Save Changes</Button>
-                  </>
-                ) : (
-                  <Button 
-                    type="button" 
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200" 
-                    onClick={() => setIsEditing(true)}
-                    disabled={isDemoUserAccount}
-                  >
-                    {isDemoUserAccount ? 'Edit Disabled' : 'Edit Profile'}
-                  </Button>
-                )}
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {t('profile.fullName')}
+                    </label>
+                    <Input
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      disabled={!isEditing || isDemoUserAccount}
+                      placeholder={t('profile.enterFullName')}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {t('profile.emailAddress')}
+                    </label>
+                    <Input
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      disabled={!isEditing || isGoogleUser || isDemoUserAccount}
+                      placeholder={t('profile.enterEmail')}
+                    />
+                    {isGoogleUser && (
+                      <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                        {t('profile.emailManagedByGoogle')}
+                      </p>
+                    )}
+                    {isDemoUserAccount && (
+                      <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                        {t('profile.emailEditingDisabled')}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-        {/* Password Settings */}
-        <Card className="rounded-3xl border-0 bg-white/70 dark:bg-[#23263a]/80 backdrop-blur-xl border border-blue-400/10 shadow-xl dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.65)] hover:shadow-2xl transition-all duration-200">
-          <CardHeader className="flex flex-row items-center gap-3 pb-2">
-            <Lock className="text-blue-500 w-6 h-6" />
-            <CardTitle className="text-xl font-bold text-blue-900 dark:text-white">Password Settings</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isGoogleUser ? (
-              <div className="text-sm text-blue-400 font-medium">
-                Password settings are managed by Google. To change your password, please visit your Google Account settings.
-              </div>
-            ) : isDemoUserAccount ? (
-              <div className="text-sm text-amber-600 dark:text-amber-400 font-medium">
-                Password changes are disabled for demo users.
-              </div>
-            ) : (
-              <form onSubmit={handlePasswordSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold">Current Password</label>
-                  <Input
-                    name="currentPassword"
-                    type="password"
-                    value={passwordData.currentPassword}
-                    onChange={handlePasswordChange}
-                    disabled={isDemoUserAccount}
-                    className="bg-white/80 dark:bg-[#23263a]/80 border border-blue-200/30 dark:border-blue-900/30"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold">New Password</label>
-                  <Input
-                    name="newPassword"
-                    type="password"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                    disabled={isDemoUserAccount}
-                    className="bg-white/80 dark:bg-[#23263a]/80 border border-blue-200/30 dark:border-blue-900/30"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold">Confirm New Password</label>
-                  <Input
-                    name="confirmPassword"
-                    type="password"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    disabled={isDemoUserAccount}
-                    className="bg-white/80 dark:bg-[#23263a]/80 border border-blue-200/30 dark:border-blue-900/30"
-                  />
-                </div>
-                {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
-                {success && <p className="text-green-500 text-sm font-medium">{success}</p>}
-                <div className="flex justify-end">
-                  <Button 
-                    type="submit" 
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold shadow-md hover:scale-105 transition-transform duration-200"
-                    disabled={isDemoUserAccount}
-                  >
-                    {isDemoUserAccount ? 'Update Disabled' : 'Update Password'}
-                  </Button>
+                {/* Error and Success Messages */}
+                {error && (
+                  <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                  </div>
+                )}
+                {success && (
+                  <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                    <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  {isEditing ? (
+                    <>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => setIsEditing(false)}
+                        className="flex-1 sm:flex-none"
+                      >
+                        {t('common.cancel')}
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        className="flex-1 sm:flex-none"
+                      >
+                        {t('profile.saveChanges')}
+                      </Button>
+                    </>
+                  ) : (
+                    <Button 
+                      type="button" 
+                      onClick={() => setIsEditing(true)}
+                      disabled={isDemoUserAccount}
+                      className="flex-1 sm:flex-none"
+                    >
+                      {isDemoUserAccount ? t('common.editDisabled') : t('profile.editProfile')}
+                    </Button>
+                  )}
                 </div>
               </form>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
 
-      {/* Add Two-Factor Authentication section */}
-      <div className="mt-8">
-        <Card className="rounded-3xl border-0 bg-white/70 dark:bg-[#23263a]/80 backdrop-blur-xl border border-blue-400/10 shadow-xl dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.65)] hover:shadow-2xl transition-all duration-200">
-          <CardHeader className="flex flex-row items-center gap-3 pb-2">
-            <Lock className="text-blue-500 w-6 h-6" />
-            <CardTitle className="text-xl font-bold text-blue-900 dark:text-white">Two-Factor Authentication</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isDemoUserAccount ? (
-              <div className="text-sm text-amber-600 dark:text-amber-400 font-medium">
-                Two-Factor Authentication is disabled for demo users.
+          {/* Two-Factor Authentication */}
+          <Card>
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                  <Shield className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
+                <CardTitle className="text-xl font-semibold">{t('profile.twoFactorAuth')}</CardTitle>
               </div>
-            ) : (
-              <TwoFactorSetup />
-            )}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              {isDemoUserAccount ? (
+                <div className="space-y-3">
+                  <div className="text-sm text-amber-600 dark:text-amber-400 font-medium">
+                    {t('profile.twoFactorDisabled')}
+                  </div>
+                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <p className="text-xs text-amber-700 dark:text-amber-300">
+                      {t('profile.twoFactorDisabledMessage')}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <TwoFactorSetup />
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Password Settings - Takes 1 column on large screens */}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                  <Lock className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                </div>
+                <CardTitle className="text-xl font-semibold">{t('profile.passwordSettings')}</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {isGoogleUser ? (
+                <div className="space-y-3">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {t('profile.passwordManagedByGoogle')}
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => window.open('https://myaccount.google.com/security', '_blank')}
+                  >
+                    {t('profile.goToGoogleAccount')}
+                  </Button>
+                </div>
+              ) : isDemoUserAccount ? (
+                <div className="space-y-3">
+                  <div className="text-sm text-amber-600 dark:text-amber-400 font-medium">
+                    {t('profile.passwordChangesDisabled')}
+                  </div>
+                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <p className="text-xs text-amber-700 dark:text-amber-300">
+                      {t('profile.passwordDisabledMessage')}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {t('profile.currentPassword')}
+                    </label>
+                    <Input
+                      name="currentPassword"
+                      type="password"
+                      value={passwordData.currentPassword}
+                      onChange={handlePasswordChange}
+                      placeholder={t('profile.enterCurrentPassword')}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {t('profile.newPassword')}
+                    </label>
+                    <Input
+                      name="newPassword"
+                      type="password"
+                      value={passwordData.newPassword}
+                      onChange={handlePasswordChange}
+                      placeholder={t('profile.enterNewPassword')}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {t('profile.confirmNewPassword')}
+                    </label>
+                    <Input
+                      name="confirmPassword"
+                      type="password"
+                      value={passwordData.confirmPassword}
+                      onChange={handlePasswordChange}
+                      placeholder={t('profile.confirmNewPassword')}
+                    />
+                  </div>
+                  
+                  {/* Error and Success Messages */}
+                  {error && (
+                    <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                      <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                    </div>
+                  )}
+                  {success && (
+                    <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                      <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
+                    </div>
+                  )}
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full"
+                  >
+                    {t('profile.updatePassword')}
+                  </Button>
+                </form>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

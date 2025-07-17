@@ -173,15 +173,15 @@ export function TemplatesContent() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer group">
+                <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer group h-full">
                   <CardHeader className="pb-2">
                     <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${template.color} flex items-center justify-center text-white mb-3`}>
                       {template.icon}
                     </div>
                     <CardTitle className="text-lg">{template.name}</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <p className="text-sm text-muted-foreground line-clamp-2">
+                  <CardContent className="space-y-3 flex-1 flex flex-col">
+                    <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
                       {template.description}
                     </p>
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -192,7 +192,7 @@ export function TemplatesContent() {
                     </div>
                     <Button
                       size="sm"
-                      className="w-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                       onClick={() => handleUseTemplate(template.id)}
                     >
                       {t('templates.useTemplate' as const)}
