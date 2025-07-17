@@ -64,7 +64,6 @@ export const renderIcon = (iconName: string, className = "w-4 h-4") => {
   const IconComponent = iconMap[iconName as keyof typeof iconMap];
   if (!IconComponent) return null;
   
-  const React = require('react');
   return React.createElement(IconComponent, { className });
 };
 
