@@ -461,7 +461,7 @@ export function SubmissionsContent() {
                   <p className="font-semibold">{formatDate(selectedSubmission.submittedAt)}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-medium text-muted-foreground">{t('submissions.status' as const)}</span>
+                  <span className="text-sm font-medium text-muted-foreground">Status</span>
                   <Badge className={getStatusColor(selectedSubmission.status)}>
                     {selectedSubmission.status}
                   </Badge>
