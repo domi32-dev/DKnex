@@ -1,6 +1,6 @@
 // app/api/auth/route.ts
 import { NextResponse } from 'next/server';
-import { PrismaClient, Prisma } from '.prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { randomUUID } from 'crypto';
 import { sendVerificationEmail } from '@/lib/email';

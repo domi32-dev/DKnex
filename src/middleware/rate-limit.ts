@@ -11,6 +11,9 @@ interface RateLimitStore {
 // In-memory store for rate limiting
 const store: RateLimitStore = {};
 
+// Export for testing
+export const _store = store;
+
 // Rate limit configuration
 const RATE_LIMIT_MAX = 5; // Maximum attempts
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute window

@@ -1,14 +1,17 @@
 "use client";
 
 import React from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import { AlertTriangle, RefreshCw, Home, Bug, Copy } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+// Note: Install sonner for toast notifications: npm install sonner
+// import { toast } from 'sonner';
 
 interface ErrorBoundaryState {
   hasError: boolean;
   error: Error | null;
   errorInfo: React.ErrorInfo | null;
+  errorId: string | null;
 }
 
 interface ErrorBoundaryProps {
@@ -24,6 +27,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       hasError: false,
       error: null,
       errorInfo: null,
+      errorId: null,
     };
   }
 
@@ -31,6 +35,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     return {
       hasError: true,
       error,
+      errorId: `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     };
   }
 
@@ -50,6 +55,11 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       console.error('Error caught by boundary:', error);
       console.error('Error info:', errorInfo);
     }
+
+    // In production, you could send to error reporting service
+    if (process.env.NODE_ENV === 'production') {
+      // Example: sendToErrorReportingService(error, errorInfo, this.state.errorId);
+    }
   }
 
   reset = () => {
@@ -57,7 +67,23 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       hasError: false,
       error: null,
       errorInfo: null,
+      errorId: null,
     });
+  };
+
+  copyErrorDetails = () => {
+    const errorDetails = {
+      errorId: this.state.errorId,
+      message: this.state.error?.message,
+      stack: this.state.error?.stack,
+      componentStack: this.state.errorInfo?.componentStack,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      url: window.location.href,
+    };
+
+    navigator.clipboard.writeText(JSON.stringify(errorDetails, null, 2));
+    // toast.success('Error details copied to clipboard');
   };
 
   render() {
@@ -68,8 +94,8 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <Card className="w-full max-w-md">
+        <div className="min-h-screen flex items-center justify-center bg-background p-4">
+          <Card className="w-full max-w-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-destructive">
                 <AlertTriangle className="w-5 h-5" />
@@ -78,22 +104,45 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                We&apos;re sorry, but something unexpected happened. Please try refreshing the page or go back to the homepage.
+                We&apos;re sorry, but something unexpected happened. Our team has been notified and is working to fix this issue.
               </p>
+              
+              {this.state.errorId && (
+                <div className="bg-muted p-3 rounded-lg">
+                  <p className="text-sm font-mono text-muted-foreground">
+                    Error ID: {this.state.errorId}
+                  </p>
+                </div>
+              )}
               
               {process.env.NODE_ENV === 'development' && this.state.error && (
                 <details className="text-sm">
-                  <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+                  <summary className="cursor-pointer text-muted-foreground hover:text-foreground flex items-center gap-2">
+                    <Bug className="w-4 h-4" />
                     Error details (dev only)
                   </summary>
-                  <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-auto">
-                    {this.state.error.toString()}
-                    {this.state.errorInfo?.componentStack}
-                  </pre>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-muted-foreground">Error details for debugging:</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={this.copyErrorDetails}
+                        className="h-6 px-2"
+                      >
+                        <Copy className="w-3 h-3 mr-1" />
+                        Copy
+                      </Button>
+                    </div>
+                    <pre className="p-2 bg-muted rounded text-xs overflow-auto max-h-40">
+                      {this.state.error.toString()}
+                      {this.state.errorInfo?.componentStack}
+                    </pre>
+                  </div>
                 </details>
               )}
               
-              <div className="flex gap-2">
+              <div className="flex gap-2 pt-2">
                 <Button onClick={this.reset} variant="outline" className="flex-1">
                   <RefreshCw className="w-4 h-4 mr-2" />
                   Try Again
