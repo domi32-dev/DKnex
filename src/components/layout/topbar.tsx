@@ -7,9 +7,12 @@ import { Search } from "@/components/ui/search";
 import { LanguageSelector } from "@/components/ui/language-selector";
 import { Notifications } from "@/components/ui/notifications";
 import { useTranslation } from "@/i18n/translations";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import type { Notification } from "@/components/ui/notifications";
 
-export const Topbar = () => {
+export const Topbar = ({ showBackButton = false }: { showBackButton?: boolean }) => {
    const { language, setLanguage, t } = useTranslation();
    const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -65,6 +68,18 @@ export const Topbar = () => {
 
    return (
       <header className="relative sticky top-0 z-30 h-16 border-b/10 bg-white/30 dark:bg-[#23263a]/30 backdrop-blur-xl overflow-hidden">
+         {/* Back button (left side) */}
+         {showBackButton && (
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 z-20">
+               <Link href="/forms">
+                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                     <ArrowLeft className="w-4 h-4" />
+                     Back to Forms
+                  </Button>
+               </Link>
+            </div>
+         )}
+
          {/* Centered search bar (desktop only) */}
          <div className="hidden md:flex absolute left-0 right-0 top-1/2 -translate-y-1/2 justify-center pointer-events-none min-w-0 z-10">
             <div className="pointer-events-auto w-full max-w-xs md:max-w-sm lg:max-w-md mx-auto">

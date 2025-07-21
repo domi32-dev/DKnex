@@ -9,6 +9,10 @@ import {
    Calendar,
    X as XIcon,
    FormInput,
+   User,
+   Settings,
+   BarChart3,
+   CalendarDays,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -40,6 +44,17 @@ export const Sidebar = ({
       { label: t('navigation.submissions'), icon: <Calendar />, href: '/submissions' },
    ];
 
+   // Additional navigation sections
+   const accountItems = [
+      { label: t('common.profile'), icon: <User />, href: '/profile' },
+      { label: t('navigation.settings'), icon: <Settings />, href: '/settings' },
+   ];
+
+   const toolsItems = [
+      { label: 'Analytics', icon: <BarChart3 />, href: '/analytics' },
+      { label: 'Calendar', icon: <CalendarDays />, href: '/calendar' },
+   ];
+
    // On mobile, always show expanded sidebar
    const effectiveCollapsed = isMobile ? false : collapsed;
 
@@ -69,7 +84,7 @@ export const Sidebar = ({
          <aside
             className={cn(
                "fixed left-0 top-0 h-screen border-r border-blue-400/10 bg-white/70 dark:bg-[#23263a]/80 backdrop-blur-xl shadow-2xl dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.65)] transition-all duration-300",
-               effectiveCollapsed ? "w-20" : "w-80",
+               effectiveCollapsed ? "w-20" : "w-64",
                isMobile
                   ? isMobileOpen
                      ? "block z-60 w-full bg-white/95 dark:bg-[#23263a]/95" // Better mobile background
@@ -166,6 +181,7 @@ export const Sidebar = ({
                // Mobile specific styling
                isMobile && "p-6 space-y-3 flex-1 overflow-y-auto"
             )}>
+               {/* Main Navigation */}
                {navItems.map((item) => {
                   const isActive = pathname === item.href;
                   return (
@@ -202,6 +218,128 @@ export const Sidebar = ({
                      </Link>
                   );
                })}
+
+               {/* Section Divider */}
+               {(!effectiveCollapsed || isMobile) && (
+                  <div className="border-t border-blue-400/10 my-4" />
+               )}
+
+               {/* Account Section */}
+               {(!effectiveCollapsed || isMobile) && (
+                  <div className="px-2">
+                     <h4 className="text-xs font-semibold text-blue-900/50 dark:text-white/50 mb-2 uppercase tracking-wide">
+                        Account
+                     </h4>
+                  </div>
+               )}
+               
+               {accountItems.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                     <Link
+                        href={item.href}
+                        key={item.label}
+                        className={cn(
+                           "flex items-center text-sm font-medium rounded-xl transition-all duration-200",
+                           "hover:bg-blue-100/50 dark:hover:bg-blue-900/30",
+                           "active:scale-[0.98]",
+                           isActive ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-900 dark:text-white border border-blue-200/50 dark:border-blue-700/50" : "text-blue-900/70 dark:text-white/70",
+                           effectiveCollapsed && !isMobile ? "justify-center p-3" : "gap-3 px-4 py-3",
+                           isMobile && "px-4 py-4 shadow-sm hover:shadow-md"
+                        )}
+                        onClick={() => isMobile && setIsMobileOpen(false)}
+                     >
+                        <span className={cn(
+                           "h-5 w-5 shrink-0 transition-colors",
+                           isActive ? "text-blue-900 dark:text-white" : "text-blue-900/70 dark:text-white/70"
+                        )}>
+                           {item.icon}
+                        </span>
+                        {(!effectiveCollapsed || isMobile) && (
+                           <span className={cn(
+                              "truncate transition-opacity duration-200",
+                              isActive ? "font-semibold" : "font-medium"
+                           )}>
+                              {item.label}
+                           </span>
+                        )}
+                     </Link>
+                  );
+               })}
+
+               {/* Section Divider */}
+               {(!effectiveCollapsed || isMobile) && (
+                  <div className="border-t border-blue-400/10 my-4" />
+               )}
+
+               {/* Tools Section */}
+               {(!effectiveCollapsed || isMobile) && (
+                  <div className="px-2">
+                     <h4 className="text-xs font-semibold text-blue-900/50 dark:text-white/50 mb-2 uppercase tracking-wide">
+                        Tools
+                     </h4>
+                  </div>
+               )}
+               
+               {toolsItems.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                     <Link
+                        href={item.href}
+                        key={item.label}
+                        className={cn(
+                           "flex items-center text-sm font-medium rounded-xl transition-all duration-200",
+                           "hover:bg-blue-100/50 dark:hover:bg-blue-900/30",
+                           "active:scale-[0.98]",
+                           isActive ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-900 dark:text-white border border-blue-200/50 dark:border-blue-700/50" : "text-blue-900/70 dark:text-white/70",
+                           effectiveCollapsed && !isMobile ? "justify-center p-3" : "gap-3 px-4 py-3",
+                           isMobile && "px-4 py-4 shadow-sm hover:shadow-md"
+                        )}
+                        onClick={() => isMobile && setIsMobileOpen(false)}
+                     >
+                        <span className={cn(
+                           "h-5 w-5 shrink-0 transition-colors",
+                           isActive ? "text-blue-900 dark:text-white" : "text-blue-900/70 dark:text-white/70"
+                        )}>
+                           {item.icon}
+                        </span>
+                        {(!effectiveCollapsed || isMobile) && (
+                           <span className={cn(
+                              "truncate transition-opacity duration-200",
+                              isActive ? "font-semibold" : "font-medium"
+                           )}>
+                              {item.label}
+                           </span>
+                        )}
+                     </Link>
+                  );
+               })}
+
+               {/* Quick Stats at Bottom */}
+               {(!effectiveCollapsed || isMobile) && (
+                  <>
+                     <div className="border-t border-blue-400/10 my-4" />
+                     <div className="px-2 space-y-2">
+                        <h4 className="text-xs font-semibold text-blue-900/50 dark:text-white/50 mb-2 uppercase tracking-wide">
+                           Quick Stats
+                        </h4>
+                        <div className="space-y-1 text-xs text-blue-900/60 dark:text-white/60">
+                           <div className="flex justify-between">
+                              <span>Total Forms:</span>
+                              <span className="font-medium">12</span>
+                           </div>
+                           <div className="flex justify-between">
+                              <span>This Week:</span>
+                              <span className="font-medium text-green-600">+3</span>
+                           </div>
+                           <div className="flex justify-between">
+                              <span>Submissions:</span>
+                              <span className="font-medium">1,247</span>
+                           </div>
+                        </div>
+                     </div>
+                  </>
+               )}
             </nav>
          </aside>
       </>

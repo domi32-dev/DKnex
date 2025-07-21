@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Monitor, Smartphone, AlertCircle } from 'lucide-react';
 import { useTranslation } from '@/i18n/translations';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 interface FormBuilderWrapperProps {
   params: Promise<{
@@ -354,7 +356,7 @@ export function FormBuilderWrapper({ params, searchParams }: FormBuilderWrapperP
 
   // Show full form builder on desktop
   return (
-    <div className="min-h-screen p-6 space-y-8 max-w-full overflow-hidden">
+    <div className="min-h-screen">
       <ModernFormBuilder
         formId={isNew ? undefined : resolvedParams.formId}
         initialFields={initialFields}

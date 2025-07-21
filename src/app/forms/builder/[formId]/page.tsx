@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ formId: s
 
 export default function FormBuilderPage({ params, searchParams }: PageProps) {
   return (
-    <DashboardShell>
+    <DashboardShell hideSidebar>
       <AuroraBackground className="fixed inset-0 w-full h-full z-0">{null}</AuroraBackground>
       <div className="relative z-10">
         <FormBuilderWrapper params={params} searchParams={searchParams} />

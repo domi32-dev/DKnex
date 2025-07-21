@@ -12,7 +12,7 @@ import AuthLayout from "@/components/layout/auth-layout";
 import { cn } from "@/lib/utils";
 import { isFeatureDisabled, getDemoMessage } from '@/lib/demo-config';
 
-export const DashboardShell = ({ children }: { children: ReactNode }) => {
+export const DashboardShell = ({ children, hideSidebar = false }: { children: ReactNode; hideSidebar?: boolean }) => {
    const [collapsed, setCollapsed] = useState(() => {
       if (typeof window !== "undefined") {
          return localStorage.getItem("sidebar-collapsed") === "true";
@@ -110,16 +110,18 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
    return (
       <div className="min-h-screen text-foreground">
          {/* Sidebar: visible on desktop, toggled on mobile */}
-         <Sidebar
-            collapsed={collapsed}
-            setCollapsed={setCollapsed}
-            isMobile={isMobile}
-            isMobileOpen={isMobileOpen}
-            setIsMobileOpen={setIsMobileOpen}
-         />
+         {!hideSidebar && (
+           <Sidebar
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
+              isMobile={isMobile}
+              isMobileOpen={isMobileOpen}
+              setIsMobileOpen={setIsMobileOpen}
+           />
+         )}
 
          {/* Overlay (mobile only): closes sidebar when clicked */}
-         {isMobile && isMobileOpen && (
+         {!hideSidebar && isMobile && isMobileOpen && (
             <div
                className="fixed inset-0 bg-black/50 z-30 backdrop-blur-sm transition-opacity"
                onClick={() => setIsMobileOpen(false)}
@@ -130,11 +132,14 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
          <div
             className={cn(
                "flex flex-col min-h-screen transition-all duration-300",
-               isMobile ? "ml-0" : collapsed ? "ml-16" : "ml-80"
+               isMobile || hideSidebar ? "ml-0" : collapsed ? "ml-16" : "ml-64"
             )}
          >
-            <Topbar />
-            <main className="flex-1 w-full max-w-[1800px] mx-auto px-6 py-4">
+            <Topbar showBackButton={hideSidebar} />
+            <main className={cn(
+               "flex-1 w-full mx-auto",
+               hideSidebar ? "max-w-none px-0 py-0" : "max-w-[1400px] px-6 py-4"
+            )}>
                {/* Main content rendered here */}
                {children}
             </main>
