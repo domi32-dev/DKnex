@@ -85,7 +85,9 @@ export function FormsContent() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">{t('forms.title' as const)}</h1>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+            {t('forms.title' as const)}
+          </h1>
           <p className="text-muted-foreground mt-1">
             {t('forms.subtitle' as const)}
           </p>
@@ -107,10 +109,13 @@ export function FormsContent() {
             placeholder={t('forms.search' as const)}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400/30"
           />
         </div>
-        <Button variant="outline">
+        <Button 
+          variant="ghost" 
+          className="bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+        >
           <Filter className="w-4 h-4 mr-2" />
           {t('forms.filter' as const)}
         </Button>
@@ -125,8 +130,14 @@ export function FormsContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <Card className="hover:shadow-lg transition-all duration-200 group">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+            <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+              {/* Animated gradient background for glassy effect */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 group-hover:from-blue-500/20 group-hover:to-purple-500/20 transition-opacity pointer-events-none"
+                animate={{ opacity: [1, 0.95, 1] }}
+                transition={{ duration: 8, repeat: Infinity }}
+              />
+              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 relative z-10">
                 <div className="space-y-1 flex-1">
                   <CardTitle className="text-xl font-bold flex items-center gap-2">
                     <FormInput className="w-5 h-5 text-primary" />
@@ -140,7 +151,7 @@ export function FormsContent() {
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 relative z-10">
                 <p className="text-sm text-muted-foreground">
                   {form.description}
                 </p>
@@ -157,23 +168,25 @@ export function FormsContent() {
                 <div className="flex items-center gap-2 pt-2">
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant="ghost"
                     onClick={() => router.push(`/forms/builder/${form.id}`)}
-                    className="flex-1"
+                    className="flex-1 bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md hover:bg-blue-100/30 dark:hover:bg-blue-900/20 text-foreground"
                   >
                     <Edit className="w-4 h-4 mr-1" />
                     {t('forms.edit' as const)}
                   </Button>
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant="ghost"
                     onClick={() => router.push(`/forms/${form.id}/preview`)}
+                    className="bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md hover:bg-blue-100/30 dark:hover:bg-blue-900/20 text-foreground"
                   >
                     <Eye className="w-4 h-4" />
                   </Button>
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant="ghost"
+                    className="bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md hover:bg-blue-100/30 dark:hover:bg-blue-900/20 text-foreground"
                   >
                     <Copy className="w-4 h-4" />
                   </Button>
