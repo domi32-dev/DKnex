@@ -24,7 +24,7 @@ import {
   Star,
   MessageSquare,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/i18n/translations";
 
 interface Submission {
@@ -236,8 +236,8 @@ export function SubmissionsContent() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <FileText className="w-8 h-8 text-primary" />
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent flex items-center gap-3">
+            <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
             {t('submissions.title' as const)}
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -245,11 +245,14 @@ export function SubmissionsContent() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            className="bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+          >
             <Download className="w-4 h-4 mr-2" />
             Export CSV
           </Button>
-          <Button>
+          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg text-white">
             <Filter className="w-4 h-4 mr-2" />
             Advanced Filter
           </Button>
@@ -265,10 +268,16 @@ export function SubmissionsContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: index * 0.1 }}
           >
-            <Card className="relative overflow-hidden hover:shadow-lg transition-all duration-300">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-2xl -translate-y-16 translate-x-16" />
+            <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+              {/* Animated gradient background for glassy effect */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 transition-opacity pointer-events-none group-hover:from-blue-500/20 group-hover:to-purple-500/20"
+                animate={{ opacity: [1, 0.95, 1] }}
+                transition={{ duration: 8, repeat: Infinity }}
+                whileHover={{ opacity: 0.15 }}
+              />
               
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
                 <div className="space-y-1">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
                     {stat.title}
@@ -295,12 +304,12 @@ export function SubmissionsContent() {
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row gap-4 md:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 w-4 h-4 z-10" />
           <Input
             placeholder={t('submissions.searchPlaceholder' as const)}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400/30"
           />
         </div>
         
@@ -309,6 +318,10 @@ export function SubmissionsContent() {
             variant={statusFilter === "all" ? "default" : "outline"}
             size="sm"
             onClick={() => setStatusFilter("all")}
+            className={statusFilter === "all" 
+              ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg" 
+              : "bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+            }
           >
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {t('submissions.status.all' as any)}
@@ -317,6 +330,10 @@ export function SubmissionsContent() {
             variant={statusFilter === "new" ? "default" : "outline"}
             size="sm"
             onClick={() => setStatusFilter("new")}
+            className={statusFilter === "new" 
+              ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg" 
+              : "bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+            }
           >
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {t('submissions.status.new' as any)}
@@ -325,6 +342,10 @@ export function SubmissionsContent() {
             variant={statusFilter === "reviewed" ? "default" : "outline"}
             size="sm"
             onClick={() => setStatusFilter("reviewed")}
+            className={statusFilter === "reviewed" 
+              ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg" 
+              : "bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+            }
           >
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {t('submissions.status.reviewed' as any)}
@@ -333,6 +354,10 @@ export function SubmissionsContent() {
             variant={statusFilter === "responded" ? "default" : "outline"}
             size="sm"
             onClick={() => setStatusFilter("responded")}
+            className={statusFilter === "responded" 
+              ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg" 
+              : "bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+            }
           >
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {t('submissions.status.responded' as any)}
@@ -341,14 +366,21 @@ export function SubmissionsContent() {
       </div>
 
       {/* Submissions Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
+      <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md relative overflow-hidden group">
+        {/* Animated gradient background for glassy effect */}
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 transition-opacity pointer-events-none group-hover:from-blue-500/20 group-hover:to-purple-500/20"
+          animate={{ opacity: [1, 0.95, 1] }}
+          transition={{ duration: 8, repeat: Infinity }}
+          whileHover={{ opacity: 0.15 }}
+        />
+        <CardHeader className="relative z-10">
+          <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+            <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             {t('submissions.recentSubmissions' as const)} ({filteredSubmissions.length})
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="relative z-10">
           <div className="space-y-4">
             {filteredSubmissions.map((submission, index) => (
               <motion.div
@@ -356,7 +388,7 @@ export function SubmissionsContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors gap-4"
+                className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg bg-white/40 dark:bg-slate-800/40 border-blue-200/30 dark:border-blue-800/30 backdrop-blur-sm hover:bg-blue-100/30 dark:hover:bg-blue-900/20 transition-all duration-200 gap-4 group"
               >
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold flex-shrink-0">
@@ -403,13 +435,22 @@ export function SubmissionsContent() {
                     variant="outline"
                     size="sm"
                     onClick={() => setSelectedSubmission(submission)}
+                    className="bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
                   >
                     <Eye className="w-4 h-4" />
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+                  >
                     <MessageSquare className="w-4 h-4" />
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+                  >
                     <MoreVertical className="w-4 h-4" />
                   </Button>
                 </div>
@@ -419,38 +460,67 @@ export function SubmissionsContent() {
 
           {filteredSubmissions.length === 0 && (
             <div className="text-center py-12">
-              <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">{t('submissions.noSubmissionsFound' as const)}</h3>
-              <p className="text-muted-foreground">
-                {searchTerm || statusFilter !== "all" 
-                  ? t('submissions.tryAdjusting' as const)
-                  : t('submissions.noSubmissionsMessage' as const)}
-              </p>
+              <div className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md rounded-2xl p-8 max-w-md mx-auto relative overflow-hidden">
+                {/* Animated gradient background */}
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 pointer-events-none"
+                  animate={{ opacity: [1, 0.95, 1] }}
+                  transition={{ duration: 8, repeat: Infinity }}
+                />
+                <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4 relative z-10" />
+                <h3 className="text-xl font-semibold mb-2 relative z-10">{t('submissions.noSubmissionsFound' as const)}</h3>
+                <p className="text-muted-foreground relative z-10">
+                  {searchTerm || statusFilter !== "all" 
+                    ? t('submissions.tryAdjusting' as const)
+                    : t('submissions.noSubmissionsMessage' as const)}
+                </p>
+              </div>
             </div>
           )}
         </CardContent>
       </Card>
 
       {/* Submission Detail Modal */}
-      {selectedSubmission && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <Card className="w-full max-w-2xl max-h-[80vh] overflow-y-auto">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  {selectedSubmission.submitterName}
-                </CardTitle>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSelectedSubmission(null)}
-                >
-                  ×
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
+      <AnimatePresence>
+        {selectedSubmission && (
+          <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedSubmission(null)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Card className="w-full max-w-2xl max-h-[80vh] overflow-y-auto bg-white/80 dark:bg-slate-900/80 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-xl relative overflow-hidden">
+              {/* Animated gradient overlay */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 pointer-events-none rounded-2xl"
+                animate={{ opacity: [1, 0.95, 1] }}
+                transition={{ duration: 8, repeat: Infinity }}
+              />
+              <CardHeader className="relative z-10">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                    <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    {selectedSubmission.submitterName}
+                  </CardTitle>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedSubmission(null)}
+                    className="bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+                  >
+                    ×
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <span className="text-sm font-medium text-muted-foreground">{t('submissions.form' as const)}</span>
@@ -493,17 +563,23 @@ export function SubmissionsContent() {
                     <div key={index} className="flex items-center gap-2 p-2 border rounded">
                       <FileText className="w-4 h-4" />
                       <span className="flex-1 truncate">{file}</span>
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+                      >
                         <Download className="w-4 h-4" />
                       </Button>
                     </div>
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </div>
-      )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 } 

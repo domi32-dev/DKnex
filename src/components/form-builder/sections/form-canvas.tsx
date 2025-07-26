@@ -16,9 +16,13 @@ import {
   GripVertical, 
   Copy, 
   Trash2, 
-  GitBranch 
+  GitBranch,
+  ChevronLeft,
+  ChevronRight,
+  Edit2,
+  X
 } from 'lucide-react';
-import { FormField } from '../types';
+import { FormField, FormPage, CustomFieldType } from '../types';
 import { FieldRenderer } from './field-renderer';
 import { groupFieldsIntoRows, getFieldWidthClass } from '../utils';
 
@@ -27,6 +31,10 @@ interface FormCanvasProps {
   selectedField: FormField | null;
   currentTheme: string;
   isInlineEditing: string | null;
+  isMultiStep: boolean;
+  pages: FormPage[];
+  currentPage: string;
+  formValues?: Record<string, any>;
   onDragEnd: (result: DropResult) => void;
   onSelectField: (field: FormField) => void;
   onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
@@ -34,8 +42,14 @@ interface FormCanvasProps {
   onDuplicateField: (field: FormField) => void;
   onStartInlineEdit: (fieldId: string) => void;
   onFinishInlineEdit: (fieldId: string, newLabel: string) => void;
+  onFormValueChange?: (fieldId: string, value: any) => void;
   onAddField: (type: FormField['type']) => void;
   onShowOnboarding: () => void;
+  onAddPage: () => void;
+  onDeletePage: (pageId: string) => void;
+  onUpdatePageTitle: (pageId: string, title: string) => void;
+  onSwitchToPage: (pageId: string) => void;
+  customFieldTypes?: CustomFieldType[];
 }
 
 export function FormCanvas({
@@ -43,6 +57,10 @@ export function FormCanvas({
   selectedField,
   currentTheme,
   isInlineEditing,
+  isMultiStep,
+  pages,
+  currentPage,
+  formValues = {},
   onDragEnd,
   onSelectField,
   onUpdateField,
@@ -50,20 +68,28 @@ export function FormCanvas({
   onDuplicateField,
   onStartInlineEdit,
   onFinishInlineEdit,
+  onFormValueChange,
   onAddField,
-  onShowOnboarding
+  onShowOnboarding,
+  onAddPage,
+  onDeletePage,
+  onUpdatePageTitle,
+  onSwitchToPage,
+  customFieldTypes = []
 }: FormCanvasProps) {
   const inlineEditRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className="flex-1 overflow-y-auto p-4">
       <div className="h-full">
-        <Card className="h-full">
+        <Card className="h-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-lg rounded-2xl">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                  <Wand2 className="w-5 h-5" />
+                <CardTitle className="text-lg font-semibold flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                  <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                    <Wand2 className="w-5 h-5 text-white" />
+                  </div>
                   Form Builder Canvas
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">Design your form by adding and arranging elements</p>
@@ -78,6 +104,60 @@ export function FormCanvas({
               </div>
             </div>
           </CardHeader>
+          
+          {/* Multi-step Navigation */}
+          {isMultiStep && (
+            <div className="border-t border-b bg-gradient-to-r from-blue-500/5 to-purple-500/5 px-6 py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm font-medium text-muted-foreground">Pages:</span>
+                  <div className="flex items-center space-x-2">
+                    {pages.map((page, index) => (
+                      <div key={page.id} className="flex items-center space-x-1">
+                        <Button
+                          variant={currentPage === page.id ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => onSwitchToPage(page.id)}
+                          className={`flex items-center gap-2 ${
+                            currentPage === page.id 
+                              ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white" 
+                              : "hover:bg-muted"
+                          }`}
+                        >
+                          <span>{page.title}</span>
+                          <Badge variant="secondary" className="text-xs">
+                            {fields.filter(f => f.pageId === page.id).length}
+                          </Badge>
+                        </Button>
+                        {pages.length > 1 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => onDeletePage(page.id)}
+                            className="p-1 h-6 w-6 hover:bg-destructive hover:text-destructive-foreground"
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onAddPage}
+                    className="flex items-center gap-1"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Page
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <CardContent className="p-4 h-[calc(100%-80px)]">
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="form-fields">
@@ -85,11 +165,11 @@ export function FormCanvas({
                   <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    className={`min-h-[200px] p-4 border-2 border-dashed rounded-lg transition-all duration-200 ${
-                      snapshot.isDraggingOver
-                        ? 'border-primary bg-primary/5'
-                        : 'border-muted-foreground/25 hover:border-muted-foreground/50'
-                    }`}
+                                         className={`min-h-[200px] p-4 border-2 border-dashed rounded-lg transition-all duration-200 ${
+                       snapshot.isDraggingOver
+                         ? 'border-blue-400 bg-blue-500/15 backdrop-blur-sm'
+                         : 'border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 bg-white/20 dark:bg-slate-800/20'
+                     }`}
                   >
                     {fields.length === 0 ? (
                       <div className="text-center py-12">
@@ -102,10 +182,9 @@ export function FormCanvas({
                         </p>
                         <div className="flex items-center justify-center gap-2">
                           <Button
-                            variant="outline"
                             size="sm"
                             onClick={() => onAddField('text')}
-                            className="flex items-center gap-1"
+                            className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
                           >
                             <Plus className="w-4 h-4" />
                             Add Text Field
@@ -114,7 +193,7 @@ export function FormCanvas({
                             variant="outline"
                             size="sm"
                             onClick={onShowOnboarding}
-                            className="flex items-center gap-1"
+                                                         className="flex items-center gap-1 bg-white/70 dark:bg-slate-700/70 border border-slate-300 dark:border-slate-600 backdrop-blur-sm hover:bg-white/90 dark:hover:bg-slate-700/90"
                           >
                             <Play className="w-4 h-4" />
                             Quick Tour
@@ -153,7 +232,7 @@ export function FormCanvas({
                                       >
                                         <div className="flex items-start justify-between h-full">
                                           <div className="flex-1 space-y-2">
-                                            {!['heading', 'paragraph', 'divider'].includes(field.type) && (
+                                                                                         {!['heading', 'paragraph', 'divider', 'custom'].includes(field.type) && (
                                               <div className="flex items-center gap-2">
                                                 {isInlineEditing === field.id ? (
                                                   <Input
@@ -191,7 +270,13 @@ export function FormCanvas({
                                                 )}
                                               </div>
                                             )}
-                                            <FieldRenderer field={field} isPreview={false} />
+                                                                                         <FieldRenderer 
+                                              field={field} 
+                                              isPreview={false} 
+                                              formValues={formValues}
+                                              onValueChange={onFormValueChange}
+                                              customFieldTypes={customFieldTypes} 
+                                            />
                                           </div>
                                           
                                           <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity ml-4">

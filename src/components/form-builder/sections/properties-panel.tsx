@@ -17,12 +17,16 @@ import {
 } from 'lucide-react';
 import { FormField } from '../types';
 
+
 interface PropertiesPanelProps {
   selectedField: FormField | null;
   onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
   onDeselectField: () => void;
   showLogicBuilder: boolean;
   setShowLogicBuilder: (show: boolean) => void;
+  allFields: FormField[];
+  onShowNotification: (message: string) => void;
+  onOpenFieldLogicEditor: (field: FormField) => void;
 }
 
 export function PropertiesPanel({
@@ -30,7 +34,10 @@ export function PropertiesPanel({
   onUpdateField,
   onDeselectField,
   showLogicBuilder,
-  setShowLogicBuilder
+  setShowLogicBuilder,
+  allFields,
+  onShowNotification,
+  onOpenFieldLogicEditor
 }: PropertiesPanelProps) {
   const updateField = (updates: Partial<FormField>) => {
     if (selectedField) {
@@ -165,8 +172,7 @@ export function PropertiesPanel({
               onCheckedChange={(checked) => updateField({
                 conditionalLogic: {
                   enabled: checked,
-                  conditions: selectedField.conditionalLogic?.conditions || [],
-                  action: selectedField.conditionalLogic?.action || 'show'
+                  rules: selectedField.conditionalLogic?.rules || []
                 }
               })}
             />
@@ -176,30 +182,16 @@ export function PropertiesPanel({
             <div className="p-3 bg-muted/30 rounded-lg space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">
-                  This field will be {selectedField.conditionalLogic.action}n when conditions are met
+                  {selectedField.conditionalLogic.rules?.length || 0} rule(s) configured
                 </span>
-                <Dialog open={showLogicBuilder} onOpenChange={setShowLogicBuilder}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <GitBranch className="w-4 h-4 mr-1" />
-                      Edit Rules
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-2xl">
-                    <DialogHeader>
-                      <DialogTitle>Conditional Logic Builder</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <p className="text-sm text-muted-foreground">
-                        Configure when this field should be shown, hidden, required, or disabled.
-                      </p>
-                      <div className="p-4 bg-muted/30 rounded-lg text-center">
-                        <GitBranch className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">Visual logic builder coming soon</p>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => onOpenFieldLogicEditor(selectedField)}
+                >
+                  <GitBranch className="w-4 h-4 mr-1" />
+                  Edit Rules
+                </Button>
               </div>
             </div>
           )}
@@ -287,18 +279,22 @@ export function PropertiesPanel({
             />
           </div>
         </div>
+
+
       </div>
     );
   };
 
   return (
-    <div className={`w-80 bg-card border-l overflow-y-auto transition-all duration-300 ${
+    <div className={`w-80 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-l border-slate-200 dark:border-slate-700 overflow-y-auto transition-all duration-300 ${
       selectedField ? 'block' : 'hidden lg:block'
     }`}>
       <div className="p-4 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold flex items-center gap-2">
-            <Settings className="w-5 h-5" />
+          <h3 className="text-lg font-bold flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+              <Settings className="w-5 h-5 text-white" />
+            </div>
             {selectedField ? 'Field Properties' : 'Properties'}
           </h3>
           {selectedField && (

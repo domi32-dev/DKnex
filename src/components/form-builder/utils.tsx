@@ -25,10 +25,15 @@ import {
   Target,
   Users,
   Zap,
-  Crown
+  Crown,
+  Brain,
+  Sparkles,
+  Wand2,
+  Bot,
+  Code
 } from 'lucide-react';
 
-import { FormField } from './types';
+import { FormField, LogicRule } from './types';
 
 // Icon mapping for rendering
 const iconMap = {
@@ -97,7 +102,14 @@ export const getFieldIcon = (type: string) => {
     repeating: () => <Copy className="w-4 h-4" />,
     lookup: () => <Database className="w-4 h-4" />,
     payment: () => <CreditCard className="w-4 h-4" />,
-    location: () => <Target className="w-4 h-4" />
+    location: () => <Target className="w-4 h-4" />,
+    // AI-powered fields
+    'ai-text': () => <Brain className="w-4 h-4" />,
+    'ai-validation': () => <Sparkles className="w-4 h-4" />,
+    'ai-content': () => <Wand2 className="w-4 h-4" />,
+    'ai-assistant': () => <Bot className="w-4 h-4" />,
+    // Custom field
+    custom: () => <Code className="w-4 h-4" />
   };
   
   const iconFn = fieldIconMap[type] || (() => <Type className="w-4 h-4" />);
@@ -172,4 +184,103 @@ export const groupFieldTypesByCategory = (fieldTypes: any[]) => {
     acc[fieldType.category].push(fieldType);
     return acc;
   }, {} as Record<string, any[]>);
+};
+
+// NEW: Conditional Logic Utilities
+export const evaluateCondition = (
+  rule: LogicRule, 
+  triggerValue: any, 
+  allFields: FormField[]
+): boolean => {
+  const { triggerCondition, triggerValue: ruleValue } = rule;
+
+  // Convert values to strings for comparison
+  const trigger = String(triggerValue || '').toLowerCase();
+  const target = String(ruleValue || '').toLowerCase();
+
+  switch (triggerCondition) {
+    case 'equals':
+      return trigger === target;
+    case 'not_equals':
+      return trigger !== target;
+    case 'contains':
+      return trigger.includes(target);
+    case 'not_contains':
+      return !trigger.includes(target);
+    case 'greater_than':
+      return Number(triggerValue) > Number(ruleValue);
+    case 'less_than':
+      return Number(triggerValue) < Number(ruleValue);
+    case 'is_empty':
+      return !triggerValue || trigger === '';
+    case 'is_not_empty':
+      return triggerValue && trigger !== '';
+    default:
+      return false;
+  }
+};
+
+export const shouldFieldBeVisible = (
+  field: FormField, 
+  formValues: Record<string, any>, 
+  allFields: FormField[]
+): boolean => {
+  // If no conditional logic, field is always visible
+  if (!field.conditionalLogic?.enabled || !field.conditionalLogic.rules?.length) {
+    return true;
+  }
+
+  // Evaluate all rules for this field
+  const results = field.conditionalLogic.rules.map(rule => {
+    const triggerFieldValue = formValues[rule.triggerField];
+    return evaluateCondition(rule, triggerFieldValue, allFields);
+  });
+
+  // For now, ALL rules must be true for field to be visible
+  // You could make this configurable (ANY vs ALL)
+  return results.every(result => result);
+};
+
+export const getVisibleFields = (
+  fields: FormField[], 
+  formValues: Record<string, any>
+): FormField[] => {
+  return fields.filter(field => shouldFieldBeVisible(field, formValues, fields));
+};
+
+export const applyFieldLogicActions = (
+  field: FormField,
+  formValues: Record<string, any>,
+  allFields: FormField[]
+): Partial<FormField> => {
+  if (!field.conditionalLogic?.enabled || !field.conditionalLogic.rules?.length) {
+    return {};
+  }
+
+  const updates: Partial<FormField> = {};
+
+  field.conditionalLogic.rules.forEach(rule => {
+    const triggerFieldValue = formValues[rule.triggerField];
+    const conditionMet = evaluateCondition(rule, triggerFieldValue, allFields);
+
+    if (conditionMet) {
+      rule.actions.forEach(action => {
+        switch (action.action) {
+          case 'set_value':
+            // This would be handled by the form component
+            break;
+          case 'set_required':
+            updates.required = true;
+            break;
+          case 'set_optional':
+            updates.required = false;
+            break;
+          // show/hide handled by shouldFieldBeVisible
+          // enable/disable could be added as a field property
+        }
+      });
+    }
+  });
+
+  return updates;
 }; 

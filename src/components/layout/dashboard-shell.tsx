@@ -10,9 +10,15 @@ import Link from "next/link";
 import Image from "next/image";
 import AuthLayout from "@/components/layout/auth-layout";
 import { cn } from "@/lib/utils";
-import { isFeatureDisabled, getDemoMessage } from '@/lib/demo-config';
+import { isFeatureDisabled, getDemoMessage } from "@/lib/demo-config";
 
-export const DashboardShell = ({ children, hideSidebar = false }: { children: ReactNode; hideSidebar?: boolean }) => {
+export const DashboardShell = ({
+   children,
+   hideSidebar = false,
+}: {
+   children: ReactNode;
+   hideSidebar?: boolean;
+}) => {
    const [collapsed, setCollapsed] = useState(() => {
       if (typeof window !== "undefined") {
          return localStorage.getItem("sidebar-collapsed") === "true";
@@ -78,27 +84,37 @@ export const DashboardShell = ({ children, hideSidebar = false }: { children: Re
                   <Button
                      variant="outline"
                      className={`p-2 w-10 h-10 rounded-md flex items-center justify-center ${
-                        isFeatureDisabled('googleAuth') 
-                           ? 'cursor-not-allowed opacity-50' 
-                           : 'cursor-pointer'
+                        isFeatureDisabled("googleAuth")
+                           ? "cursor-not-allowed opacity-50"
+                           : "cursor-pointer"
                      }`}
                      onClick={() => {
-                        if (isFeatureDisabled('googleAuth')) {
-                           console.log(getDemoMessage('featureDisabled'));
+                        if (isFeatureDisabled("googleAuth")) {
+                           console.log(getDemoMessage("featureDisabled"));
                            return;
                         }
                         signIn("google");
                      }}
-                     disabled={isFeatureDisabled('googleAuth')}
-                     aria-label={isFeatureDisabled('googleAuth') ? 'Google Sign In (Demo Disabled)' : 'Sign in with Google'}
-                     title={isFeatureDisabled('googleAuth') ? 'Google Sign In disabled in demo mode' : 'Sign in using your Google account'}
+                     disabled={isFeatureDisabled("googleAuth")}
+                     aria-label={
+                        isFeatureDisabled("googleAuth")
+                           ? "Google Sign In (Demo Disabled)"
+                           : "Sign in with Google"
+                     }
+                     title={
+                        isFeatureDisabled("googleAuth")
+                           ? "Google Sign In disabled in demo mode"
+                           : "Sign in using your Google account"
+                     }
                   >
                      <Image
                         src="/google.svg"
                         alt="Google logo"
                         width={20}
                         height={20}
-                        className={`dark:invert-0 ${isFeatureDisabled('googleAuth') ? 'opacity-50' : ''}`}
+                        className={`dark:invert-0 ${
+                           isFeatureDisabled("googleAuth") ? "opacity-50" : ""
+                        }`}
                      />
                   </Button>
                </div>
@@ -111,13 +127,13 @@ export const DashboardShell = ({ children, hideSidebar = false }: { children: Re
       <div className="min-h-screen text-foreground">
          {/* Sidebar: visible on desktop, toggled on mobile */}
          {!hideSidebar && (
-           <Sidebar
-              collapsed={collapsed}
-              setCollapsed={setCollapsed}
-              isMobile={isMobile}
-              isMobileOpen={isMobileOpen}
-              setIsMobileOpen={setIsMobileOpen}
-           />
+            <Sidebar
+               collapsed={collapsed}
+               setCollapsed={setCollapsed}
+               isMobile={isMobile}
+               isMobileOpen={isMobileOpen}
+               setIsMobileOpen={setIsMobileOpen}
+            />
          )}
 
          {/* Overlay (mobile only): closes sidebar when clicked */}
@@ -136,10 +152,14 @@ export const DashboardShell = ({ children, hideSidebar = false }: { children: Re
             )}
          >
             <Topbar showBackButton={hideSidebar} />
-            <main className={cn(
-               "flex-1 w-full mx-auto",
-               hideSidebar ? "max-w-none px-0 py-0" : "max-w-[1400px] px-6 py-4"
-            )}>
+            <main
+               className={cn(
+                  "flex-1 w-full mx-auto",
+                  hideSidebar
+                     ? "max-w-none px-0 py-0"
+                     : "max-w-[1400px] px-6 py-4"
+               )}
+            >
                {/* Main content rendered here */}
                {children}
             </main>

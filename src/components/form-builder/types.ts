@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 export interface FormField {
   id: string;
-  type: 'text' | 'email' | 'number' | 'textarea' | 'select' | 'checkbox' | 'radio' | 'date' | 'phone' | 'url' | 'file' | 'rating' | 'toggle' | 'divider' | 'heading' | 'paragraph' | 'signature' | 'richtext' | 'matrix' | 'calculation' | 'section' | 'repeating' | 'lookup' | 'payment' | 'location' | 'slider' | 'color' | 'time' | 'datetime';
+  type: 'text' | 'email' | 'number' | 'textarea' | 'select' | 'checkbox' | 'radio' | 'date' | 'phone' | 'url' | 'file' | 'rating' | 'toggle' | 'divider' | 'heading' | 'paragraph' | 'signature' | 'richtext' | 'matrix' | 'calculation' | 'section' | 'repeating' | 'lookup' | 'payment' | 'location' | 'slider' | 'color' | 'time' | 'datetime' | 'custom';
   label: string;
   placeholder?: string;
   required: boolean;
@@ -15,6 +15,11 @@ export interface FormField {
     max?: number;
     customMessage?: string;
     customRule?: string;
+    aiValidation?: {
+      enabled: boolean;
+      rules: string[];
+      severity: 'error' | 'warning' | 'info';
+    };
   };
   style?: {
     fontSize?: 'sm' | 'base' | 'lg' | 'xl' | '2xl';
@@ -28,12 +33,7 @@ export interface FormField {
   width?: 'full' | 'half' | 'third' | 'quarter';
   conditionalLogic?: {
     enabled: boolean;
-    conditions: {
-      fieldId: string;
-      operator: 'equals' | 'not_equals' | 'contains' | 'greater_than' | 'less_than' | 'is_empty' | 'is_not_empty';
-      value: string;
-    }[];
-    action: 'show' | 'hide' | 'require' | 'disable';
+    rules: LogicRule[];
   };
   calculations?: {
     enabled: boolean;
@@ -64,12 +64,157 @@ export interface FormField {
     addButtonText: string;
     removeButtonText: string;
   };
+  // AI Integration Fields
+  aiSettings?: {
+    enabled: boolean;
+    suggestions: AISuggestion[];
+    autoComplete: boolean;
+    smartValidation: boolean;
+    contentGeneration: boolean;
+    optimizationHints: string[];
+  };
+  // Dev Mode Fields
+  customComponent?: {
+    enabled: boolean;
+    id?: string; // Add id to link to CustomFieldType
+    html: string;
+    css: string;
+    javascript: string;
+    props: Record<string, any>;
+    events: CustomEvent[];
+    dependencies: string[];
+  };
   step?: number;
   pageId?: string;
   analytics?: {
     completionRate?: number;
     averageTime?: number;
     dropoffRate?: number;
+    aiOptimizationScore?: number;
+  };
+}
+
+// AI Integration Types
+export interface AISuggestion {
+  id: string;
+  type: 'field' | 'validation' | 'styling' | 'logic' | 'optimization';
+  title: string;
+  description: string;
+  confidence: number;
+  action: () => void;
+  preview?: string;
+}
+
+export interface AIFormAnalysis {
+  score: number;
+  suggestions: AISuggestion[];
+  insights: {
+    conversionOptimization: string[];
+    userExperience: string[];
+    accessibility: string[];
+    performance: string[];
+  };
+  predictedMetrics: {
+    completionRate: number;
+    abandonmentRate: number;
+    timeToComplete: number;
+  };
+}
+
+export interface AIFieldRecommendation {
+  fieldType: FormField['type'];
+  label: string;
+  placeholder?: string;
+  validation?: Partial<FormField['validation']>;
+  reasoning: string;
+  confidence: number;
+}
+
+// Dev Mode Types
+export interface CustomEvent {
+  name: string;
+  handler: string;
+  parameters: string[];
+}
+
+export interface CustomFieldType {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  icon: ReactNode;
+  template: {
+    html: string;
+    css: string;
+    javascript: string;
+    props: CustomFieldProp[];
+  };
+  preview: string;
+  author: string;
+  version: string;
+  dependencies: string[];
+}
+
+export interface CustomFieldProp {
+  name: string;
+  type: 'string' | 'number' | 'boolean' | 'array' | 'object';
+  required: boolean;
+  default?: any;
+  description: string;
+}
+
+export interface LogicRule {
+  id: string;
+  name: string;
+  enabled: boolean;
+  triggerField: string;
+  triggerCondition: 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'greater_than' | 'less_than' | 'is_empty' | 'is_not_empty';
+  triggerValue: string;
+  actions: LogicAction[];
+  priority: number;
+}
+
+export interface LogicAction {
+  id: string;
+  targetField: string;
+  action: 'show' | 'hide' | 'enable' | 'disable' | 'set_value' | 'set_required' | 'set_optional';
+  value?: string;
+}
+
+export interface FormLogic {
+  id: string;
+  name: string;
+  type: 'save_workflow' | 'validation_workflow' | 'notification_workflow' | 'redirect_workflow';
+  enabled: boolean;
+  conditions: LogicRule[];
+  actions: FormLogicAction[];
+  priority: number;
+}
+
+export interface FormLogicAction {
+  id: string;
+  type: 'save_data' | 'send_email' | 'redirect' | 'show_message' | 'trigger_webhook';
+  config: Record<string, any>;
+}
+
+export interface DevModeSettings {
+  enabled: boolean;
+  codeEditor: {
+    theme: 'dark' | 'light';
+    fontSize: number;
+    wordWrap: boolean;
+    minimap: boolean;
+  };
+  sandbox: {
+    allowNetworkRequests: boolean;
+    allowLocalStorage: boolean;
+    allowedDomains: string[];
+    maxExecutionTime: number;
+  };
+  debugging: {
+    enableConsole: boolean;
+    enableInspector: boolean;
+    logLevel: 'error' | 'warn' | 'info' | 'debug';
   };
 }
 
@@ -158,3 +303,48 @@ export type FormBuilderAction =
   | { type: 'UNDO' }
   | { type: 'REDO' }
   | { type: 'ADD_TO_HISTORY'; payload: FormField[] }; 
+
+export interface PlatformExport {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  category: 'framework' | 'platform' | 'cms' | 'enterprise';
+  supportedFeatures: string[];
+  exportFunction: (form: FormExportData) => Promise<ExportResult>;
+  preview?: string;
+  documentation?: string;
+}
+
+export interface FormExportData {
+  formName: string;
+  fields: FormField[];
+  pages: FormPage[];
+  settings: {
+    theme: string;
+    primaryColor: string;
+    submitButtonText: string;
+    successMessage: string;
+    enableNotifications: boolean;
+    enableAnalytics: boolean;
+  };
+  customFieldTypes: CustomFieldType[];
+  isMultiStep: boolean;
+}
+
+export interface ExportResult {
+  success: boolean;
+  files: ExportFile[];
+  instructions: string[];
+  warnings?: string[];
+  errors?: string[];
+  estimatedTime?: string;
+}
+
+export interface ExportFile {
+  name: string;
+  content: string;
+  type: 'code' | 'config' | 'documentation' | 'assets';
+  language?: string;
+  framework?: string;
+} 

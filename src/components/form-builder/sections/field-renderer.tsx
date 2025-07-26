@@ -1,6 +1,7 @@
 'use client';
 
-import { FormField } from '../types';
+import { useEffect, useRef } from 'react';
+import { FormField, CustomFieldType } from '../types';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
@@ -16,12 +17,116 @@ import {
   PenTool 
 } from 'lucide-react';
 
+// Custom Component Renderer with JavaScript execution
+interface CustomComponentRendererProps {
+  html: string;
+  css: string;
+  javascript: string;
+  fieldId: string;
+  fieldData: FormField;
+  formValues: Record<string, any>;
+  onValueChange?: (fieldId: string, value: any) => void;
+}
+
+function CustomComponentRenderer({
+  html,
+  css,
+  javascript,
+  fieldId,
+  fieldData,
+  formValues,
+  onValueChange
+}: CustomComponentRendererProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const container = containerRef.current;
+    
+    try {
+      // Clear previous content
+      container.innerHTML = html;
+
+      // Create a safe evaluation context
+      const safeContext = {
+        element: container,
+        fieldData,
+        formValues,
+        onValueChange,
+        console: console, // Allow console for debugging
+        document: {
+          querySelector: container.querySelector.bind(container),
+          querySelectorAll: container.querySelectorAll.bind(container),
+          addEventListener: container.addEventListener.bind(container),
+          removeEventListener: container.removeEventListener.bind(container)
+        }
+      };
+
+      // Execute JavaScript in a controlled way
+      if (javascript && javascript.trim()) {
+        const safeJS = `
+          (function(element, fieldData, formValues, onValueChange, console, document) {
+            ${javascript}
+            
+            // Auto-initialize if initCustomField function exists
+            if (typeof initCustomField === 'function') {
+              initCustomField(element, fieldData);
+            }
+          })(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
+        `;
+        
+        const func = new Function(safeJS);
+        func(
+          safeContext.element,
+          safeContext.fieldData,
+          safeContext.formValues,
+          safeContext.onValueChange,
+          safeContext.console,
+          safeContext.document
+        );
+      }
+
+      // Add event listeners for form inputs within the custom component
+      const inputs = container.querySelectorAll('input, select, textarea');
+      inputs.forEach((input) => {
+        input.addEventListener('input', (e) => {
+          const target = e.target as HTMLInputElement;
+          onValueChange?.(fieldId, target.value);
+        });
+        
+        input.addEventListener('change', (e) => {
+          const target = e.target as HTMLInputElement;
+          onValueChange?.(fieldId, target.value);
+        });
+      });
+
+    } catch (error) {
+      console.error('Error executing custom component JavaScript:', error);
+      container.innerHTML = `<div style="color: red; padding: 8px; border: 1px solid red; border-radius: 4px;">
+        Error in custom component: ${(error as Error).message}
+      </div>`;
+    }
+  }, [html, javascript, fieldId, fieldData, formValues, onValueChange]);
+
+  return (
+    <div 
+      ref={containerRef}
+      className="custom-component-container"
+      style={{ width: '100%' }}
+    />
+  );
+}
+
 interface FieldRendererProps {
   field: FormField;
   isPreview?: boolean;
+  formValues?: Record<string, any>;
+  onValueChange?: (fieldId: string, value: any) => void;
+  customFieldTypes?: CustomFieldType[];
 }
 
-export function FieldRenderer({ field, isPreview = false }: FieldRendererProps) {
+export function FieldRenderer({ field, isPreview = false, formValues = {}, onValueChange, customFieldTypes = [] }: FieldRendererProps) {
   const baseInputClass = "w-full px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200";
   
   switch (field.type) {
@@ -35,6 +140,8 @@ export function FieldRenderer({ field, isPreview = false }: FieldRendererProps) 
           type={field.type === 'phone' ? 'tel' : field.type}
           placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
           required={field.required}
+          value={formValues[field.id] || ''}
+          onChange={(e) => onValueChange?.(field.id, e.target.value)}
           className={baseInputClass}
           disabled={!isPreview}
         />
@@ -45,6 +152,8 @@ export function FieldRenderer({ field, isPreview = false }: FieldRendererProps) 
         <textarea
           placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
           required={field.required}
+          value={formValues[field.id] || ''}
+          onChange={(e) => onValueChange?.(field.id, e.target.value)}
           className={`${baseInputClass} min-h-[120px] resize-vertical`}
           disabled={!isPreview}
         />
@@ -52,7 +161,11 @@ export function FieldRenderer({ field, isPreview = false }: FieldRendererProps) 
     
     case 'select':
       return (
-        <Select disabled={!isPreview}>
+        <Select 
+          disabled={!isPreview}
+          value={formValues[field.id] || ''}
+          onValueChange={(value) => onValueChange?.(field.id, value)}
+        >
           <SelectTrigger className={`${baseInputClass} justify-between`}>
             <SelectValue placeholder="Select an option" />
           </SelectTrigger>
@@ -65,6 +178,7 @@ export function FieldRenderer({ field, isPreview = false }: FieldRendererProps) 
       );
     
     case 'checkbox':
+      const checkboxValues = formValues[field.id] || [];
       return (
         <div className="space-y-3">
           {field.options?.map((option, index) => (
@@ -72,6 +186,13 @@ export function FieldRenderer({ field, isPreview = false }: FieldRendererProps) 
               <input
                 type="checkbox"
                 id={`${field.id}_${index}`}
+                checked={checkboxValues.includes(option)}
+                onChange={(e) => {
+                  const newValues = e.target.checked
+                    ? [...checkboxValues, option]
+                    : checkboxValues.filter((v: string) => v !== option);
+                  onValueChange?.(field.id, newValues);
+                }}
                 className="w-4 h-4 rounded border-2 border-border focus:ring-primary/20 text-primary"
                 disabled={!isPreview}
               />
@@ -92,6 +213,9 @@ export function FieldRenderer({ field, isPreview = false }: FieldRendererProps) 
                 type="radio"
                 id={`${field.id}_${index}`}
                 name={field.id}
+                value={option}
+                checked={formValues[field.id] === option}
+                onChange={(e) => onValueChange?.(field.id, e.target.value)}
                 className="w-4 h-4 border-2 border-border focus:ring-primary/20 text-primary"
                 disabled={!isPreview}
               />
@@ -324,6 +448,111 @@ export function FieldRenderer({ field, isPreview = false }: FieldRendererProps) 
               Add Item
             </Button>
           </div>
+        </div>
+      );
+    
+    case 'custom':
+      // Handle custom field types
+      const customFieldType = customFieldTypes.find(type => type.id === field.customComponent?.id);
+      if (customFieldType) {
+        // Process template variables in preview mode
+        const processTemplate = (html: string) => {
+          if (!isPreview) return html;
+          
+          let processedHtml = html;
+          
+          // Escape HTML for safe insertion
+          const escapeHtml = (text: string) => {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+          };
+          
+          // Replace basic template variables with actual field values
+          processedHtml = processedHtml.replace(/\{\{label\}\}/g, escapeHtml(field.label || ''));
+          processedHtml = processedHtml.replace(/\{\{placeholder\}\}/g, escapeHtml(field.placeholder || ''));
+          processedHtml = processedHtml.replace(/\{\{id\}\}/g, field.id);
+          processedHtml = processedHtml.replace(/\{\{type\}\}/g, field.type);
+          processedHtml = processedHtml.replace(/\{\{required\}\}/g, field.required ? 'required' : '');
+          
+          // Handle simple required asterisk
+          processedHtml = processedHtml.replace(/\{\{#if required\}\}\*\{\{\/if\}\}/g, field.required ? '*' : '');
+          
+          // Handle conditional blocks for required fields
+          processedHtml = processedHtml.replace(/\{\{#if required\}\}(.*?)\{\{\/if\}\}/gs, (match, content) => {
+            return field.required ? content : '';
+          });
+          
+          // Handle conditional blocks for NOT required fields
+          processedHtml = processedHtml.replace(/\{\{#unless required\}\}(.*?)\{\{\/unless\}\}/gs, (match, content) => {
+            return !field.required ? content : '';
+          });
+          
+          // Handle options for select/radio/checkbox fields
+          if (field.options && field.options.length > 0) {
+            const optionsHtml = field.options.map(option => 
+              `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`
+            ).join('');
+            processedHtml = processedHtml.replace(/\{\{#each options\}\}(.*?)\{\{\/each\}\}/gs, optionsHtml);
+            
+            // Replace simple options placeholder
+            processedHtml = processedHtml.replace(/\{\{options\}\}/g, optionsHtml);
+          } else {
+            // Remove options blocks if no options
+            processedHtml = processedHtml.replace(/\{\{#each options\}\}(.*?)\{\{\/each\}\}/gs, '');
+            processedHtml = processedHtml.replace(/\{\{options\}\}/g, '');
+          }
+          
+          // Handle field width
+          processedHtml = processedHtml.replace(/\{\{width\}\}/g, field.width || 'full');
+          
+          // Clean up any remaining empty template blocks
+          processedHtml = processedHtml.replace(/\{\{[^}]*\}\}/g, '');
+          
+          return processedHtml;
+        };
+
+                 // In preview mode, render the field content with JavaScript execution
+         if (isPreview) {
+           return (
+             <div className="custom-field-preview">
+               {/* Inject custom CSS if available */}
+               {customFieldType.template.css && (
+                 <style dangerouslySetInnerHTML={{ __html: customFieldType.template.css }} />
+               )}
+               <CustomComponentRenderer 
+                 html={processTemplate(customFieldType.template.html)}
+                 css={customFieldType.template.css}
+                 javascript={customFieldType.template.javascript}
+                 fieldId={field.id}
+                 fieldData={field}
+                 formValues={formValues}
+                 onValueChange={onValueChange}
+               />
+             </div>
+           );
+         }
+
+         // In editor mode, show with wrapper and labels
+         return (
+           <div className="space-y-2 p-4 border-2 border-dashed border-purple-200 rounded-lg bg-purple-50/50">
+             <div className="flex items-center justify-between">
+               <div className="flex items-center space-x-2">
+                 <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                   Custom Component
+                 </Badge>
+                 <span className="font-medium text-purple-800">{customFieldType.name}</span>
+               </div>
+             </div>
+             <div className="text-sm text-muted-foreground p-2 bg-muted rounded">
+               {customFieldType.description}
+             </div>
+           </div>
+         );
+      }
+      return (
+        <div className="p-4 border-2 border-dashed border-red-200 rounded-lg bg-red-50/50">
+          <span className="text-red-600">Custom component not found</span>
         </div>
       );
     

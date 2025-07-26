@@ -129,13 +129,16 @@ export function FormsContent() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
+            whileHover={{ y: -5, scale: 1.02 }}
+            className="group cursor-pointer"
           >
-            <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+            <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md hover:shadow-xl transition-all duration-300 relative overflow-hidden">
               {/* Animated gradient background for glassy effect */}
               <motion.div 
-                className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 group-hover:from-blue-500/20 group-hover:to-purple-500/20 transition-opacity pointer-events-none"
+                className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 transition-opacity pointer-events-none group-hover:from-blue-500/20 group-hover:to-purple-500/20"
                 animate={{ opacity: [1, 0.95, 1] }}
                 transition={{ duration: 8, repeat: Infinity }}
+                whileHover={{ opacity: 0.15 }}
               />
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 relative z-10">
                 <div className="space-y-1 flex-1">
@@ -224,56 +227,71 @@ export function FormsContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
+            className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4"
             onClick={() => setShowCreateForm(false)}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-card rounded-lg shadow-xl p-3 sm:p-4 md:p-6 lg:p-8 w-[95vw] max-w-[350px] sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[85vh] overflow-y-auto mx-auto"
+              className="relative rounded-2xl shadow-2xl border border-blue-200/50 dark:border-blue-800/50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-3 sm:p-4 md:p-6 lg:p-8 w-[95vw] max-w-[350px] sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[85vh] overflow-y-auto mx-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2 sm:mb-3 md:mb-4">
+              {/* Animated gradient overlay */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 pointer-events-none rounded-2xl"
+                animate={{ opacity: [1, 0.95, 1] }}
+                transition={{ duration: 8, repeat: Infinity }}
+              />
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2 sm:mb-3 md:mb-4 relative z-10">
                 {t('forms.createNewForm' as const)}
               </h2>
-              <p className="text-muted-foreground mb-4 sm:mb-6 md:mb-8 text-xs sm:text-sm md:text-base">
+              <p className="text-muted-foreground mb-4 sm:mb-6 md:mb-8 text-xs sm:text-sm md:text-base relative z-10">
                 Choose the type of form you want to create
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6 relative z-10">
                 <Card 
-                  className="p-3 sm:p-4 md:p-6 hover:border-primary/50 transition-colors cursor-pointer hover:shadow-lg" 
+                  className="relative p-3 sm:p-4 md:p-6 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-blue-200/40 dark:border-blue-800/40 backdrop-blur-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group"
                   onClick={() => handleCreateForm(true)}
                 >
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white mb-2 sm:mb-3 md:mb-4">
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 group-hover:from-blue-500/20 group-hover:to-purple-500/20 transition-opacity pointer-events-none rounded-xl"
+                    animate={{ opacity: [1, 0.95, 1] }}
+                    transition={{ duration: 8, repeat: Infinity }}
+                  />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white mb-2 sm:mb-3 md:mb-4 relative z-10">
                     <FormInput className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                   </div>
-                  <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2">Responsive Form</h3>
-                  <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2 relative z-10">Responsive Form</h3>
+                  <p className="text-muted-foreground text-xs sm:text-sm md:text-base relative z-10">
                     Create a form that adapts to different screen sizes
                   </p>
                 </Card>
-                
                 <Card 
-                  className="p-3 sm:p-4 md:p-6 hover:border-primary/50 transition-colors cursor-pointer hover:shadow-lg" 
+                  className="relative p-3 sm:p-4 md:p-6 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-blue-200/40 dark:border-blue-800/40 backdrop-blur-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group"
                   onClick={() => handleCreateForm(false)}
                 >
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white mb-2 sm:mb-3 md:mb-4">
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 group-hover:from-blue-500/20 group-hover:to-purple-500/20 transition-opacity pointer-events-none rounded-xl"
+                    animate={{ opacity: [1, 0.95, 1] }}
+                    transition={{ duration: 8, repeat: Infinity }}
+                  />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white mb-2 sm:mb-3 md:mb-4 relative z-10">
                     <FormInput className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                   </div>
-                  <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2">Desktop Only</h3>
-                  <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2 relative z-10">Desktop Only</h3>
+                  <p className="text-muted-foreground text-xs sm:text-sm md:text-base relative z-10">
                     Create a form optimized for desktop viewing
                   </p>
                 </Card>
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-3 md:gap-4 mt-4 sm:mt-6 md:mt-8">
+              <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-3 md:gap-4 mt-4 sm:mt-6 md:mt-8 relative z-10">
                 <Button 
-                  variant="outline" 
+                  variant="ghost" 
                   onClick={() => setShowCreateForm(false)}
-                  className="w-full sm:w-auto text-sm sm:text-base"
+                  className="w-full sm:w-auto text-sm sm:text-base bg-white/30 dark:bg-slate-900/30 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
                 >
                   Cancel
                 </Button>

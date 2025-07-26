@@ -126,7 +126,9 @@ export function TemplatesContent() {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold">{t('templates.title' as const)}</h1>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+          {t('templates.title' as const)}
+        </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
           {t('templates.subtitle' as const)}
         </p>
@@ -140,7 +142,7 @@ export function TemplatesContent() {
             placeholder={t('templates.searchPlaceholder' as const)}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400/30"
           />
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -150,7 +152,10 @@ export function TemplatesContent() {
               variant={selectedCategory === category ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedCategory(category)}
-              className={selectedCategory === category ? "bg-gradient-to-r from-blue-600 to-purple-600" : ""}
+              className={selectedCategory === category 
+                ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg" 
+                : "bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
+              }
             >
               {category}
             </Button>
@@ -163,7 +168,9 @@ export function TemplatesContent() {
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Star className="w-5 h-5 text-yellow-500" />
-            <h2 className="text-xl font-semibold">{t('templates.mostPopular' as const)}</h2>
+            <h2 className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+              {t('templates.mostPopular' as const)}
+            </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {templates.filter(t => t.popular).map((template) => (
@@ -172,15 +179,27 @@ export function TemplatesContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="group cursor-pointer"
               >
-                <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer group h-full">
-                  <CardHeader className="pb-2">
-                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${template.color} flex items-center justify-center text-white mb-3`}>
+                <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md hover:shadow-xl transition-all duration-300 relative overflow-hidden h-full">
+                  {/* Animated gradient background for glassy effect */}
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 transition-opacity pointer-events-none group-hover:from-blue-500/20 group-hover:to-purple-500/20"
+                    animate={{ opacity: [1, 0.95, 1] }}
+                    transition={{ duration: 8, repeat: Infinity }}
+                    whileHover={{ opacity: 0.15 }}
+                  />
+                  <CardHeader className="pb-2 relative z-10">
+                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${template.color} flex items-center justify-center text-white mb-3 shadow-lg`}>
                       {template.icon}
                     </div>
-                    <CardTitle className="text-lg">{template.name}</CardTitle>
+                    <CardTitle className="text-lg font-bold flex items-center gap-2">
+                      {template.name}
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3 flex-1 flex flex-col">
+                  <CardContent className="space-y-3 flex-1 flex flex-col relative z-10">
                     <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
                       {template.description}
                     </p>
@@ -192,7 +211,7 @@ export function TemplatesContent() {
                     </div>
                     <Button
                       size="sm"
-                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
                       onClick={() => handleUseTemplate(template.id)}
                     >
                       {t('templates.useTemplate' as const)}
@@ -207,7 +226,7 @@ export function TemplatesContent() {
 
       {/* All Templates */}
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold">
+        <h2 className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
           {selectedCategory === 'All' ? t('templates.browseAll' as const) : `${selectedCategory} Templates`}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -217,20 +236,29 @@ export function TemplatesContent() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="group cursor-pointer"
             >
-              <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer group h-full">
-                <CardHeader className="pb-2">
+              <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md hover:shadow-xl transition-all duration-300 relative overflow-hidden h-full">
+                {/* Animated gradient background for glassy effect */}
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 transition-opacity pointer-events-none group-hover:from-blue-500/20 group-hover:to-purple-500/20"
+                  animate={{ opacity: [1, 0.95, 1] }}
+                  transition={{ duration: 8, repeat: Infinity }}
+                  whileHover={{ opacity: 0.15 }}
+                />
+                <CardHeader className="pb-2 relative z-10">
                   <div className="flex items-start justify-between">
-                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${template.color} flex items-center justify-center text-white`}>
+                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${template.color} flex items-center justify-center text-white shadow-lg`}>
                       {template.icon}
                     </div>
                     {template.popular && (
                       <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                     )}
                   </div>
-                  <CardTitle className="text-lg">{template.name}</CardTitle>
+                  <CardTitle className="text-lg font-bold">{template.name}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 flex-1 flex flex-col">
+                <CardContent className="space-y-3 flex-1 flex flex-col relative z-10">
                   <p className="text-sm text-muted-foreground flex-1">
                     {template.description}
                   </p>
@@ -242,7 +270,7 @@ export function TemplatesContent() {
                   </div>
                   <Button
                     size="sm"
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
                     onClick={() => handleUseTemplate(template.id)}
                   >
                     {t('templates.useTemplate' as const)}
@@ -257,20 +285,29 @@ export function TemplatesContent() {
       {/* Empty State */}
       {filteredTemplates.length === 0 && (
         <div className="text-center py-12">
-          <FormInput className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-xl font-semibold mb-2">{t('templates.noTemplatesFound' as const)}</h3>
-          <p className="text-muted-foreground mb-6">
-            {t('templates.tryAdjusting' as const)}
-          </p>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setSearchTerm('');
-              setSelectedCategory('All');
-            }}
-          >
-            Clear Filters
-          </Button>
+          <div className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md rounded-2xl p-8 max-w-md mx-auto relative overflow-hidden">
+            {/* Animated gradient background */}
+            <motion.div 
+              className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 pointer-events-none"
+              animate={{ opacity: [1, 0.95, 1] }}
+              transition={{ duration: 8, repeat: Infinity }}
+            />
+            <FormInput className="w-16 h-16 text-muted-foreground mx-auto mb-4 relative z-10" />
+            <h3 className="text-xl font-semibold mb-2 relative z-10">{t('templates.noTemplatesFound' as const)}</h3>
+            <p className="text-muted-foreground mb-6 relative z-10">
+              {t('templates.tryAdjusting' as const)}
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSearchTerm('');
+                setSelectedCategory('All');
+              }}
+              className="bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20 relative z-10"
+            >
+              Clear Filters
+            </Button>
+          </div>
         </div>
       )}
     </div>

@@ -12,7 +12,6 @@ import { MiniChartCard } from "@/components/ui/mini-chart-card";
 import { GoalProgressCard } from "@/components/ui/goal-progress-card";
 import { SmartSuggestionCard } from "@/components/ui/smart-suggestion-card";
 import {
-   Plus,
    FormInput,
    BarChart3,
    TrendingUp,
@@ -29,7 +28,6 @@ import {
    Save
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 import { useTranslation } from "@/i18n/translations";
 import { useSession } from "next-auth/react";
 
@@ -53,7 +51,6 @@ interface MetricData {
 }
 
 export function ModernDashboard() {
-   const router = useRouter();
    const { t } = useTranslation();
    const { data: session } = useSession();
    
@@ -165,6 +162,7 @@ export function ModernDashboard() {
                   <motion.div
                      animate={{ rotate: [0, 10, -10, 0] }}
                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                     className="text-2xl md:text-3xl"
                   >
                      👋
                   </motion.div>
@@ -172,16 +170,6 @@ export function ModernDashboard() {
                <p className="text-muted-foreground text-sm md:text-base dark:text-slate-300">
                   {t('dashboard.subtitle' as const)}
                </p>
-            </div>
-            
-            <div className="flex items-center gap-3">
-               <Button
-                  onClick={() => router.push("/forms")}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg text-white whitespace-nowrap group"
-               >
-                  <Plus className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform" />
-                  {t('dashboard.createNewForm' as const)}
-               </Button>
             </div>
          </div>
 

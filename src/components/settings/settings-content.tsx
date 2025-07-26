@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -70,25 +71,32 @@ export function SettingsContent() {
     <div className="space-y-6">
       {/* Page Header */}
       <div className="text-center md:text-left">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-2">
           {t('settings.title')}
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-muted-foreground">
           {t('settings.subtitle')}
         </p>
       </div>
 
       {/* Demo User Warning */}
       {isDemoUserAccount && (
-        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
-              {t('settings.demoAccountLimited')}
-            </p>
-            <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
-              {t('settings.someSettingsLimited')}
-            </p>
+        <div className="bg-amber-50/60 dark:bg-amber-900/20 border border-amber-200/50 dark:border-amber-800/50 backdrop-blur-md rounded-2xl p-4 relative overflow-hidden group">
+          {/* Animated gradient background */}
+          <div 
+            className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-orange-500/10 pointer-events-none opacity-100"
+            style={{ animation: 'pulse 8s ease-in-out infinite' }}
+          />
+          <div className="flex items-start gap-3 relative z-10">
+            <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                {t('settings.demoAccountLimited')}
+              </p>
+              <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+                {t('settings.someSettingsLimited')}
+              </p>
+            </div>
           </div>
         </div>
       )}
@@ -96,16 +104,21 @@ export function SettingsContent() {
       {/* Settings Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Notifications Settings */}
-        <Card>
-          <CardHeader className="pb-4">
+        <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md relative overflow-hidden group">
+          {/* Animated gradient background for glassy effect */}
+          <div 
+            className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 transition-opacity pointer-events-none group-hover:from-blue-500/20 group-hover:to-cyan-500/20"
+            style={{ animation: 'pulse 8s ease-in-out infinite' }}
+          />
+          <CardHeader className="pb-4 relative z-10">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                <Bell className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg shadow-lg">
+                <Bell className="h-5 w-5 text-white" />
               </div>
-              <CardTitle className="text-xl font-semibold">{t('settings.notifications')}</CardTitle>
+              <CardTitle className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">{t('settings.notifications')}</CardTitle>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 relative z-10">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label className="text-sm font-medium">{t('settings.emailNotifications')}</Label>
@@ -165,16 +178,21 @@ export function SettingsContent() {
         </Card>
 
         {/* Privacy Settings */}
-        <Card>
-          <CardHeader className="pb-4">
+        <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md relative overflow-hidden group">
+          {/* Animated gradient background for glassy effect */}
+          <div 
+            className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 transition-opacity pointer-events-none group-hover:from-green-500/20 group-hover:to-emerald-500/20"
+            style={{ animation: 'pulse 8s ease-in-out infinite' }}
+          />
+          <CardHeader className="pb-4 relative z-10">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                <Shield className="h-5 w-5 text-green-600 dark:text-green-400" />
+              <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg shadow-lg">
+                <Shield className="h-5 w-5 text-white" />
               </div>
-              <CardTitle className="text-xl font-semibold">{t('settings.privacySecurity')}</CardTitle>
+              <CardTitle className="text-xl font-semibold bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">{t('settings.privacySecurity')}</CardTitle>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 relative z-10">
             <div className="space-y-2">
               <Label className="text-sm font-medium">{t('settings.profileVisibility')}</Label>
               <Select
@@ -224,16 +242,21 @@ export function SettingsContent() {
         </Card>
 
         {/* Appearance Settings */}
-        <Card>
-          <CardHeader className="pb-4">
+        <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md relative overflow-hidden group">
+          {/* Animated gradient background for glassy effect */}
+          <div 
+            className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 transition-opacity pointer-events-none group-hover:from-purple-500/20 group-hover:to-pink-500/20"
+            style={{ animation: 'pulse 8s ease-in-out infinite' }}
+          />
+          <CardHeader className="pb-4 relative z-10">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                <Palette className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg shadow-lg">
+                <Palette className="h-5 w-5 text-white" />
               </div>
-              <CardTitle className="text-xl font-semibold">{t('settings.appearance')}</CardTitle>
+              <CardTitle className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">{t('settings.appearance')}</CardTitle>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 relative z-10">
             <div className="space-y-2">
               <Label className="text-sm font-medium">{t('settings.theme')}</Label>
               <Select
@@ -280,16 +303,21 @@ export function SettingsContent() {
         </Card>
 
         {/* Accessibility Settings */}
-        <Card>
-          <CardHeader className="pb-4">
+        <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md relative overflow-hidden group">
+          {/* Animated gradient background for glassy effect */}
+          <div 
+            className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-amber-500/10 transition-opacity pointer-events-none group-hover:from-orange-500/20 group-hover:to-amber-500/20"
+            style={{ animation: 'pulse 8s ease-in-out infinite' }}
+          />
+          <CardHeader className="pb-4 relative z-10">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-                <Eye className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+              <div className="p-2 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg shadow-lg">
+                <Eye className="h-5 w-5 text-white" />
               </div>
-              <CardTitle className="text-xl font-semibold">{t('settings.accessibility')}</CardTitle>
+              <CardTitle className="text-xl font-semibold bg-gradient-to-r from-orange-600 to-amber-600 dark:from-orange-400 dark:to-amber-400 bg-clip-text text-transparent">{t('settings.accessibility')}</CardTitle>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 relative z-10">
             <div className="space-y-2">
               <Label className="text-sm font-medium">{t('settings.fontSize')}</Label>
               <Select
@@ -338,16 +366,21 @@ export function SettingsContent() {
       </div>
 
       {/* Language Settings */}
-      <Card>
-        <CardHeader className="pb-4">
+      <Card className="bg-white/60 dark:bg-slate-800/60 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md relative overflow-hidden group">
+        {/* Animated gradient background for glassy effect */}
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-violet-500/10 transition-opacity pointer-events-none group-hover:from-indigo-500/20 group-hover:to-violet-500/20"
+          style={{ animation: 'pulse 8s ease-in-out infinite' }}
+        />
+        <CardHeader className="pb-4 relative z-10">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-              <Globe className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+            <div className="p-2 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-lg shadow-lg">
+              <Globe className="h-5 w-5 text-white" />
             </div>
-            <CardTitle className="text-xl font-semibold">{t('settings.languageRegion')}</CardTitle>
+            <CardTitle className="text-xl font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">{t('settings.languageRegion')}</CardTitle>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="relative z-10">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label className="text-sm font-medium">{t('settings.language')}</Label>
@@ -371,7 +404,7 @@ export function SettingsContent() {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 pt-6">
         <Button 
-          className="flex-1 sm:flex-none"
+          className="flex-1 sm:flex-none bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg text-white"
           onClick={() => {
             // Save settings logic here
             console.log('Settings saved:', settings);
@@ -383,7 +416,7 @@ export function SettingsContent() {
         
         <Button 
           variant="outline" 
-          className="flex-1 sm:flex-none"
+          className="flex-1 sm:flex-none bg-white/20 dark:bg-slate-200/10 border border-blue-200/30 dark:border-blue-800/30 backdrop-blur-md text-foreground hover:bg-blue-100/30 dark:hover:bg-blue-900/20"
           onClick={() => {
             // Reset to defaults logic here
             console.log('Settings reset');
@@ -394,8 +427,13 @@ export function SettingsContent() {
       </div>
 
       {/* Info Section */}
-      <Card className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-        <CardContent className="pt-6">
+      <Card className="bg-blue-50/60 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-md relative overflow-hidden group">
+        {/* Animated gradient background */}
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 pointer-events-none opacity-100"
+          style={{ animation: 'pulse 8s ease-in-out infinite' }}
+        />
+        <CardContent className="pt-6 relative z-10">
           <div className="flex items-start gap-3">
             <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
             <div className="space-y-2">

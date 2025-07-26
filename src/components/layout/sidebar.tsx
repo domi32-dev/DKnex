@@ -315,31 +315,6 @@ export const Sidebar = ({
                   );
                })}
 
-               {/* Quick Stats at Bottom */}
-               {(!effectiveCollapsed || isMobile) && (
-                  <>
-                     <div className="border-t border-blue-400/10 my-4" />
-                     <div className="px-2 space-y-2">
-                        <h4 className="text-xs font-semibold text-blue-900/50 dark:text-white/50 mb-2 uppercase tracking-wide">
-                           Quick Stats
-                        </h4>
-                        <div className="space-y-1 text-xs text-blue-900/60 dark:text-white/60">
-                           <div className="flex justify-between">
-                              <span>Total Forms:</span>
-                              <span className="font-medium">12</span>
-                           </div>
-                           <div className="flex justify-between">
-                              <span>This Week:</span>
-                              <span className="font-medium text-green-600">+3</span>
-                           </div>
-                           <div className="flex justify-between">
-                              <span>Submissions:</span>
-                              <span className="font-medium">1,247</span>
-                           </div>
-                        </div>
-                     </div>
-                  </>
-               )}
             </nav>
          </aside>
       </>
