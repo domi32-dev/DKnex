@@ -18,10 +18,7 @@ import {
    Target,
    Activity,
    Brain,
-   Zap,
-   Settings,
    Clock,
-   Users,
    Star,
    Smartphone,
    Eye,
@@ -54,7 +51,6 @@ export function ModernDashboard() {
    const { t } = useTranslation();
    const { data: session } = useSession();
    
-   const [selectedTimeframe, setSelectedTimeframe] = useState('7d');
    const [dashboardLayout, setDashboardLayout] = useState<DashboardWidget[]>([
       { id: 'metrics', title: 'Key Metrics', type: 'metric', order: 0, visible: true },
       { id: 'insights', title: 'AI Insights', type: 'chart', order: 1, visible: true },
@@ -190,16 +186,15 @@ export function ModernDashboard() {
                   </Badge>
                </div>
                <Button variant="ghost" size="sm">
-                  <Settings className="w-4 h-4" />
+                  {/* <Settings className="w-4 h-4" /> */}
                </Button>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-               {aiInsights.map((insight, index) => (
+               {aiInsights.map((insight) => (
                   <AIInsightCard
                      key={insight.id}
                      insight={insight}
-                     index={index}
                      onTakeAction={handleTakeAction}
                      onViewDetails={handleViewDetails}
                   />
@@ -209,7 +204,7 @@ export function ModernDashboard() {
 
          {/* Enhanced Metrics with Interactivity */}
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {smartMetrics.map((metric, index) => (
+            {smartMetrics.map((metric) => (
                <MetricCard
                   key={metric.title}
                   title={metric.title}

@@ -1,39 +1,17 @@
 import { 
   Type, 
-  Hash, 
-  Mail, 
-  Calendar, 
   CheckSquare, 
-  Circle, 
-  ChevronDown,
-  FileText,
-  Phone,
-  Link,
-  Star,
-  ToggleLeft,
-  Layout,
-  Minus,
-  Palette,
-  Upload,
-  PenTool,
-  Grid,
-  Calculator,
-  Copy,
-  Database,
-  CreditCard,
-  Target,
-  Users,
-  Zap,
-  Crown,
-  Brain,
-  Code,
-  Sparkles,
-  Wand2,
-  Bot,
+  Layout, 
+  Database, 
+  Zap, 
+  Crown, 
+  Brain, 
+  Code, 
   Building
 } from 'lucide-react';
 
-import { FieldCategory, FieldType, FieldTemplate } from './types';
+// Remove unused type imports
+// import { FieldCategory, FieldType, FieldTemplate } from './types';
 
 export const fieldCategories = {
   input: {

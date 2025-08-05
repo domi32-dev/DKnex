@@ -14,7 +14,7 @@ import Link from "next/link";
 import type { Notification } from "@/components/ui/notifications";
 
 export const Topbar = ({ showBackButton = false }: { showBackButton?: boolean }) => {
-   const { language, setLanguage, t } = useTranslation();
+   const { language, setLanguage } = useTranslation();
    const [notifications, setNotifications] = useState<Notification[]>([]);
    const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
 

@@ -5,20 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Plus, 
   Trash2, 
-  Save,
-  GitBranch,
   Eye,
   EyeOff,
-  Settings,
-  CheckCircle,
-  Zap,
   X
 } from 'lucide-react';
 import { FormField, LogicRule, LogicAction } from '../types';
@@ -162,10 +157,6 @@ export function FieldLogicEditor({
     return allFields.find(f => f.id === fieldId);
   };
 
-  const getTargetField = (fieldId: string) => {
-    return allFields.find(f => f.id === fieldId);
-  };
-
   const rules = field.conditionalLogic?.rules || [];
 
   return (
@@ -173,7 +164,6 @@ export function FieldLogicEditor({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <GitBranch className="w-4 h-4 text-blue-500" />
           <h3 className="text-sm font-medium">Conditional Logic</h3>
           <Badge variant="outline" className="text-xs">
             {rules.length} rules
@@ -222,7 +212,7 @@ export function FieldLogicEditor({
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {getTriggerField(rule.triggerField)?.label || 'Select field'} {rule.triggerCondition} "{rule.triggerValue}"
+                          {getTriggerField(rule.triggerField)?.label || 'Select field'} {rule.triggerCondition} &quot;{rule.triggerValue}&quot;
                         </p>
                       </div>
                     </div>
@@ -309,7 +299,7 @@ export function FieldLogicEditor({
                   <Label className="text-xs">Condition</Label>
                   <Select
                     value={selectedRule.triggerCondition}
-                    onValueChange={(value: any) => updateRule(selectedRule.id, { triggerCondition: value })}
+                    onValueChange={(value: LogicRule['triggerCondition']) => updateRule(selectedRule.id, { triggerCondition: value })}
                   >
                     <SelectTrigger className="h-8 text-sm">
                       <SelectValue />
@@ -375,7 +365,7 @@ export function FieldLogicEditor({
 
                             <Select
                               value={action.action}
-                              onValueChange={(value: any) => updateAction(selectedRule.id, action.id, { action: value })}
+                              onValueChange={(value: LogicAction['action']) => updateAction(selectedRule.id, action.id, { action: value })}
                             >
                               <SelectTrigger className="w-24 h-6 text-xs">
                                 <SelectValue />

@@ -3,19 +3,29 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { 
   Search, 
-  HelpCircle, 
-  ChevronDown, 
-  Sparkles, 
+  Filter, 
+  Grid3X3, 
+  List, 
+  Settings, 
+  X, 
+  Trash2, 
+  Copy, 
+  Eye, 
+  EyeOff,
+  HelpCircle,
+  ChevronDown,
+  Sparkles,
   Plus,
   Crown,
-  Trash2,
   Package,
   Edit
 } from 'lucide-react';
@@ -58,11 +68,11 @@ export function Sidebar({
 }: SidebarProps) {
   // Merge built-in field types with custom field types
   const allFieldTypes = [
-    ...fieldTypes.map(fieldType => ({
+    ...fieldTypes.map((fieldType) => ({
       ...fieldType,
       uniqueKey: fieldType.type // Use type as unique key for built-in fields
     })),
-    ...customFieldTypes.map(customField => ({
+    ...customFieldTypes.map((customField: CustomFieldType) => ({
       type: 'custom' as const,
       label: customField.name,
       description: customField.description,
@@ -77,7 +87,7 @@ export function Sidebar({
     const matchesSearch = searchQuery === '' || 
       fieldType.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
       fieldType.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      fieldType.keywords.some(keyword => keyword.includes(searchQuery.toLowerCase()));
+      fieldType.keywords.some((keyword: string) => keyword.includes(searchQuery.toLowerCase()));
     
     const matchesCategory = selectedCategory === 'all' || fieldType.category === selectedCategory;
     
@@ -174,7 +184,7 @@ export function Sidebar({
               <Button
                 key={template.id}
                 variant="ghost"
-                className="w-full justify-start p-3 h-auto hover:bg-muted/50 transition-colors"
+                className="w-full justify-start p-3 h-auto hover:bg-blue-50 hover:border-blue-200 dark:hover:bg-slate-700/50 dark:hover:border-slate-600 border border-transparent rounded-lg transition-all duration-200 text-foreground hover:text-foreground"
                 onClick={() => onAddField(template.field.type as FormField['type'], template, undefined)}
               >
                 <div className="flex items-center gap-3">
@@ -182,7 +192,7 @@ export function Sidebar({
                     {template.icon}
                   </div>
                   <div className="text-left">
-                    <div className="font-medium text-sm flex items-center gap-2">
+                    <div className="font-medium text-sm flex items-center gap-2 text-foreground">
                       {template.name}
                       {template.isPremium && <Crown className="w-3 h-3 text-yellow-500" />}
                     </div>
@@ -208,7 +218,7 @@ export function Sidebar({
                   open={!collapsedCategories[categoryKey]}
                   onOpenChange={() => toggleCategory(categoryKey)}
                 >
-                  <CollapsibleTrigger className="w-full justify-between p-2 bg-transparent border-none hover:bg-muted rounded-md flex items-center">
+                  <CollapsibleTrigger className="w-full justify-between p-2 bg-transparent border-none hover:bg-blue-50 hover:border-blue-200 dark:hover:bg-slate-700/50 dark:hover:border-slate-600 border border-transparent rounded-md flex items-center transition-all duration-200 text-foreground hover:text-foreground">
                     <div className="flex items-center gap-2">
                       <div className={`w-8 h-8 rounded-lg ${category.color} flex items-center justify-center text-white flex-shrink-0`}>
                         {(() => {
@@ -217,7 +227,7 @@ export function Sidebar({
                         })()}
                       </div>
                       <div className="text-left">
-                        <div className="font-medium text-sm">{category.label}</div>
+                        <div className="font-medium text-sm text-foreground">{category.label}</div>
                         <div className="text-xs text-muted-foreground">{category.description}</div>
                       </div>
                     </div>
@@ -236,7 +246,7 @@ export function Sidebar({
                         <div key={(fieldType as any).uniqueKey} className="group relative">
                           <Button
                             variant="ghost"
-                            className="w-full justify-start p-3 h-auto hover:bg-muted/50 transition-colors"
+                            className="w-full justify-start p-3 h-auto hover:bg-blue-50 hover:border-blue-200 dark:hover:bg-slate-700/50 dark:hover:border-slate-600 border border-transparent rounded-lg transition-all duration-200 text-foreground hover:text-foreground"
                             onClick={() => {
                               if (isCustomField && 'customId' in fieldType) {
                                 onAddField(fieldType.type as FormField['type'], undefined, (fieldType as any).customId);
@@ -250,7 +260,7 @@ export function Sidebar({
                                 {isCustomField ? <Package className="w-4 h-4" /> : getFieldIcon(fieldType.type)}
                               </div>
                               <div className="text-left flex-1">
-                                <div className="font-medium text-sm flex items-center gap-2">
+                                <div className="font-medium text-sm flex items-center gap-2 text-foreground">
                                   {fieldType.label}
                                   {isCustomField && (
                                     <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
@@ -308,7 +318,7 @@ export function Sidebar({
                   <div key={(fieldType as any).uniqueKey} className="group relative">
                     <Button
                       variant="ghost"
-                      className="w-full justify-start p-3 h-auto hover:bg-muted/50 transition-colors"
+                      className="w-full justify-start p-3 h-auto hover:bg-blue-50 hover:border-blue-200 dark:hover:bg-slate-700/50 dark:hover:border-slate-600 border border-transparent rounded-lg transition-all duration-200 text-foreground hover:text-foreground"
                       onClick={() => {
                         if (isCustomField && 'customId' in fieldType) {
                           onAddField(fieldType.type as FormField['type'], undefined, (fieldType as any).customId);
@@ -322,7 +332,7 @@ export function Sidebar({
                           {isCustomField ? <Package className="w-4 h-4" /> : getFieldIcon(fieldType.type)}
                         </div>
                         <div className="text-left flex-1">
-                          <div className="font-medium text-sm flex items-center gap-2">
+                          <div className="font-medium text-sm flex items-center gap-2 text-foreground">
                             {fieldType.label}
                             {isCustomField && (
                               <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">

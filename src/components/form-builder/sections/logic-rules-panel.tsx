@@ -14,19 +14,20 @@ import {
   X, 
   Plus, 
   Trash2, 
-  Save,
-  GitBranch,
-  Eye,
-  EyeOff,
-  Copy,
-  Settings,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Zap,
-  Workflow,
-  Database,
-  Mail,
+  Save, 
+  GitBranch, 
+  Settings, 
+  AlertTriangle, 
+  CheckCircle, 
+  Workflow, 
+  Database, 
+  Users, 
+  Mail, 
+  Calendar, 
+  FileText, 
+  Code, 
+  Globe, 
+  Building,
   ExternalLink,
   MessageSquare,
   Webhook
@@ -286,7 +287,7 @@ export function LogicRulesPanel({
                               Field: <span className="font-medium">{field.label}</span>
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              When: {rule.triggerCondition} "{rule.triggerValue}"
+                              When: {rule.triggerCondition} &quot;{rule.triggerValue}&quot;
                             </p>
                           </div>
                           <div className="flex items-center gap-1">

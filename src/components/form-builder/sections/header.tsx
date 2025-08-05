@@ -70,8 +70,6 @@ export function Header({
   setShowAIAssistant,
   showDevMode,
   setShowDevMode,
-  devModeEnabled,
-  setDevModeEnabled,
   historyIndex,
   historyLength,
   onUndo,
@@ -184,7 +182,7 @@ export function Header({
               }`}
               onClick={() => {
                 setShowDevMode(!showDevMode);
-                setDevModeEnabled(!showDevMode);
+                // setDevModeEnabled(!showDevMode); // This line is removed
                 onShowNotification(!showDevMode ? 'Studio Mode activated!' : 'Studio Mode closed');
               }}
             >

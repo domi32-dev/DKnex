@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NextRequest } from 'next/server';
 
+// Define proper types for the mocked POST function
+type MockedPOST = ReturnType<typeof vi.fn<(request: NextRequest) => Promise<Response>>>;
+
 // Mock the entire API route
 vi.mock('@/app/api/auth/register/route', () => ({
   POST: vi.fn(),
@@ -41,7 +44,7 @@ describe('Registration API (Mocked)', () => {
     const { POST } = await import('@/app/api/auth/register/route');
     
     // Mock the POST function to return validation errors
-    (POST as any).mockResolvedValue(
+    (POST as unknown as MockedPOST).mockResolvedValue(
       new Response(
         JSON.stringify({
           error: 'Validation failed',
@@ -75,7 +78,7 @@ describe('Registration API (Mocked)', () => {
     const { POST } = await import('@/app/api/auth/register/route');
     
     // Mock the POST function to return success
-    (POST as any).mockResolvedValue(
+    (POST as unknown as MockedPOST).mockResolvedValue(
       new Response(
         JSON.stringify({
           success: true,
@@ -112,7 +115,7 @@ describe('Registration API (Mocked)', () => {
     const { POST } = await import('@/app/api/auth/register/route');
     
     // Mock the POST function to return existing email error
-    (POST as any).mockResolvedValue(
+    (POST as unknown as MockedPOST).mockResolvedValue(
       new Response(
         JSON.stringify({
           error: 'Account already exists',

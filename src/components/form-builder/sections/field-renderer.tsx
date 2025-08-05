@@ -20,7 +20,6 @@ import {
 // Custom Component Renderer with JavaScript execution
 interface CustomComponentRendererProps {
   html: string;
-  css: string;
   javascript: string;
   fieldId: string;
   fieldData: FormField;
@@ -30,7 +29,6 @@ interface CustomComponentRendererProps {
 
 function CustomComponentRenderer({
   html,
-  css,
   javascript,
   fieldId,
   fieldData,
@@ -522,7 +520,6 @@ export function FieldRenderer({ field, isPreview = false, formValues = {}, onVal
                )}
                <CustomComponentRenderer 
                  html={processTemplate(customFieldType.template.html)}
-                 css={customFieldType.template.css}
                  javascript={customFieldType.template.javascript}
                  fieldId={field.id}
                  fieldData={field}

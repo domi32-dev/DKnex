@@ -53,7 +53,7 @@ export function MiniChartCard({
 
         <div className="relative z-10 flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <motion.div 
                 className={`w-8 h-8 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}
@@ -73,37 +73,39 @@ export function MiniChartCard({
             </div>
           </div>
 
-          {/* Mini Chart */}
-          <div className="relative h-12 mb-3">
-            <svg viewBox={`0 0 ${chartData.length * 10} 60`} className="w-full h-full">
-              <motion.polyline
-                fill="none"
-                stroke={`url(#gradient-${color.replace(/[^a-zA-Z0-9]/g, '')})`}
-                strokeWidth="2.5"
-                points={chartData
-                  .map((value, index) => {
-                    const x = index * 10;
-                    const y = 60 - ((value - minValue) / (maxValue - minValue)) * 40;
-                    return `${x},${y}`;
-                  })
-                  .join(' ')}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 2, delay: 0.5 }}
-              />
-              <defs>
-                <linearGradient id={`gradient-${color.replace(/[^a-zA-Z0-9]/g, '')}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor={color.includes('blue') ? '#3b82f6' : color.includes('green') ? '#10b981' : '#f59e0b'} />
-                  <stop offset="100%" stopColor={color.includes('purple') ? '#8b5cf6' : color.includes('emerald') ? '#059669' : '#dc2626'} />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
+          {/* Mini Chart - Now flexible to fill available space */}
+          <div className="relative flex-grow flex flex-col">
+            <div className="flex-grow min-h-[60px]">
+              <svg viewBox={`0 0 ${chartData.length * 10} 60`} className="w-full h-full">
+                <motion.polyline
+                  fill="none"
+                  stroke={`url(#gradient-${color.replace(/[^a-zA-Z0-9]/g, '')})`}
+                  strokeWidth="2.5"
+                  points={chartData
+                    .map((value, index) => {
+                      const x = index * 10;
+                      const y = 60 - ((value - minValue) / (maxValue - minValue)) * 40;
+                      return `${x},${y}`;
+                    })
+                    .join(' ')}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: 2, delay: 0.5 }}
+                />
+                <defs>
+                  <linearGradient id={`gradient-${color.replace(/[^a-zA-Z0-9]/g, '')}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor={color.includes('blue') ? '#3b82f6' : color.includes('green') ? '#10b981' : '#f59e0b'} />
+                    <stop offset="100%" stopColor={color.includes('purple') ? '#8b5cf6' : color.includes('emerald') ? '#059669' : '#dc2626'} />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
 
-          {/* Chart Points */}
-          <div className="flex justify-between text-xs text-muted-foreground mt-auto">
-            <span>7 days ago</span>
-            <span>Today</span>
+            {/* Chart Points - Footer */}
+            <div className="flex justify-between text-xs text-muted-foreground mt-2 pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
+              <span>7 days ago</span>
+              <span>Today</span>
+            </div>
           </div>
         </div>
       </div>

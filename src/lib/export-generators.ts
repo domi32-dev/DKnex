@@ -1,4 +1,4 @@
-import { FormExportData, ExportResult, ExportFile } from '@/components/form-builder/types';
+import { FormExportData, ExportResult, ExportFile, FormField } from '@/components/form-builder/types';
 
 // SharePoint Direct Upload Export Generator
 export async function generateSharePointDirect(formData: FormExportData, sharepointConfig?: {
@@ -162,7 +162,7 @@ export async function generateSharePointSPFx(formData: FormExportData): Promise<
     });
 
     // Generate gulpfile.js
-    const gulpfile = generateSPFxGulpfile(formData);
+    const gulpfile = generateSPFxGulpfile();
     files.push({
       name: 'gulpfile.js',
       content: gulpfile,
@@ -171,7 +171,7 @@ export async function generateSharePointSPFx(formData: FormExportData): Promise<
       framework: 'spfx'
     });
 
-    // Generate config files
+    // Generate config.json
     const configJson = generateSPFxConfigJson(formData);
     files.push({
       name: 'config/config.json',
@@ -181,7 +181,8 @@ export async function generateSharePointSPFx(formData: FormExportData): Promise<
       framework: 'spfx'
     });
 
-    const writeManifestsJson = generateSPFxWriteManifestsJson(formData);
+    // Generate write-manifests.json
+    const writeManifestsJson = generateSPFxWriteManifestsJson();
     files.push({
       name: 'config/write-manifests.json',
       content: writeManifestsJson,
@@ -190,7 +191,8 @@ export async function generateSharePointSPFx(formData: FormExportData): Promise<
       framework: 'spfx'
     });
 
-    const serveJson = generateSPFxServeJson(formData);
+    // Generate serve.json
+    const serveJson = generateSPFxServeJson();
     files.push({
       name: 'config/serve.json',
       content: serveJson,
@@ -200,10 +202,10 @@ export async function generateSharePointSPFx(formData: FormExportData): Promise<
     });
 
     // Generate tsconfig.json
-    const tsconfig = generateSPFxTsConfig(formData);
+    const tsConfig = generateSPFxTsConfig();
     files.push({
       name: 'tsconfig.json',
-      content: tsconfig,
+      content: tsConfig,
       type: 'config',
       language: 'json',
       framework: 'spfx'
@@ -654,7 +656,7 @@ function generateSPFxFormStyles(formData: FormExportData): string {
 }`;
 }
 
-function generateSPFxField(field: any): string {
+function generateSPFxField(field: FormField): string {
   const fieldName = field.id;
   const fieldLabel = field.label;
   const isRequired = field.required;
@@ -719,7 +721,7 @@ ${field.options?.map((option: string) => `                <option value="${optio
   }
 }
 
-function generateSPFxGulpfile(formData: FormExportData): string {
+function generateSPFxGulpfile(): string {
   return `'use strict';
 
 const gulp = require('gulp');
@@ -759,14 +761,14 @@ function generateSPFxConfigJson(formData: FormExportData): string {
   }, null, 2);
 }
 
-function generateSPFxWriteManifestsJson(formData: FormExportData): string {
+function generateSPFxWriteManifestsJson(): string {
   return JSON.stringify({
     "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/write-manifests.schema.json",
     "cdnBasePath": "<!-- PATH TO CDN -->"
   }, null, 2);
 }
 
-function generateSPFxServeJson(formData: FormExportData): string {
+function generateSPFxServeJson(): string {
   return JSON.stringify({
     "$schema": "https://developer.microsoft.com/json-schemas/core-build/serve.schema.json",
     "port": 4321,
@@ -789,7 +791,7 @@ function generateSPFxServeJson(formData: FormExportData): string {
   }, null, 2);
 }
 
-function generateSPFxTsConfig(formData: FormExportData): string {
+function generateSPFxTsConfig(): string {
   return JSON.stringify({
     "compilerOptions": {
       "target": "ES5",
@@ -830,16 +832,11 @@ function generateSPFxSolutionConfig(formData: FormExportData): string {
       "id": "12345678-1234-1234-1234-123456789012",
       "version": "1.0.0.0",
       "includeClientSideAssets": true,
-      "isDomainIsolated": false,
-      "developer": {
-        "name": "",
-        "websiteUrl": "",
-        "privacyUrl": "",
-        "termsOfUseUrl": ""
-      }
+      "skipFeatureDeployment": true,
+      "isDomainIsolated": false
     },
     "paths": {
-      "zippedPackage": "solution/${formData.formName.toLowerCase().replace(/\s+/g, '-')}-webpart.sppkg"
+      "zippedPackage": "solution/${formData.formName.replace(/\s+/g, '')}-webpart.sppkg"
     }
   }, null, 2);
 }
@@ -1105,7 +1102,7 @@ export default App;`;
 }
 
 // Helper functions for field generation
-function generateReactField(field: any): string {
+function generateReactField(field: FormField): string {
   const fieldName = field.id;
   const fieldLabel = field.label;
   const isRequired = field.required;
@@ -1211,7 +1208,7 @@ function getTypeScriptType(fieldType: string): string {
   }
 }
 
-function getYupValidation(field: any): string {
+function getYupValidation(field: FormField): string {
   switch (field.type) {
     case 'email':
       return 'yup.string().email("Invalid email format").required("Email is required")';
@@ -1224,7 +1221,7 @@ function getYupValidation(field: any): string {
   }
 }
 
-function getDefaultValue(field: any): string {
+function getDefaultValue(field: FormField): string {
   switch (field.type) {
     case 'number': return '0';
     case 'checkbox': return 'false';
@@ -1233,13 +1230,13 @@ function getDefaultValue(field: any): string {
 } 
 
 // Helper functions for SharePoint Direct Export
-function generateSharePointListSchema(formData: FormExportData): any {
+function generateSharePointListSchema(formData: FormExportData): Record<string, unknown> {
   const schema = {
     title: formData.formName,
     description: `Form fields for ${formData.formName}`,
     fields: formData.fields.map(field => {
       let fieldType = 'Text';
-      let additionalProps: any = {};
+      const additionalProps: Record<string, unknown> = {};
 
       switch (field.type) {
         case 'email':
@@ -1299,7 +1296,7 @@ function generateSharePointListSchema(formData: FormExportData): any {
   return schema;
 }
 
-function generatePowerAutomateFlow(formData: FormExportData): any {
+function generatePowerAutomateFlow(formData: FormExportData): Record<string, unknown> {
   return {
     definition: {
       '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#',
@@ -1322,20 +1319,18 @@ function generatePowerAutomateFlow(formData: FormExportData): any {
         }
       },
       actions: {
-        'Send_notification_email': {
+        'Send_an_email': {
           type: 'ApiConnection',
           inputs: {
             host: {
-              connectionName: 'shared_outlook',
-              operationId: 'SendEmailV2',
-              apiId: '/providers/Microsoft.PowerApps/apis/shared_outlook'
+              connectionName: 'shared_office365',
+              operationId: 'SendEmail',
+              apiId: '/providers/Microsoft.PowerApps/apis/shared_office365'
             },
             parameters: {
-              emailMessage: {
-                To: 'admin@company.com',
-                Subject: `New ${formData.formName} submission`,
-                Body: 'A new form submission has been received.'
-              }
+              to: 'admin@company.com',
+              subject: `New form submission: ${formData.formName}`,
+              body: 'A new form has been submitted. Please review the details.'
             }
           }
         }

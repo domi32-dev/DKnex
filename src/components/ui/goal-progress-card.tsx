@@ -7,7 +7,6 @@ interface GoalProgressCardProps {
   title: string;
   current: number;
   target: number;
-  unit: string;
   icon: ReactNode;
   color: string;
   description?: string;
@@ -18,7 +17,6 @@ export function GoalProgressCard({
   title,
   current,
   target,
-  unit,
   icon,
   color,
   description,

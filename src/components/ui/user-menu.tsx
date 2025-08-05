@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,6 @@ import {
   Settings, 
   LogOut, 
   Shield,
-  Bell,
   HelpCircle,
   ExternalLink
 } from "lucide-react";

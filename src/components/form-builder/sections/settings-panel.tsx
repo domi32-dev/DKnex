@@ -9,20 +9,23 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 import { 
-  X, 
   Settings, 
+  Save, 
+  X, 
   Palette, 
-  Code, 
-  Bell, 
-  Globe, 
-  Shield,
-  Download,
+  Eye, 
+  EyeOff, 
+  Lock, 
+  Unlock, 
+  Users, 
+  Mail, 
+  Shield, 
+  Zap,
   Upload,
-  Trash2,
-  Save
+  Download,
+  Trash2
 } from 'lucide-react';
 
 interface SettingsPanelProps {
@@ -114,7 +117,7 @@ export function SettingsPanel({
             setRequireSSL(settings.requireSSL ?? true);
             setMaxSubmissions([settings.maxSubmissions || 100]);
             onShowNotification('Settings imported successfully!');
-          } catch (error) {
+          } catch {
             onShowNotification('Error importing settings. Please check the file format.');
           }
         };

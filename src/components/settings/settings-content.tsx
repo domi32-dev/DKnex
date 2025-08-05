@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -14,15 +13,12 @@ import {
   Globe, 
   Palette, 
   Shield, 
-  Smartphone, 
-  Volume2, 
-  Zap,
   AlertTriangle,
   CheckCircle,
   Info
 } from "lucide-react";
 import { useTranslation } from "@/i18n/translations";
-import { isDemoUser, getDemoMessage } from '@/lib/demo-config';
+import { isDemoUser } from '@/lib/demo-config';
 
 export function SettingsContent() {
   const { data: session } = useSession();
@@ -65,6 +61,16 @@ export function SettingsContent() {
 
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage as "en" | "de");
+  };
+
+  const handleThemeChange = (theme: string) => {
+    setSettings(prev => ({
+      ...prev,
+      appearance: {
+        ...prev.appearance,
+        theme: theme
+      }
+    }));
   };
 
   return (
@@ -261,7 +267,7 @@ export function SettingsContent() {
               <Label className="text-sm font-medium">{t('settings.theme')}</Label>
               <Select
                 value={settings.appearance.theme}
-                onValueChange={(value) => handleSettingChange('appearance', 'theme', value)}
+                onValueChange={handleThemeChange}
               >
                 <SelectTrigger>
                   <SelectValue />

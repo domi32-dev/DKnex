@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, 
@@ -39,8 +39,8 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const router = useRouter();
 
-  // Command registry
-  const commands: CommandItem[] = [
+  // Command registry - wrapped in useMemo to prevent unnecessary re-renders
+  const commands: CommandItem[] = useMemo(() => [
     {
       id: 'create-form',
       label: 'Create new form',
@@ -120,7 +120,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
       action: () => router.push('/forms/quick/contact'),
       keywords: ['quick', 'contact', 'instant', 'fast'],
     },
-  ];
+  ], [router]);
 
   // Global keyboard shortcuts handler
   useEffect(() => {
@@ -273,7 +273,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                   </div>
                   <p className="text-muted-foreground mb-2">No commands found</p>
                   <p className="text-sm text-muted-foreground">
-                    Try searching for "create", "view", or "settings"
+                    Try searching for &quot;create&quot;, &quot;view&quot;, or &quot;settings&quot;
                   </p>
                 </div>
               ) : (
@@ -283,7 +283,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                       <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {categoryLabels[category as keyof typeof categoryLabels]}
                       </div>
-                      {commands.map((command, index) => {
+                      {commands.map((command) => {
                         const globalIndex = filteredCommands.indexOf(command);
                         return (
                           <motion.div

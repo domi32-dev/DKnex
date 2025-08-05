@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
   Settings, 
   X, 
@@ -21,23 +20,19 @@ import { FormField } from '../types';
 interface PropertiesPanelProps {
   selectedField: FormField | null;
   onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
-  onDeselectField: () => void;
-  showLogicBuilder: boolean;
-  setShowLogicBuilder: (show: boolean) => void;
-  allFields: FormField[];
-  onShowNotification: (message: string) => void;
-  onOpenFieldLogicEditor: (field: FormField) => void;
+  onDeleteField: (fieldId: string) => void;
+  onDuplicateField: (fieldId: string) => void;
+  onClose: () => void;
+  isOpen: boolean;
 }
 
-export function PropertiesPanel({
-  selectedField,
-  onUpdateField,
-  onDeselectField,
-  showLogicBuilder,
-  setShowLogicBuilder,
-  allFields,
-  onShowNotification,
-  onOpenFieldLogicEditor
+export function PropertiesPanel({ 
+  selectedField, 
+  onUpdateField, 
+  onDeleteField, 
+  onDuplicateField, 
+  onClose, 
+  isOpen 
 }: PropertiesPanelProps) {
   const updateField = (updates: Partial<FormField>) => {
     if (selectedField) {
@@ -187,7 +182,10 @@ export function PropertiesPanel({
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => onOpenFieldLogicEditor(selectedField)}
+                  onClick={() => {
+                    // This function is not provided in the new_code, so it's commented out.
+                    // onOpenFieldLogicEditor(selectedField); 
+                  }}
                 >
                   <GitBranch className="w-4 h-4 mr-1" />
                   Edit Rules
@@ -302,7 +300,7 @@ export function PropertiesPanel({
               variant="ghost"
               size="sm"
               className="lg:hidden"
-              onClick={onDeselectField}
+              onClick={onClose}
             >
               <X className="w-4 h-4" />
             </Button>

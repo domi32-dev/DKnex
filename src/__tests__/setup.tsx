@@ -1,5 +1,24 @@
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
+import React from "react";
+
+// Define proper types for mocked components
+interface MockImageProps {
+  src: string;
+  alt: string;
+  [key: string]: unknown;
+}
+
+interface MockIconProps {
+  className?: string;
+  [key: string]: unknown;
+}
+
+interface MockCardProps {
+  children?: React.ReactNode;
+  className?: string;
+  [key: string]: unknown;
+}
 
 // Mock Next.js router
 vi.mock("next/navigation", () => ({
@@ -17,7 +36,7 @@ vi.mock("next/navigation", () => ({
 
 // Mock Next.js image
 vi.mock("next/image", () => ({
-  default: ({ src, alt, ...props }: any) => {
+  default: ({ src, alt, ...props }: MockImageProps) => {
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={src} alt={alt} {...props} />;
   },
@@ -25,19 +44,19 @@ vi.mock("next/image", () => ({
 
 // Mock Lucide React icons
 vi.mock("lucide-react", () => ({
-  AlertTriangle: ({ className }: any) => <div data-testid="alert-triangle" className={className} />,
-  RefreshCw: ({ className }: any) => <div data-testid="refresh-cw" className={className} />,
-  Home: ({ className }: any) => <div data-testid="home" className={className} />,
-  Bug: ({ className }: any) => <div data-testid="bug" className={className} />,
-  Copy: ({ className }: any) => <div data-testid="copy" className={className} />,
+  AlertTriangle: ({ className }: MockIconProps) => <div data-testid="alert-triangle" className={className} />,
+  RefreshCw: ({ className }: MockIconProps) => <div data-testid="refresh-cw" className={className} />,
+  Home: ({ className }: MockIconProps) => <div data-testid="home" className={className} />,
+  Bug: ({ className }: MockIconProps) => <div data-testid="bug" className={className} />,
+  Copy: ({ className }: MockIconProps) => <div data-testid="copy" className={className} />,
 }));
 
 // Mock UI components
 vi.mock("@/components/ui/card", () => ({
-  Card: ({ children, className }: any) => <div className={className}>{children}</div>,
-  CardContent: ({ children, className }: any) => <div className={className}>{children}</div>,
-  CardHeader: ({ children, className }: any) => <div className={className}>{children}</div>,
-  CardTitle: ({ children, className }: any) => <h3 className={className}>{children}</h3>,
+  Card: ({ children, className }: MockCardProps) => <div className={className}>{children}</div>,
+  CardContent: ({ children, className }: MockCardProps) => <div className={className}>{children}</div>,
+  CardHeader: ({ children, className }: MockCardProps) => <div className={className}>{children}</div>,
+  CardTitle: ({ children, className }: MockCardProps) => <h3 className={className}>{children}</h3>,
 }));
 
 // Mock NextAuth

@@ -14,7 +14,6 @@ import {
   Target, 
   TrendingUp, 
   CheckCircle,
-  AlertTriangle,
   Info,
   Zap,
   Lightbulb,
@@ -22,21 +21,17 @@ import {
   Send,
   Loader2
 } from 'lucide-react';
-import { FormField, AISuggestion, AIFormAnalysis, AIFieldRecommendation } from '../types';
+import { FormField, AISuggestion, AIFormAnalysis } from '../types';
 
 interface AIAssistantPanelProps {
   fields: FormField[];
   showAIAssistant: boolean;
-  onSelectField: (field: FormField) => void;
-  onAddField: (type: FormField['type'], template?: any) => void;
   onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
 }
 
 export function AIAssistantPanel({
   fields,
   showAIAssistant,
-  onSelectField,
-  onAddField,
   onUpdateField
 }: AIAssistantPanelProps) {
   const [analysis, setAnalysis] = useState<AIFormAnalysis | null>(null);
@@ -45,13 +40,6 @@ export function AIAssistantPanel({
   const [chatInput, setChatInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('suggestions');
-
-  // Simulate AI analysis when fields change
-  useEffect(() => {
-    if (fields.length > 0) {
-      simulateAIAnalysis();
-    }
-  }, [fields]);
 
   const simulateAIAnalysis = async () => {
     setIsLoading(true);
@@ -95,6 +83,17 @@ export function AIAssistantPanel({
     setSuggestions(mockAnalysis.suggestions);
     setIsLoading(false);
   };
+
+  // Simulate AI analysis when fields change
+  useEffect(() => {
+    if (fields.length > 0) {
+      simulateAIAnalysis();
+    }
+  }, [fields]);
+
+  useEffect(() => {
+    simulateAIAnalysis();
+  }, [simulateAIAnalysis]);
 
   const generateSuggestions = (): AISuggestion[] => {
     const possibleSuggestions = [

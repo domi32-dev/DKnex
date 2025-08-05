@@ -44,7 +44,7 @@ export function PreviewMode({
   const [currentPreviewPage, setCurrentPreviewPage] = useState(
     isMultiStep && pages.length > 0 ? pages[0].id : ''
   );
-  const [formValues, setFormValues] = useState<Record<string, any>>({});
+  const [formValues, setFormValues] = useState<Record<string, string | number | boolean | string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
@@ -102,7 +102,7 @@ export function PreviewMode({
   };
 
   // Handle form value changes
-  const handleFormValueChange = (fieldId: string, value: any) => {
+  const handleFormValueChange = (fieldId: string, value: string | number | boolean | string[]) => {
     setFormValues(prev => ({
       ...prev,
       [fieldId]: value

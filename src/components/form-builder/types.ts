@@ -80,7 +80,7 @@ export interface FormField {
     html: string;
     css: string;
     javascript: string;
-    props: Record<string, any>;
+    props: Record<string, string | number | boolean | string[]>;
     events: CustomEvent[];
     dependencies: string[];
   };
@@ -159,7 +159,7 @@ export interface CustomFieldProp {
   name: string;
   type: 'string' | 'number' | 'boolean' | 'array' | 'object';
   required: boolean;
-  default?: any;
+  default?: string | number | boolean | string[];
   description: string;
 }
 
@@ -194,7 +194,7 @@ export interface FormLogic {
 export interface FormLogicAction {
   id: string;
   type: 'save_data' | 'send_email' | 'redirect' | 'show_message' | 'trigger_webhook';
-  config: Record<string, any>;
+  config: Record<string, string | number | boolean | string[]>;
 }
 
 export interface DevModeSettings {

@@ -31,7 +31,7 @@ export function LazyLoad({ children, fallback }: LazyLoadProps) {
 }
 
 // Lazy load a specific component
-export function LazyComponent<T extends Record<string, any>>({
+export function LazyComponent<T extends Record<string, unknown>>({
   component,
   props,
   fallback,
@@ -40,7 +40,7 @@ export function LazyComponent<T extends Record<string, any>>({
 
   return (
     <Suspense fallback={fallback || <DefaultFallback />}>
-      <LazyComponent {...(props as any)} />
+      <LazyComponent {...(props as T)} />
     </Suspense>
   );
 }
@@ -91,7 +91,7 @@ export function LazyLoadOnView({
 }
 
 // Preload component for better UX
-export function preloadComponent<T extends Record<string, any>>(
+export function preloadComponent<T extends Record<string, unknown>>(
   component: () => Promise<{ default: ComponentType<T> }>
 ) {
   return () => {
@@ -101,19 +101,16 @@ export function preloadComponent<T extends Record<string, any>>(
 }
 
 // Lazy load with error boundary
-export function LazyLoadWithErrorBoundary<T extends Record<string, any>>({
+export function LazyLoadWithErrorBoundary<T extends Record<string, unknown>>({
   component,
   props,
   fallback,
-  errorFallback,
-}: LazyComponentProps<T> & {
-  errorFallback?: React.ComponentType<{ error: Error; reset: () => void }>;
-}) {
+}: LazyComponentProps<T>) {
   const LazyComponent = lazy(component);
 
   return (
     <Suspense fallback={fallback || <DefaultFallback />}>
-      <LazyComponent {...(props as any)} />
+      <LazyComponent {...(props as T)} />
     </Suspense>
   );
 } 

@@ -33,7 +33,7 @@ import {
   Code
 } from 'lucide-react';
 
-import { FormField, LogicRule } from './types';
+import { FormField, LogicRule, FieldType } from './types';
 
 // Icon mapping for rendering
 const iconMap = {
@@ -163,7 +163,7 @@ export const groupFieldsIntoRows = (fields: FormField[]) => {
   return rows;
 };
 
-export const filterFieldTypes = (fieldTypes: any[], searchQuery: string, selectedCategory: string) => {
+export const filterFieldTypes = (fieldTypes: FieldType[], searchQuery: string, selectedCategory: string) => {
   return fieldTypes.filter(fieldType => {
     const matchesSearch = searchQuery === '' || 
       fieldType.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -176,21 +176,21 @@ export const filterFieldTypes = (fieldTypes: any[], searchQuery: string, selecte
   });
 };
 
-export const groupFieldTypesByCategory = (fieldTypes: any[]) => {
+export const groupFieldTypesByCategory = (fieldTypes: FieldType[]) => {
   return fieldTypes.reduce((acc, fieldType) => {
     if (!acc[fieldType.category]) {
       acc[fieldType.category] = [];
     }
     acc[fieldType.category].push(fieldType);
     return acc;
-  }, {} as Record<string, any[]>);
+  }, {} as Record<string, FieldType[]>);
 };
 
 // NEW: Conditional Logic Utilities
 export const evaluateCondition = (
   rule: LogicRule, 
-  triggerValue: any, 
-  allFields: FormField[]
+  triggerValue: string | number | boolean | string[], 
+  _allFields: FormField[]
 ): boolean => {
   const { triggerCondition, triggerValue: ruleValue } = rule;
 
@@ -214,7 +214,7 @@ export const evaluateCondition = (
     case 'is_empty':
       return !triggerValue || trigger === '';
     case 'is_not_empty':
-      return triggerValue && trigger !== '';
+      return Boolean(triggerValue) && trigger !== '';
     default:
       return false;
   }
@@ -222,7 +222,7 @@ export const evaluateCondition = (
 
 export const shouldFieldBeVisible = (
   field: FormField, 
-  formValues: Record<string, any>, 
+  formValues: Record<string, string | number | boolean | string[]>, 
   allFields: FormField[]
 ): boolean => {
   // If no conditional logic, field is always visible
@@ -243,14 +243,14 @@ export const shouldFieldBeVisible = (
 
 export const getVisibleFields = (
   fields: FormField[], 
-  formValues: Record<string, any>
+  formValues: Record<string, string | number | boolean | string[]>
 ): FormField[] => {
   return fields.filter(field => shouldFieldBeVisible(field, formValues, fields));
 };
 
 export const applyFieldLogicActions = (
   field: FormField,
-  formValues: Record<string, any>,
+  formValues: Record<string, string | number | boolean | string[]>,
   allFields: FormField[]
 ): Partial<FormField> => {
   if (!field.conditionalLogic?.enabled || !field.conditionalLogic.rules?.length) {

@@ -8,8 +8,7 @@ import { Heart } from 'lucide-react';
 
 // Import types and utilities
 import { FormField, FormPage, FieldTemplate, CustomFieldType } from './types';
-import { defaultTemplates as defaultTemplatesData } from './constants';
-import { generateId, getVisibleFields, shouldFieldBeVisible } from './utils';
+import { generateId, getVisibleFields } from './utils';
 
 // Import components
 import { Header } from './sections/header';
@@ -59,6 +58,7 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
   const [showLogicBuilder, setShowLogicBuilder] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showExportPanel, setShowExportPanel] = useState(false);
+  const [currentTheme, setCurrentTheme] = useState('default');
   
   // AI & Dev Mode state
   const [showAIAssistant, setShowAIAssistant] = useState(false);
@@ -92,7 +92,6 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
   
   // Inline editing state
   const [isInlineEditing, setIsInlineEditing] = useState<string | null>(null);
-  const [currentTheme, setCurrentTheme] = useState('default');
   const [fieldTemplates, setFieldTemplates] = useState<FieldTemplate[]>([]);
   
   const inlineEditRef = useRef<HTMLInputElement>(null);
@@ -440,7 +439,7 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
             } else {
               showNotification('Invalid form data format');
             }
-          } catch (_error) {
+          } catch (error) {
             showNotification('Error parsing JSON file');
           }
         };
@@ -670,8 +669,6 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
             <AIAssistantPanel
               fields={fields}
               showAIAssistant={showAIAssistant}
-              onSelectField={setSelectedField}
-              onAddField={addField}
               onUpdateField={updateField}
             />
           )}
