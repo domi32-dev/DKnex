@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MetricCard } from "@/components/ui/metric-card";
 import { AIInsightCard, AIInsight } from "@/components/ui/ai-insight-card";
-import { DashboardSection } from "@/components/ui/dashboard-section";
 import { MiniChartCard } from "@/components/ui/mini-chart-card";
 import { GoalProgressCard } from "@/components/ui/goal-progress-card";
 import { SmartSuggestionCard } from "@/components/ui/smart-suggestion-card";
@@ -240,7 +239,6 @@ export function ModernDashboard() {
                   title={t('dashboard.submissionsGoal' as const)}
                   current={1847}
                   target={2500}
-                  unit="submissions"
                   icon={<Target className="w-5 h-5" />}
                   color="from-green-500 to-emerald-500"
                   description={t('dashboard.onTrackToReach' as const)}
@@ -262,7 +260,6 @@ export function ModernDashboard() {
                   title={t('dashboard.qualityGoal' as const)}
                   current={87}
                   target={95}
-                  unit="score"
                   icon={<Star className="w-5 h-5" />}
                   color="from-purple-500 to-pink-500"
                   description={t('dashboard.aheadOfSchedule' as const)}
