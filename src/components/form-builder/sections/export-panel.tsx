@@ -20,9 +20,8 @@ import {
   Building
 } from 'lucide-react';
 import { PLATFORM_EXPORTS } from '../constants';
-import { FormExportData, ExportResult } from '../types';
+import { FormExportData, ExportResult, ExportFile } from '../types';
 import { generateSharePointSPFx, generateSharePointDirect, generateReactComponent } from '@/lib/export-generators';
-import { useTranslation } from '@/i18n/translations';
 import JSZip from 'jszip';
 
 interface ExportPanelProps {
@@ -131,7 +130,7 @@ export function ExportPanel({ isOpen, onClose, formData }: ExportPanelProps) {
     }
   };
 
-  const createSPFxProjectZip = async (files: any[]) => {
+  const createSPFxProjectZip = async (files: ExportFile[]) => {
     const zip = new JSZip();
     const projectName = files.find(f => f.name.includes('WebPart'))?.name.split('/')[2] || 'spfx-project';
     

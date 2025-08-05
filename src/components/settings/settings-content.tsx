@@ -49,7 +49,7 @@ export function SettingsContent() {
 
   const isDemoUserAccount = isDemoUser(session?.user?.email);
 
-  const handleSettingChange = (category: string, setting: string, value: any) => {
+  const handleSettingChange = (category: string, setting: string, value: string | number | boolean) => {
     setSettings(prev => ({
       ...prev,
       [category]: {

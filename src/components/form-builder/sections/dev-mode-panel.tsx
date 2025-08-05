@@ -21,7 +21,6 @@ import {
   EyeOff,
   Terminal,
   AlertTriangle,
-  CheckCircle,
   Download,
   Upload,
   Trash2,
@@ -260,7 +259,7 @@ export function DevModePanel({
 
   useEffect(() => {
     updatePreview();
-  }, [htmlCode, cssCode, jsCode]);
+  }, [htmlCode, cssCode, jsCode, updatePreview]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {

@@ -21,22 +21,15 @@ import {
   CheckCircle, 
   Workflow, 
   Database, 
-  Users, 
   Mail, 
-  Calendar, 
-  FileText, 
-  Code, 
-  Globe, 
-  Building,
   ExternalLink,
   MessageSquare,
   Webhook
 } from 'lucide-react';
-import { FormField, LogicRule, LogicAction, FormLogic, FormLogicAction } from '../types';
+import { FormField, LogicRule, FormLogic, FormLogicAction } from '../types';
 
 interface LogicRulesPanelProps {
   fields: FormField[];
-  showLogicRules: boolean;
   onClose: () => void;
   onShowNotification: (message: string) => void;
   onUpdateField?: (fieldId: string, updates: Partial<FormField>) => void;
@@ -44,7 +37,6 @@ interface LogicRulesPanelProps {
 
 export function LogicRulesPanel({ 
   fields, 
-  showLogicRules, 
   onClose,
   onShowNotification,
   onUpdateField
@@ -108,24 +100,6 @@ export function LogicRulesPanel({
       actions: [...(formLogic.find(l => l.id === logicId)?.actions || []), newAction]
     });
   }, [formLogic, updateFormLogic]);
-
-  const getFieldOptions = useCallback(() => {
-    return fields.map(field => ({
-      value: field.id,
-      label: field.label || field.type
-    }));
-  }, [fields]);
-
-  const getConditionOptions = () => [
-    { value: 'equals', label: 'Equals' },
-    { value: 'not_equals', label: 'Does not equal' },
-    { value: 'contains', label: 'Contains' },
-    { value: 'not_contains', label: 'Does not contain' },
-    { value: 'greater_than', label: 'Greater than' },
-    { value: 'less_than', label: 'Less than' },
-    { value: 'is_empty', label: 'Is empty' },
-    { value: 'is_not_empty', label: 'Is not empty' }
-  ];
 
   const getFormLogicTypeOptions = () => [
     { value: 'save_workflow', label: 'Save Workflow', icon: Database },
@@ -208,12 +182,9 @@ export function LogicRulesPanel({
                       <span className="text-sm font-medium">Field Rules</span>
                       <Badge variant="outline">{allFieldRules.length}</Badge>
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      {allFieldRules.length > 0 
-                        ? `${allFieldRules.length} conditional rules across ${new Set(allFieldRules.map(r => r.field.id)).size} fields`
-                        : 'No field rules configured yet'
-                      }
-                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Conditional logic rules applied to individual fields
+                    </p>
                   </div>
 
                   {/* Form Logic Summary */}
@@ -222,37 +193,9 @@ export function LogicRulesPanel({
                       <span className="text-sm font-medium">Form Workflows</span>
                       <Badge variant="outline">{formLogic.length}</Badge>
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      {formLogic.length > 0 
-                        ? `${formLogic.length} workflow rules configured`
-                        : 'No form workflows configured yet'
-                      }
-                    </div>
-                  </div>
-
-                  {/* Quick Actions */}
-                  <div className="pt-4 border-t space-y-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full"
-                      onClick={() => {
-                        // This would open field logic editor
-                        onShowNotification('Select a field to edit its logic rules');
-                      }}
-                    >
-                      <Plus className="w-3 h-3 mr-2" />
-                      Add Field Rule
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full"
-                      onClick={createNewFormLogic}
-                    >
-                      <Plus className="w-3 h-3 mr-2" />
-                      Add Form Workflow
-                    </Button>
+                    <p className="text-xs text-muted-foreground">
+                      Complex workflows that trigger on form submission
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -260,111 +203,75 @@ export function LogicRulesPanel({
 
             {/* Field Rules Tab */}
             <TabsContent value="field-rules" className="space-y-4">
-              {allFieldRules.length === 0 ? (
-                <Card>
-                  <CardContent className="text-center py-8">
-                    <GitBranch className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm text-muted-foreground">No field rules configured yet</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Select a field and enable conditional logic to create rules
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-3">
-                  {allFieldRules.map(({ field, rule }) => (
-                    <Card key={rule.id} className="cursor-pointer hover:bg-muted/50">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h4 className="font-medium text-sm">{rule.name}</h4>
-                              <Badge variant="outline" className="text-xs">
-                                {rule.actions.length} actions
-                              </Badge>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Field Rules</CardTitle>
+                  <CardDescription>Conditional logic applied to individual fields</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {allFieldRules.length === 0 ? (
+                    <div className="text-center py-8">
+                      <GitBranch className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                      <p className="text-muted-foreground">No field rules configured</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {allFieldRules.map(({ field, rule }) => (
+                        <div key={`${field.id}-${rule.id}`} className="p-3 border rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <span className="font-medium">{field.label}</span>
+                              <span className="text-muted-foreground ml-2">→ {rule.triggerCondition}</span>
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                              Field: <span className="font-medium">{field.label}</span>
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              When: {rule.triggerCondition} &quot;{rule.triggerValue}&quot;
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Switch
-                              checked={rule.enabled}
-                              onCheckedChange={(checked) => {
-                                // Update the rule in the field
-                                if (onUpdateField) {
-                                  const updatedRules = field.conditionalLogic?.rules.map(r =>
-                                    r.id === rule.id ? { ...r, enabled: checked } : r
-                                  ) || [];
-                                                                 onUpdateField(field.id, {
-                                     conditionalLogic: {
-                                       enabled: field.conditionalLogic?.enabled || false,
-                                       rules: updatedRules
-                                     }
-                                   });
-                                }
-                              }}
-                            />
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                onShowNotification('Field logic editing will be available in the properties panel');
-                              }}
-                              className="h-6 w-6 p-0"
-                            >
-                              <Settings className="w-3 h-3" />
-                            </Button>
+                            <Badge variant="secondary">Field Rule</Badge>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
 
             {/* Form Logic Tab */}
             <TabsContent value="form-logic" className="space-y-4">
-              {/* Form Logic List */}
-              <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Form Workflows</h3>
+                <Button onClick={createNewFormLogic} className="flex items-center gap-2">
+                  <Plus className="w-4 h-4" />
+                  New Workflow
+                </Button>
+              </div>
+
+              <div className="grid gap-4">
                 {formLogic.map((logic) => {
-                  const Icon = getFormLogicTypeIcon(logic.type);
+                  const LogicIcon = getFormLogicTypeIcon(logic.type);
                   return (
                     <Card 
                       key={logic.id} 
                       className={`cursor-pointer transition-all ${
                         selectedFormLogic?.id === logic.id 
-                          ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950/20' 
-                          : 'hover:bg-muted/50'
+                          ? 'ring-2 ring-primary' 
+                          : 'hover:shadow-md'
                       }`}
                       onClick={() => setSelectedFormLogic(logic)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <Switch
-                              checked={logic.enabled}
-                              onCheckedChange={(checked) => updateFormLogic(logic.id, { enabled: checked })}
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <Icon className="w-4 h-4 text-blue-500" />
-                                <h4 className="font-medium text-sm">{logic.name}</h4>
-                                <Badge variant="outline" className="text-xs">
-                                  {logic.actions.length} actions
-                                </Badge>
-                              </div>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {logic.conditions.length} conditions, {logic.actions.length} actions
+                            <LogicIcon className="w-5 h-5 text-blue-500" />
+                            <div>
+                              <h4 className="font-medium">{logic.name}</h4>
+                              <p className="text-sm text-muted-foreground">
+                                {getFormLogicTypeOptions().find(t => t.value === logic.type)?.label}
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-2">
+                            <Switch 
+                              checked={logic.enabled} 
+                              onCheckedChange={(checked) => updateFormLogic(logic.id, { enabled: checked })}
+                            />
                             <Button
                               variant="ghost"
                               size="sm"
@@ -372,9 +279,9 @@ export function LogicRulesPanel({
                                 e.stopPropagation();
                                 deleteFormLogic(logic.id);
                               }}
-                              className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                              className="text-red-500 hover:text-red-700"
                             >
-                              <Trash2 className="w-3 h-3" />
+                              <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
                         </div>
@@ -384,37 +291,17 @@ export function LogicRulesPanel({
                 })}
               </div>
 
-              {/* Add New Form Logic */}
-              <Button 
-                onClick={createNewFormLogic}
-                variant="outline"
-                className="w-full border-dashed"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Form Workflow
-              </Button>
-
-              {/* Form Logic Editor */}
+              {/* Selected Logic Details */}
               {selectedFormLogic && (
-                <Card className="mt-6">
+                <Card>
                   <CardHeader>
-                    <CardTitle className="text-base flex items-center justify-between">
-                      <span>Edit Workflow</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedFormLogic(null)}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    </CardTitle>
+                    <CardTitle>Edit Workflow</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {/* Workflow Name */}
                     <div className="space-y-2">
-                      <Label htmlFor="workflow-name">Workflow Name</Label>
+                      <Label>Workflow Name</Label>
                       <Input
-                        id="workflow-name"
                         value={selectedFormLogic.name}
                         onChange={(e) => updateFormLogic(selectedFormLogic.id, { name: e.target.value })}
                         placeholder="Enter workflow name"
@@ -426,7 +313,7 @@ export function LogicRulesPanel({
                       <Label>Workflow Type</Label>
                       <Select
                         value={selectedFormLogic.type}
-                        onValueChange={(value: any) => updateFormLogic(selectedFormLogic.id, { type: value })}
+                        onValueChange={(value: 'save_workflow' | 'validation_workflow' | 'notification_workflow' | 'redirect_workflow') => updateFormLogic(selectedFormLogic.id, { type: value })}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -471,7 +358,7 @@ export function LogicRulesPanel({
                                   <ActionIcon className="w-4 h-4 text-blue-500" />
                                   <Select
                                     value={action.type}
-                                    onValueChange={(value: any) => {
+                                    onValueChange={(value: 'save_data' | 'send_email' | 'redirect' | 'show_message' | 'trigger_webhook') => {
                                       const updatedActions = selectedFormLogic.actions.map(a =>
                                         a.id === action.id ? { ...a, type: value } : a
                                       );
@@ -518,19 +405,6 @@ export function LogicRulesPanel({
               )}
             </TabsContent>
           </Tabs>
-
-          {/* Save Button */}
-          {(allFieldRules.length > 0 || formLogic.length > 0) && (
-            <div className="mt-6 pt-4 border-t">
-              <Button 
-                onClick={() => onShowNotification('Logic rules saved successfully!')} 
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save Logic Rules
-              </Button>
-            </div>
-          )}
         </div>
       </div>
     </div>

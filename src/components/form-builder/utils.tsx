@@ -189,8 +189,7 @@ export const groupFieldTypesByCategory = (fieldTypes: FieldType[]) => {
 // NEW: Conditional Logic Utilities
 export const evaluateCondition = (
   rule: LogicRule, 
-  triggerValue: string | number | boolean | string[], 
-  _allFields: FormField[]
+  triggerValue: string | number | boolean | string[]
 ): boolean => {
   const { triggerCondition, triggerValue: ruleValue } = rule;
 
@@ -233,7 +232,7 @@ export const shouldFieldBeVisible = (
   // Evaluate all rules for this field
   const results = field.conditionalLogic.rules.map(rule => {
     const triggerFieldValue = formValues[rule.triggerField];
-    return evaluateCondition(rule, triggerFieldValue, allFields);
+    return evaluateCondition(rule, triggerFieldValue);
   });
 
   // For now, ALL rules must be true for field to be visible
@@ -261,7 +260,7 @@ export const applyFieldLogicActions = (
 
   field.conditionalLogic.rules.forEach(rule => {
     const triggerFieldValue = formValues[rule.triggerField];
-    const conditionMet = evaluateCondition(rule, triggerFieldValue, allFields);
+    const conditionMet = evaluateCondition(rule, triggerFieldValue);
 
     if (conditionMet) {
       rule.actions.forEach(action => {

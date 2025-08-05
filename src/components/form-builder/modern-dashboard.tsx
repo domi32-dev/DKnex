@@ -27,14 +27,6 @@ import { motion } from "framer-motion";
 import { useTranslation } from "@/i18n/translations";
 import { useSession } from "next-auth/react";
 
-interface DashboardWidget {
-   id: string;
-   title: string;
-   type: 'metric' | 'chart' | 'list' | 'activity';
-   order: number;
-   visible: boolean;
-}
-
 interface MetricData {
    title: string;
    value: string;
@@ -50,13 +42,6 @@ export function ModernDashboard() {
    const { t } = useTranslation();
    const { data: session } = useSession();
    
-   const [dashboardLayout, setDashboardLayout] = useState<DashboardWidget[]>([
-      { id: 'metrics', title: 'Key Metrics', type: 'metric', order: 0, visible: true },
-      { id: 'insights', title: 'AI Insights', type: 'chart', order: 1, visible: true },
-      { id: 'recent', title: 'Recent Activity', type: 'activity', order: 2, visible: true },
-      { id: 'forms', title: 'Quick Access', type: 'list', order: 3, visible: true },
-   ]);
-
    // AI-powered insights
    const aiInsights: AIInsight[] = [
       {

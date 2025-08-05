@@ -23,8 +23,8 @@ interface CustomComponentRendererProps {
   javascript: string;
   fieldId: string;
   fieldData: FormField;
-  formValues: Record<string, any>;
-  onValueChange?: (fieldId: string, value: any) => void;
+  formValues: Record<string, string | number | boolean | string[]>;
+  onValueChange?: (fieldId: string, value: string | number | boolean | string[]) => void;
 }
 
 function CustomComponentRenderer({
@@ -119,13 +119,30 @@ function CustomComponentRenderer({
 interface FieldRendererProps {
   field: FormField;
   isPreview?: boolean;
-  formValues?: Record<string, any>;
-  onValueChange?: (fieldId: string, value: any) => void;
+  formValues?: Record<string, string | number | boolean | string[]>;
+  onValueChange?: (fieldId: string, value: string | number | boolean | string[]) => void;
   customFieldTypes?: CustomFieldType[];
 }
 
 export function FieldRenderer({ field, isPreview = false, formValues = {}, onValueChange, customFieldTypes = [] }: FieldRendererProps) {
   const baseInputClass = "w-full px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200";
+  
+  // Helper function to get form value as string
+  const getStringValue = (fieldId: string): string => {
+    const value = formValues[fieldId];
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number') return value.toString();
+    if (typeof value === 'boolean') return value.toString();
+    if (Array.isArray(value)) return value.join(', ');
+    return '';
+  };
+
+  // Helper function to get checkbox values as array
+  const getCheckboxValues = (fieldId: string): string[] => {
+    const value = formValues[fieldId];
+    if (Array.isArray(value)) return value;
+    return [];
+  };
   
   switch (field.type) {
     case 'text':
@@ -138,7 +155,7 @@ export function FieldRenderer({ field, isPreview = false, formValues = {}, onVal
           type={field.type === 'phone' ? 'tel' : field.type}
           placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
           required={field.required}
-          value={formValues[field.id] || ''}
+          value={getStringValue(field.id)}
           onChange={(e) => onValueChange?.(field.id, e.target.value)}
           className={baseInputClass}
           disabled={!isPreview}
@@ -150,7 +167,7 @@ export function FieldRenderer({ field, isPreview = false, formValues = {}, onVal
         <textarea
           placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
           required={field.required}
-          value={formValues[field.id] || ''}
+          value={getStringValue(field.id)}
           onChange={(e) => onValueChange?.(field.id, e.target.value)}
           className={`${baseInputClass} min-h-[120px] resize-vertical`}
           disabled={!isPreview}
@@ -161,7 +178,7 @@ export function FieldRenderer({ field, isPreview = false, formValues = {}, onVal
       return (
         <Select 
           disabled={!isPreview}
-          value={formValues[field.id] || ''}
+          value={getStringValue(field.id)}
           onValueChange={(value) => onValueChange?.(field.id, value)}
         >
           <SelectTrigger className={`${baseInputClass} justify-between`}>
@@ -176,7 +193,7 @@ export function FieldRenderer({ field, isPreview = false, formValues = {}, onVal
       );
     
     case 'checkbox':
-      const checkboxValues = formValues[field.id] || [];
+      const checkboxValues = getCheckboxValues(field.id);
       return (
         <div className="space-y-3">
           {field.options?.map((option, index) => (
@@ -212,7 +229,7 @@ export function FieldRenderer({ field, isPreview = false, formValues = {}, onVal
                 id={`${field.id}_${index}`}
                 name={field.id}
                 value={option}
-                checked={formValues[field.id] === option}
+                checked={getStringValue(field.id) === option}
                 onChange={(e) => onValueChange?.(field.id, e.target.value)}
                 className="w-4 h-4 border-2 border-border focus:ring-primary/20 text-primary"
                 disabled={!isPreview}

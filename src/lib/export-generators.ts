@@ -742,6 +742,7 @@ build.rig.getTasks = function () {
 build.initialize(gulp);`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function generateSPFxConfigJson(formData: FormExportData): string {
   return JSON.stringify({
     "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
@@ -824,6 +825,7 @@ function generateSPFxTsConfig(): string {
   }, null, 2);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function generateSPFxSolutionConfig(formData: FormExportData): string {
   return JSON.stringify({
     "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",

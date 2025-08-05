@@ -24,7 +24,7 @@ import { SettingsPanel } from './sections/settings-panel';
 import { FieldLogicEditor } from './sections/field-logic-editor';
 import { ExportPanel } from './sections/export-panel';
 import { Button } from '@/components/ui/button';
-import { X, GitBranch } from 'lucide-react';
+import { X, GitBranch, Zap } from 'lucide-react';
 
 interface FormBuilderProps {
   formId?: string;
@@ -32,7 +32,7 @@ interface FormBuilderProps {
   onSave?: (fields: FormField[], formName: string, pages?: FormPage[]) => void;
 }
 
-export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave }: FormBuilderProps) {
+export function ModernFormBuilder({ initialFields = [], onSave }: FormBuilderProps) {
   const { t } = useTranslation();
   
   // Core state
@@ -43,7 +43,7 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
   const [formName, setFormName] = useState<string>(t('formBuilder.untitledForm' as keyof typeof t) || 'Untitled Form');
   
   // Form values for conditional logic
-  const [formValues, setFormValues] = useState<Record<string, any>>({});
+  const [formValues, setFormValues] = useState<Record<string, string | number | boolean | string[]>>({});
   
   // UI state
   const [previewMode, setPreviewMode] = useState(false);
@@ -55,8 +55,6 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
   const [editingFieldForLogic, setEditingFieldForLogic] = useState<FormField | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
-  const [showLogicBuilder, setShowLogicBuilder] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
   const [showExportPanel, setShowExportPanel] = useState(false);
   const [currentTheme, setCurrentTheme] = useState('default');
   
@@ -71,8 +69,8 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
       try {
         const saved = localStorage.getItem('dknex-custom-components');
         return saved ? JSON.parse(saved) : [];
-      } catch (error) {
-        console.error('Failed to load custom components:', error);
+      } catch {
+        console.error('Failed to load custom components');
         return [];
       }
     }
@@ -92,7 +90,6 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
   
   // Inline editing state
   const [isInlineEditing, setIsInlineEditing] = useState<string | null>(null);
-  const [fieldTemplates, setFieldTemplates] = useState<FieldTemplate[]>([]);
   
   const inlineEditRef = useRef<HTMLInputElement>(null);
 
@@ -370,7 +367,7 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
   }, [fields, isMultiStep, currentPage, formValues]);
 
   // Handle form value changes for conditional logic
-  const handleFormValueChange = useCallback((fieldId: string, value: any) => {
+  const handleFormValueChange = useCallback((fieldId: string, value: string | number | boolean | string[]) => {
     setFormValues(prev => ({
       ...prev,
       [fieldId]: value
@@ -407,8 +404,8 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
       newFields.splice(destination.index, 0, movedField);
       setFields(newFields);
       addToHistory(newFields);
-    } catch (error) {
-      console.error('Drag and drop error:', error);
+    } catch {
+      console.error('Drag and drop error');
     }
   }, [fields, addToHistory]);
 
@@ -439,7 +436,7 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
             } else {
               showNotification('Invalid form data format');
             }
-          } catch (error) {
+          } catch {
             showNotification('Error parsing JSON file');
           }
         };
@@ -480,6 +477,13 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
       [category]: !prev[category]
     }));
   };
+
+  const handleDuplicateField = useCallback((fieldId: string) => {
+    const fieldToDuplicate = fields.find(f => f.id === fieldId);
+    if (fieldToDuplicate) {
+      duplicateField(fieldToDuplicate);
+    }
+  }, [fields, duplicateField]);
 
   // Preview mode
   if (previewMode) {
@@ -554,29 +558,28 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
                     {showLogicRules && (
                       <LogicRulesPanel
                         fields={fields}
-                        showLogicRules={showLogicRules}
                         onClose={() => setShowLogicRules(false)}
                         onShowNotification={showNotification}
                         onUpdateField={updateField}
                       />
                     )}
 
-        {/* Field Logic Editor Panel */}
+        {/* Field Logic Editor Modal */}
         {showFieldLogicEditor && editingFieldForLogic && (
-          <div className="fixed inset-0 z-[50] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div className="w-full max-w-4xl max-h-[80vh] mx-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden">
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div className="w-full max-w-4xl max-h-[90vh] mx-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden">
               {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/50 dark:to-purple-950/50">
-                <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
+                <div className="flex items-center gap-3">
                   <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-                    <GitBranch className="w-5 h-5 text-white" />
+                    <Zap className="w-5 h-5 text-white" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
                       Field Logic Editor
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      Configure conditional logic for "{editingFieldForLogic.label}"
+                      Configure conditional logic for &quot;{editingFieldForLogic.label}&quot;
                     </p>
                   </div>
                 </div>
@@ -615,12 +618,12 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
             toggleCategory={toggleCategory}
             showTemplates={showTemplates}
             setShowTemplates={setShowTemplates}
-            fieldTemplates={fieldTemplates}
+            fieldTemplates={[]}
             customFieldTypes={customFieldTypes}
             onDeleteCustomFieldType={deleteCustomFieldType}
             onEditCustomFieldType={editCustomFieldType}
             onAddField={addField}
-            onShowOnboarding={() => setShowOnboarding(true)}
+            onShowOnboarding={() => {}}
           />
 
           {/* Form Canvas */}
@@ -642,7 +645,7 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
             onFinishInlineEdit={finishInlineEdit}
             onFormValueChange={handleFormValueChange}
             onAddField={addField}
-            onShowOnboarding={() => setShowOnboarding(true)}
+            onShowOnboarding={() => {}}
             onAddPage={addPage}
             onDeletePage={deletePage}
             onUpdatePageTitle={updatePageTitle}
@@ -650,19 +653,17 @@ export function ModernFormBuilder({ formId: _formId, initialFields = [], onSave 
             customFieldTypes={customFieldTypes}
           />
 
-                                {/* Properties Panel */}
-                      {!showAIAssistant && (
-                        <PropertiesPanel
-                          selectedField={selectedField}
-                          onUpdateField={updateField}
-                          onDeselectField={() => setSelectedField(null)}
-                          showLogicBuilder={showLogicBuilder}
-                          setShowLogicBuilder={setShowLogicBuilder}
-                          allFields={fields}
-                          onShowNotification={showNotification}
-                          onOpenFieldLogicEditor={openFieldLogicEditor}
-                        />
-                      )}
+          {/* Properties Panel */}
+          {!showAIAssistant && (
+            <PropertiesPanel
+              selectedField={selectedField}
+              onUpdateField={updateField}
+              onDeleteField={deleteField}
+              onDuplicateField={handleDuplicateField}
+              onClose={() => setSelectedField(null)}
+              isOpen={!!selectedField}
+            />
+          )}
 
           {/* AI Assistant Panel */}
           {showAIAssistant && (

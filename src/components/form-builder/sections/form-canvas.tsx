@@ -17,9 +17,6 @@ import {
   Copy, 
   Trash2, 
   GitBranch,
-  ChevronLeft,
-  ChevronRight,
-  Edit2,
   X
 } from 'lucide-react';
 import { FormField, FormPage, CustomFieldType } from '../types';
@@ -34,7 +31,7 @@ interface FormCanvasProps {
   isMultiStep: boolean;
   pages: FormPage[];
   currentPage: string;
-  formValues?: Record<string, any>;
+  formValues?: Record<string, string | number | boolean | string[]>;
   onDragEnd: (result: DropResult) => void;
   onSelectField: (field: FormField) => void;
   onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
@@ -42,7 +39,7 @@ interface FormCanvasProps {
   onDuplicateField: (field: FormField) => void;
   onStartInlineEdit: (fieldId: string) => void;
   onFinishInlineEdit: (fieldId: string, newLabel: string) => void;
-  onFormValueChange?: (fieldId: string, value: any) => void;
+  onFormValueChange?: (fieldId: string, value: string | number | boolean | string[]) => void;
   onAddField: (type: FormField['type']) => void;
   onShowOnboarding: () => void;
   onAddPage: () => void;
@@ -73,7 +70,6 @@ export function FormCanvas({
   onShowOnboarding,
   onAddPage,
   onDeletePage,
-  onUpdatePageTitle,
   onSwitchToPage,
   customFieldTypes = []
 }: FormCanvasProps) {
@@ -112,7 +108,7 @@ export function FormCanvas({
                 <div className="flex items-center space-x-4">
                   <span className="text-sm font-medium text-muted-foreground">Pages:</span>
                   <div className="flex items-center space-x-2">
-                    {pages.map((page, index) => (
+                    {pages.map((page) => (
                       <div key={page.id} className="flex items-center space-x-1">
                         <Button
                           variant={currentPage === page.id ? "default" : "outline"}
@@ -165,38 +161,29 @@ export function FormCanvas({
                   <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                                         className={`min-h-[200px] p-4 border-2 border-dashed rounded-lg transition-all duration-200 ${
-                       snapshot.isDraggingOver
-                         ? 'border-blue-400 bg-blue-500/15 backdrop-blur-sm'
-                         : 'border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 bg-white/20 dark:bg-slate-800/20'
-                     }`}
+                    className={`min-h-[200px] p-4 border-2 border-dashed rounded-lg transition-all duration-200 ${
+                      snapshot.isDraggingOver
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border bg-muted/20'
+                    }`}
                   >
                     {fields.length === 0 ? (
                       <div className="text-center py-12">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                           <Wand2 className="w-8 h-8 text-white" />
                         </div>
-                        <h3 className="text-lg font-semibold mb-2">Start building your form</h3>
-                        <p className="text-muted-foreground text-sm max-w-md mx-auto mb-4">
-                          Add form elements from the sidebar to get started. You can drag and drop to reorder them.
+                        <h3 className="text-lg font-semibold mb-2">Start Building Your Form</h3>
+                        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                          Add form fields from the sidebar to begin creating your form. You can drag and drop to arrange them.
                         </p>
-                        <div className="flex items-center justify-center gap-2">
-                          <Button
-                            size="sm"
-                            onClick={() => onAddField('text')}
-                            className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
-                          >
+                        <div className="flex items-center justify-center gap-4">
+                          <Button onClick={() => onAddField('text')} className="flex items-center gap-2">
                             <Plus className="w-4 h-4" />
                             Add Text Field
                           </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={onShowOnboarding}
-                                                         className="flex items-center gap-1 bg-white/70 dark:bg-slate-700/70 border border-slate-300 dark:border-slate-600 backdrop-blur-sm hover:bg-white/90 dark:hover:bg-slate-700/90"
-                          >
-                            <Play className="w-4 h-4" />
-                            Quick Tour
+                          <Button variant="outline" onClick={onShowOnboarding}>
+                            <Play className="w-4 h-4 mr-2" />
+                            Quick Start Guide
                           </Button>
                         </div>
                       </div>
@@ -204,7 +191,7 @@ export function FormCanvas({
                       <div className="space-y-4">
                         {groupFieldsIntoRows(fields).map((row, rowIndex) => (
                           <div key={`row-${rowIndex}`} className="flex flex-wrap -mr-2">
-                            {row.map((field, fieldIndex) => {
+                            {row.map((field) => {
                               const globalIndex = fields.indexOf(field);
                               return (
                                 <Draggable key={field.id} draggableId={field.id} index={globalIndex}>
@@ -232,7 +219,7 @@ export function FormCanvas({
                                       >
                                         <div className="flex items-start justify-between h-full">
                                           <div className="flex-1 space-y-2">
-                                                                                         {!['heading', 'paragraph', 'divider', 'custom'].includes(field.type) && (
+                                            {!['heading', 'paragraph', 'divider', 'custom'].includes(field.type) && (
                                               <div className="flex items-center gap-2">
                                                 {isInlineEditing === field.id ? (
                                                   <Input
@@ -270,7 +257,7 @@ export function FormCanvas({
                                                 )}
                                               </div>
                                             )}
-                                                                                         <FieldRenderer 
+                                            <FieldRenderer 
                                               field={field} 
                                               isPreview={false} 
                                               formValues={formValues}
@@ -299,7 +286,7 @@ export function FormCanvas({
                                                     onDuplicateField(field);
                                                   }}
                                                 >
-                                                  <Copy className="w-3 h-3" />
+                                                  <Copy className="w-4 h-4" />
                                                 </Button>
                                               </TooltipTrigger>
                                               <TooltipContent>
@@ -318,7 +305,7 @@ export function FormCanvas({
                                                     onDeleteField(field.id);
                                                   }}
                                                 >
-                                                  <Trash2 className="w-3 h-3" />
+                                                  <Trash2 className="w-4 h-4" />
                                                 </Button>
                                               </TooltipTrigger>
                                               <TooltipContent>

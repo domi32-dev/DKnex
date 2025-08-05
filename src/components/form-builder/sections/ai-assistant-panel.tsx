@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -41,7 +41,7 @@ export function AIAssistantPanel({
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('suggestions');
 
-  const simulateAIAnalysis = async () => {
+  const simulateAIAnalysis = useCallback(async () => {
     setIsLoading(true);
     
     // Simulate API call delay
@@ -82,18 +82,14 @@ export function AIAssistantPanel({
     setAnalysis(mockAnalysis);
     setSuggestions(mockAnalysis.suggestions);
     setIsLoading(false);
-  };
+  }, [fields, onUpdateField]);
 
   // Simulate AI analysis when fields change
   useEffect(() => {
     if (fields.length > 0) {
       simulateAIAnalysis();
     }
-  }, [fields]);
-
-  useEffect(() => {
-    simulateAIAnalysis();
-  }, [simulateAIAnalysis]);
+  }, [fields, simulateAIAnalysis]);
 
   const generateSuggestions = (): AISuggestion[] => {
     const possibleSuggestions = [
