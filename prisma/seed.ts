@@ -4,15 +4,16 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 // Demo users for portfolio showcase
+// IMPORTANT: In production, use environment variables for passwords
 const DEMO_USERS = [
   {
-    email: 'demo@dknex.com',
-    password: 'Demo123!@#',
+    email: process.env.DEMO_USER_EMAIL || 'demo@dknex.com',
+    password: process.env.DEMO_USER_PASSWORD || 'Demo123!@#',
     name: 'Demo User',
   },
   {
-    email: 'admin@dknex.com',
-    password: 'Admin123!@#',
+    email: process.env.DEMO_ADMIN_EMAIL || 'admin@dknex.com',
+    password: process.env.DEMO_ADMIN_PASSWORD || 'Admin123!@#',
     name: 'Admin Demo',
   }
 ];

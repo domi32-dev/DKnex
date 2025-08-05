@@ -6,13 +6,19 @@
     "dev": "next dev --turbopack",
     "build": "npx prisma generate && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --fix",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset && npm run db:seed",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:docker:up": "docker-compose up -d postgres",
+    "db:docker:down": "docker-compose down",
+    "db:docker:reset": "docker-compose down -v && docker-compose up -d postgres",
+    "setup:dev": "npm install && cp env.example .env.local && npm run db:docker:up && npx prisma migrate dev && npm run db:seed",
+    "clean": "rm -rf .next node_modules coverage",
+    "clean:install": "npm run clean && npm install"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",

@@ -6,11 +6,13 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org)
 [![Prisma](https://img.shields.io/badge/Prisma-6.6-green?logo=prisma)](https://www.prisma.io)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?logo=postgresql)](https://www.postgresql.org)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/do-ki-project)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/domi32-dev/dknex)
 
 ## 🌟 Live Demo & Portfolio
 
-**🚀 [Live Demo](https://dknex.vercel.app/)** | **📊 [Portfolio](https://dk-dev.com)** | **💼 [LinkedIn](https://linkedin.com/in/dominik-kinzel)**
+**🚀 [Live Demo](https://dknex.vercel.app/)** | **📊 [Portfolio](https://www.dominik-kinzel.dev/)** | **💼 [LinkedIn](https://linkedin.com/in/dominik-kinzel)**
 
 > **Demo Credentials**: `demo@dknex.com` / `Demo123!@#` (2FA disabled for demo)
 
@@ -88,42 +90,63 @@ A comprehensive **Form Builder Platform** with dashboard that enables users to c
 
 ### Prerequisites
 - Node.js 18+ 
-- PostgreSQL database
+- PostgreSQL database (or use Docker)
 - Git
 
-### Installation
+### Quick Start (Recommended)
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/do-ki-project.git
-cd do-ki-project
+# 1. Fork this repository on GitHub (click "Fork" button)
+# 2. Clone your fork (replace YOUR_USERNAME with your GitHub username)
+git clone https://github.com/YOUR_USERNAME/dknex.git
+cd dknex
 
-# Install dependencies
+# 3. Install dependencies
 npm install
 
-# Set up environment variables
-cp .env.example .env.local
+# 4. Set up environment
+cp env.example .env.local
 # Edit .env.local with your configuration
 
-# Set up the database
+# 5. Set up database (choose one option)
+
+# Option A: Using Docker (easiest)
+docker run --name dknex-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dknex -p 5432:5432 -d postgres:15
+
+# Option B: Local PostgreSQL
+# Install PostgreSQL and create database 'dknex'
+
+# 6. Run database setup
 npx prisma migrate dev
 npx prisma db seed
 
-# Start the development server
+# 7. Start development server
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.
+
+### Demo Mode
+For quick testing, you can enable demo mode:
+```bash
+# In .env.local
+DEMO_MODE=true
+NEXT_PUBLIC_DEMO_MODE=true
+```
+
+Then use these credentials:
+- **Email**: `demo@dknex.com`
+- **Password**: `Demo123!@#`
 
 ## 🔧 Environment Variables
 
 Create a `.env.local` file in the root directory:
 
 ```env
-# Database
-DATABASE_URL="postgresql://username:password@localhost:5432/test"
+# Database (required)
+DATABASE_URL="postgresql://username:password@localhost:5432/dknex"
 
-# NextAuth
+# NextAuth (required)
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-nextauth-secret"
 
@@ -131,13 +154,19 @@ NEXTAUTH_SECRET="your-nextauth-secret"
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
-# Email Configuration
+# Email Configuration (optional)
 EMAIL_SERVER_HOST="smtp.gmail.com"
 EMAIL_SERVER_PORT=587
 EMAIL_SERVER_USER="your-email@gmail.com"
-EMAIL_SERVER_PASSWORD="your-app-password"
-EMAIL_FROM="noreply@test.com"
+EMAIL_SERVER_PASS="your-app-password"
+EMAIL_FROM="noreply@yourdomain.com"
+
+# Demo Mode (optional)
+DEMO_MODE="false"
+NEXT_PUBLIC_DEMO_MODE="false"
 ```
+
+**💡 Tip**: For local development, you can use a simple secret like `"your-secret-key-here"` for `NEXTAUTH_SECRET`.
 
 ## 📱 Screenshots
 
@@ -240,19 +269,17 @@ src/
 
 ## 🤝 Contributing
 
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Quick Start for Contributors
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📋 Development Guidelines
-
-- Follow TypeScript best practices
-- Write unit tests for new features
-- Use conventional commit messages
-- Ensure all tests pass before submitting PR
-- Follow the existing code style
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Commit with conventional commit messages
+7. Push to your branch
+8. Create a Pull Request
 
 ## 🎯 Current Focus Areas
 
@@ -289,13 +316,29 @@ src/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Quick Start for Contributors
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Commit with conventional commit messages
+7. Push to your branch
+8. Create a Pull Request
+
 ## 📧 Contact
 
-**Your Name**
+**Dominik Kinzel**
 - Email: domi.kinzel@gmail.com
 - LinkedIn: [https://www.linkedin.com/in/dominik-kinzel](https://www.linkedin.com/in/dominik-kinzel)
-- Portfolio: [dk-dev.com](https://dk-dev.com)
+- Portfolio: [dominik-kinzel.dev](https://www.dominik-kinzel.dev/)
 - GitHub: [@domi32-dev](https://github.com/domi32-dev)
+
+
 
 ## 🎯 Technical Highlights & Challenges Solved
 

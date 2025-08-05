@@ -18,8 +18,8 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/do-ki-project.git
-   cd do-ki-project
+   git clone https://github.com/yourusername/DKNex.git
+   cd DKNex
    ```
 
 2. **Install dependencies**

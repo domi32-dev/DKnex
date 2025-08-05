@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🚀 Quick Start Guide
+    url: https://github.com/domi32-dev/dknex#quick-start-recommended
+    about: New to DkNex? Start here for easy setup instructions.
+  - name: 💬 GitHub Discussions
+    url: https://github.com/domi32-dev/dknex/discussions
+    about: Ask questions, share ideas, and discuss features with the community.
+  - name: 📧 Email Support
+    url: mailto:domi.kinzel@gmail.com
+    about: Contact the maintainer directly for urgent issues or private matters. 

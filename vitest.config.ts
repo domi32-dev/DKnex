@@ -10,7 +10,7 @@ export default defineConfig({
     setupFiles: ['./src/__tests__/setup.tsx'],
     globals: true,
     coverage: {
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       exclude: [
         'node_modules/',
         'src/types/',

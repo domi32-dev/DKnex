@@ -8,17 +8,17 @@ export const DEMO_CONFIG = {
     ) || process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
   ),
   
-  // Demo user credentials
+  // Demo user credentials - use environment variables
   demoUsers: [
     {
-      email: 'demo@dknex.com',
-      password: 'Demo123!@#',
+      email: process.env.DEMO_USER_EMAIL || 'demo@dknex.com',
+      password: process.env.DEMO_USER_PASSWORD || 'Demo123!@#',
       name: 'Demo User',
       role: 'user'
     },
     {
-      email: 'admin@dknex.com', 
-      password: 'Admin123!@#',
+      email: process.env.DEMO_ADMIN_EMAIL || 'admin@dknex.com', 
+      password: process.env.DEMO_ADMIN_PASSWORD || 'Admin123!@#',
       name: 'Admin Demo',
       role: 'admin'
     }
