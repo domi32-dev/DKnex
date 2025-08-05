@@ -61,7 +61,7 @@ jobs:
            run: npm run test:coverage
            env:
               DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
-              NEXTAUTH_SECRET: test-secret
+              NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'test-secret-for-ci' }}
               NEXTAUTH_URL: http://localhost:3000
 
          - name: Upload coverage to Codecov
@@ -94,7 +94,7 @@ jobs:
            run: npm run build
            env:
               DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
-              NEXTAUTH_SECRET: test-secret
+              NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'test-secret-for-ci' }}
               NEXTAUTH_URL: http://localhost:3000
 
          - name: Upload build artifacts
@@ -102,10 +102,15 @@ jobs:
            with:
               name: build-files
               path: .next/
+              if-no-files-found: warn
 
    security:
       name: Security Scan
       runs-on: ubuntu-latest
+      permissions:
+         security-events: write
+         actions: read
+         contents: read
 
       steps:
          - name: Checkout code
@@ -128,6 +133,10 @@ jobs:
    codeql:
       name: CodeQL Analysis
       runs-on: ubuntu-latest
+      permissions:
+         security-events: write
+         actions: read
+         contents: read
 
       steps:
          - name: Checkout code
@@ -151,7 +160,7 @@ jobs:
            run: npm run build
            env:
               DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
-              NEXTAUTH_SECRET: test-secret
+              NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'test-secret-for-ci' }}
               NEXTAUTH_URL: http://localhost:3000
 
          - name: Perform CodeQL Analysis
