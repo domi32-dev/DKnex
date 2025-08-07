@@ -20,6 +20,23 @@
 
 A comprehensive **Form Builder Platform** with dashboard that enables users to create, manage, and analyze interactive forms. This project demonstrates advanced full-stack development with modern web technologies and enterprise-grade features.
 
+## 📱 Screenshots
+
+### Dashboard Overview
+![Dashboard](public/screenshots/dashboard.jpg)
+
+### Form Builder Interface
+![Form Builder](public/screenshots/formbuilder.jpg)
+
+### Mobile Responsive Design
+![Mobile View](public/screenshots/mobile.jpg)
+
+### Analytics Screenshot
+![Analytics](public/screenshots/submits.jpg)
+
+### Tablet Screenshot
+![Analytics](public/screenshots/tablet.jpg)
+
 ## ✨ Key Features
 
 ### 🏗️ **Advanced Form Builder**
@@ -167,20 +184,6 @@ NEXT_PUBLIC_DEMO_MODE="false"
 ```
 
 **💡 Tip**: For local development, you can use a simple secret like `"your-secret-key-here"` for `NEXTAUTH_SECRET`.
-
-## 📱 Screenshots
-
-### Dashboard Overview
-![Dashboard](public/screenshots/dashboard.png)
-
-### Form Builder Interface
-![Form Builder](public/screenshots/form-builder.png)
-
-### Mobile Responsive Design
-![Mobile View](public/screenshots/mobile.png)
-
-### Analytics Dashboard
-![Analytics](public/screenshots/analytics.png)
 
 ## 🧪 Testing
 
