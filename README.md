@@ -12,10 +12,6 @@
 
 <p align="center">
   <img src="public/screenshots/dashboard.jpg" alt="DkNex Dashboard" width="900">
-  <br/>
-  <a href="https://dknex.vercel.app/"><img src="https://img.shields.io/badge/Live%20Demo-Open-blue?logo=vercel" alt="Live Demo"></a>
-  <a href="https://vercel.com/new/clone?repository-url=https://github.com/domi32-dev/dknex"><img src="https://img.shields.io/badge/Deploy%20to%20Vercel-1%20click-black?logo=vercel" alt="Deploy"></a>
-  <a href="#getting-started"><img src="https://img.shields.io/badge/Get%20Started-3%20min-success" alt="Get Started"></a>
 </p>
 
 ## ⚡ TL;DR (3‑step setup)
