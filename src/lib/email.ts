@@ -12,7 +12,8 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendVerificationEmail(to: string, token: string) {
-  const link = `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${token}`;
+  const appUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  const link = `${appUrl}/api/auth/verify?token=${token}`;
 
   try {
     await transporter.sendMail({

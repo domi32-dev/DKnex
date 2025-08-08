@@ -424,8 +424,8 @@ Set up environment variables in your deployment platform:
 ```env
 # Production
 DATABASE_URL="postgresql://..."
-NEXTAUTH_URL="https://your-domain.com"
-NEXTAUTH_SECRET="your-production-secret"
+   NEXTAUTH_URL="https://your-domain.com"
+   NEXTAUTH_SECRET="your-production-secret"
 ```
 
 ### Build Process

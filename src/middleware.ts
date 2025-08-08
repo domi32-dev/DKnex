@@ -25,9 +25,10 @@ export async function middleware(request: NextRequest) {
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   
   // Content Security Policy
+  const isDev = process.env.NODE_ENV !== 'production';
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https:;
+    script-src 'self' ${isDev ? "'unsafe-inline' 'unsafe-eval'" : ''} blob: https:;
     worker-src 'self' blob: https:;
     style-src 'self' 'unsafe-inline';
     img-src 'self' data: https:;
@@ -41,10 +42,17 @@ export async function middleware(request: NextRequest) {
   headers.set('X-Frame-Options', 'DENY');
 
   // HSTS
-  headers.set(
-    'Strict-Transport-Security',
-    'max-age=31536000; includeSubDomains; preload'
-  );
+  if (!isDev) {
+    headers.set(
+      'Strict-Transport-Security',
+      'max-age=31536000; includeSubDomains; preload'
+    );
+  }
+
+  // Additional recommended headers
+  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+  headers.set('Cross-Origin-Resource-Policy', 'same-origin');
 
   return response;
 }

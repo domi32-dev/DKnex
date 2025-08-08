@@ -21,7 +21,13 @@ const DEMO_USERS = [
 async function main() {
   console.log('🌱 Starting database seeding...');
 
-  // Clean up existing data
+  const isDemoMode = process.env.DEMO_MODE === 'true' || process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  if (!isDemoMode) {
+    console.log('⚠️  DEMO_MODE is not enabled. Skipping seeding to avoid accidental production data.');
+    return;
+  }
+
+  // Clean up existing data (demo mode only)
   await prisma.userNotification.deleteMany();
   await prisma.notification.deleteMany();
   await prisma.project.deleteMany();
@@ -33,23 +39,20 @@ async function main() {
   console.log('👤 Creating demo users...');
   for (const demoUser of DEMO_USERS) {
     const hashedPassword = await bcrypt.hash(demoUser.password, 12);
-    
     await prisma.user.create({
       data: {
         email: demoUser.email,
         name: demoUser.name,
         password: hashedPassword,
         emailVerified: new Date(),
-        twoFactorEnabled: false, // Disable 2FA for demo users
+        twoFactorEnabled: false,
       },
     });
-    
     console.log(`✅ Created demo user: ${demoUser.email}`);
   }
 
-  // Create demo users
+  // Create sample users (only in demo mode)
   const hashedPassword = await bcrypt.hash('demo123', 12);
-  
   const adminUser = await prisma.user.create({
     data: {
       name: 'John Doe',
@@ -172,7 +175,7 @@ async function main() {
   ]);
 
   // Create user notifications
-  const userNotifications = [];
+  const userNotifications: any[] = [];
   
   // Admin user notifications
   for (const notification of notifications) {

@@ -2,13 +2,13 @@ import { NextAuthOptions, Session, User } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from '.prisma/client';
+import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { JWT } from "next-auth/jwt";
 import { SessionStrategy } from "next-auth";
 import speakeasy from 'speakeasy';
 
-const prisma = new PrismaClient();
+// Use shared Prisma client to avoid multiple instances in dev
 
 if (!process.env.NEXTAUTH_URL) {
    process.env.NEXTAUTH_URL = 'http://localhost:3000';
@@ -98,7 +98,8 @@ export const authOptions: NextAuthOptions = {
          return session;
       },
    }, 
-   secret: process.env.JWT_SECRET ?? "",
+   // Align with NextAuth naming; NEXTAUTH_SECRET is the standard
+   secret: process.env.NEXTAUTH_SECRET ?? "",
    // Optional: debug logging
    // debug: process.env.NODE_ENV === "development",
 }; 

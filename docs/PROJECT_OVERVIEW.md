@@ -48,7 +48,6 @@
 
 ### **Backend & API Development**
 - **Next.js API Routes** - Serverless backend functions
-- **tRPC** - End-to-end type-safe API development
 - **Prisma ORM** - Modern database toolkit with migrations
 - **PostgreSQL** - Production-ready relational database
 - **NextAuth.js** - Enterprise authentication system
@@ -101,7 +100,7 @@ src/
 │   ├── ui/              # Base UI components
 │   └── layout/          # Layout components
 ├── lib/                  # Utility libraries
-├── server/              # tRPC server setup
+├── server/              # (optional) API server helpers
 ├── types/               # TypeScript type definitions
 ├── utils/               # Helper functions
 ├── validations/         # Zod schemas

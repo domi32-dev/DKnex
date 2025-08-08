@@ -10,6 +10,47 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![Deploy with Vercel](https://img.shields.io/badge/Deploy%20with-Vercel-black?logo=vercel)](https://vercel.com/new/clone?repository-url=https://github.com/domi32-dev/dknex)
 
+<p align="center">
+  <img src="public/screenshots/dashboard.jpg" alt="DkNex Dashboard" width="900">
+  <br/>
+  <a href="https://dknex.vercel.app/"><img src="https://img.shields.io/badge/Live%20Demo-Open-blue?logo=vercel" alt="Live Demo"></a>
+  <a href="https://vercel.com/new/clone?repository-url=https://github.com/domi32-dev/dknex"><img src="https://img.shields.io/badge/Deploy%20to%20Vercel-1%20click-black?logo=vercel" alt="Deploy"></a>
+  <a href="#getting-started"><img src="https://img.shields.io/badge/Get%20Started-3%20min-success" alt="Get Started"></a>
+</p>
+
+## ⚡ TL;DR (3‑step setup)
+
+```bash
+npm install
+cp env.example .env.local
+npx prisma migrate dev && npx prisma db seed && npm run dev
+```
+
+<a id="quick-navigation"></a>
+
+<details>
+  <summary><b>🧭 Quick Navigation</b></summary>
+
+- [Live Demo & Portfolio](#live-demo--portfolio)
+- [Project Overview](#project-overview)
+- [Screenshots](#screenshots)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Testing](#testing)
+- [Performance Metrics](#performance-metrics)
+- [CI/CD Pipeline](#cicd-pipeline)
+- [API Documentation](#api-documentation)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [Roadmap & Future Enhancements](#roadmap--future-enhancements)
+- [Browser Support](#browser-support)
+- [License](#license)
+- [Contact](#contact)
+
+</details>
+
 ## 🌟 Live Demo & Portfolio
 
 **🚀 [Live Demo](https://dknex.vercel.app/)** | **📊 [Portfolio](https://www.dominik-kinzel.dev/)** | **💼 [LinkedIn](https://linkedin.com/in/dominik-kinzel)**
@@ -22,20 +63,35 @@ A comprehensive **Form Builder Platform** with dashboard that enables users to c
 
 ## 📱 Screenshots
 
-### Dashboard Overview
-![Dashboard](public/screenshots/dashboard.jpg)
+<details>
+  <summary><b>Open gallery</b></summary>
 
-### Form Builder Interface
-![Form Builder](public/screenshots/formbuilder.jpg)
+  <table>
+    <tr>
+      <td align="center">
+        <img src="public/screenshots/formbuilder.jpg" alt="Form Builder Interface" width="420"><br/>
+        <sub>Form Builder</sub>
+      </td>
+      <td align="center">
+        <img src="public/screenshots/submits.jpg" alt="Analytics Dashboard" width="420"><br/>
+        <sub>Analytics</sub>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="public/screenshots/tablet.jpg" alt="Tablet View" width="420"><br/>
+        <sub>Tablet</sub>
+      </td>
+      <td align="center">
+        <img src="public/screenshots/mobile.jpg" alt="Mobile View" width="420"><br/>
+        <sub>Mobile</sub>
+      </td>
+    </tr>
+  </table>
 
-### Mobile Responsive Design
-![Mobile View](public/screenshots/mobile.jpg)
+</details>
 
-### Analytics Screenshot
-![Analytics](public/screenshots/submits.jpg)
-
-### Tablet Screenshot
-![Analytics](public/screenshots/tablet.jpg)
+[Back to top](#quick-navigation)
 
 ## ✨ Key Features
 
@@ -91,10 +147,9 @@ A comprehensive **Form Builder Platform** with dashboard that enables users to c
 
 ### **Backend**
 - **Next.js API Routes** - Serverless functions
-- **tRPC** - Type-safe API development
 - **Prisma ORM** - Database toolkit
 - **PostgreSQL** - Production database
-- **NextAuth.js** - Authentication system
+ - **NextAuth.js** - Authentication system
 
 ### **DevOps & Tools**
 - **ESLint** - Code linting and formatting
@@ -154,6 +209,10 @@ NEXT_PUBLIC_DEMO_MODE=true
 Then use these credentials:
 - **Email**: `demo@dknex.com`
 - **Password**: `Demo123!@#`
+
+### Optional: Redis for Rate Limiting
+
+Set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` in `.env.local` to enable distributed, Edge-compatible rate limiting in production. If unset, an in-memory fallback is used (single-instance only).
 
 ## 🔧 Environment Variables
 
@@ -369,7 +428,6 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 - **Why Next.js 15**: Leveraged App Router for better performance and developer experience
 - **Why Prisma**: Type-safe database operations with excellent migration tooling
-- **Why tRPC**: End-to-end type safety between frontend and backend
 - **Why Tailwind**: Rapid UI development while maintaining design consistency
 
 ## 🙏 Acknowledgments
