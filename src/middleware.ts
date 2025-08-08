@@ -28,11 +28,11 @@ export async function middleware(request: NextRequest) {
   const isDev = process.env.NODE_ENV !== 'production';
   const cspHeader = `
     default-src 'self';
-    script-src 'self' ${isDev ? "'unsafe-inline' 'unsafe-eval'" : ''} blob: https:;
+    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ''} blob: https:;
     worker-src 'self' blob: https:;
     style-src 'self' 'unsafe-inline';
     img-src 'self' data: https:;
-    connect-src 'self' https:;
+    connect-src 'self' https: wss:;
     child-src 'self' blob:;
   `.replace(/\s+/g, ' ').trim();
 
